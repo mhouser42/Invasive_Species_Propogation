@@ -15,7 +15,6 @@ def get_IL_df(df: pd.DataFrame, years=5, columns=['ObjectID', 'Status',
     :param years: number of years to go back from current date (the idea being to not have old, outdated data.)
     :param columns: desired columns to return
     :return IL_df: new dataframe of relevant information in Illinois
-
     """
     df = df[columns].copy()
     df['DateUp'] = pd.to_datetime(df['DateUp'], format='%m-%d-%y', errors='coerce')
