@@ -1,6 +1,8 @@
+.idea/
 R-lib/
 lyde_EDA.ipynb
-.idea/
+playground.ipynb
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

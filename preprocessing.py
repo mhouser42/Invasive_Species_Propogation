@@ -5,19 +5,26 @@ python program to process data from various sources
 import pandas as pd
 
 
-def get_IL_df(df: pd.DataFrame, columns=['ObjectID', 'Status',
+def get_IL_df(df: pd.DataFrame, years=5, columns=['ObjectID', 'Status',
                                          'ObsDate', 'DateEnt', 'DateUp',
                                          'Location', 'Latitude', 'Longitude',
                                          'InfestAcre', 'Density', 'Habitat', 'Verified']) -> pd.DataFrame:
     """
     Take a dataframe of recorded Tree of Heaven observations and returns all positive rows that are in Illinois.
     :param df: Dataframe of invasive species data. obtained from www.eddmaps.org
+    :param years: number of years to go back from current date (the idea being to not have old, outdated data.)
     :param columns: desired columns to return
     :return IL_df: new dataframe of relevant information in Illinois
+
+    TODO: Dealing with UserWarning: Could not infer format - If the format is set (i.e. %m/%d/%Y), no data is returned.
     """
-    df = df[columns]
-    IL_df = df[(df['Location'].str.contains('Illinois')) & (df['Status'] == 'Positive')].copy()
-    IL_df['Verified'] = IL_df['Verified'] == 'Verified'
+    df = df[columns].copy()
+    df['DateUp'] = pd.to_datetime(df['DateUp'], errors='coerce')
+    IL_df = df[(df['Location'].str.contains('Illinois'))
+               & (df['Status'] == 'Positive')
+               & (df['Verified'] == 'Verified')
+               & (df['DateUp'] >= pd.Timestamp.now() - pd.DateOffset(years=years))].copy()
+    IL_df.drop(columns=['Verified'], inplace=True)
     return IL_df
 
 
@@ -31,14 +38,13 @@ if __name__ == '__main__':
                                 'DateEnt', 'DateUp',
                                 'Location', 'Latitude', 'Longitude',
                                 'InfestAcre', 'Density', 'Verified'])
+
     # handling duplicates in rev_df
-    rev_df['DateUp'] = pd.to_datetime(rev_df['DateUp'], errors='coerce')
-    rev_df.set_index('ObjectID', inplace=True)
-    rev_df = rev_df.sort_values(by='DateUp', ascending=False)
-    rev_df = rev_df.loc[~rev_df.index.duplicated(keep='first')]
+    rev_df = rev_df.sort_values(by='DateUp', ascending=False).drop_duplicates(subset='ObjectID', keep='first')
 
     toh_df.set_index('ObjectID', inplace=True)
+    rev_df.set_index('ObjectID', inplace=True)
 
-    toh_df.update(rev_df[rev_df['Verified']][['Density', 'InfestAcre']])
-    toh_df.reindex()
+    toh_df.update(rev_df[['Density', 'InfestAcre']])
+    toh_df.reset_index(inplace=True)
     toh_df.to_csv(f'{path}/IL_toh.csv')
