@@ -16,10 +16,9 @@ def get_IL_df(df: pd.DataFrame, years=5, columns=['ObjectID', 'Status',
     :param columns: desired columns to return
     :return IL_df: new dataframe of relevant information in Illinois
 
-    TODO: Dealing with UserWarning: Could not infer format - If the format is set (i.e. %m/%d/%Y), no data is returned.
     """
     df = df[columns].copy()
-    df['DateUp'] = pd.to_datetime(df['DateUp'], errors='coerce')
+    df['DateUp'] = pd.to_datetime(df['DateUp'], format='%m-%d-%y', errors='coerce')
     IL_df = df[(df['Location'].str.contains('Illinois'))
                & (df['Status'] == 'Positive')
                & (df['Verified'] == 'Verified')
