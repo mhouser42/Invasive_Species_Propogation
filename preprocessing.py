@@ -22,7 +22,7 @@ def get_IL_df(df: pd.DataFrame, years=5, columns=['ObjectID', 'Status',
                & (df['Status'] == 'Positive')
                & (df['Verified'] == 'Verified')
                & (df['DateUp'] >= pd.Timestamp.now() - pd.DateOffset(years=years))].copy()
-    IL_df.drop(columns=['Verified'], inplace=True)
+    IL_df.drop(columns=['Status', 'Verified'], inplace=True)
     return IL_df
 
 
@@ -44,5 +44,4 @@ if __name__ == '__main__':
     rev_df.set_index('ObjectID', inplace=True)
 
     toh_df.update(rev_df[['Density', 'InfestAcre']])
-    toh_df.reset_index(inplace=True)
     toh_df.to_csv(f'{path}/IL_toh.csv')
