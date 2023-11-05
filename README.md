@@ -6,19 +6,19 @@ Tentative README.md
 
 INVASIVE SPECIES PROPAGATION MONTE CARLO
 
-https://github.com/mhouser42/Invasive_Species_PropogationLinks to an external site.
+https://github.com/mhouser42/Invasive_Species_Propogation
 
 Team members: 
 
-Justin Tung: https://github.com/JayTongueLinks to an external site.
-Matt Adam-Houser: https://github.com/mhouser42Links to an external site.
+Justin Tung: https://github.com/JayTongue
+Matt Adam-Houser: https://github.com/mhouser42
  
 
-The spotted lanternfly (SLF) is an invasive species originating in China. It was accidentally introduced to North America in 2014, first detected in Pennsylvania before eventually spreading to 14 other statesLinks to an external site.. Just this past September, it has been spotted in Illinois for the first timeLinks to an external site.. The purpose of our Monte Carlo is to simulate the spread of the lanternfly and explore potential preventative measures.
+The spotted lanternfly (SLF) is an invasive species originating in China. It was accidentally introduced to North America in 2014, first detected in Pennsylvania before eventually spreading to 14 other states. Just this past September, it has been spotted in Illinois for the first time. The purpose of our Monte Carlo is to simulate the spread of the lanternfly and explore potential preventative measures.
 
  
 
-Aggregate data from US locations compiled by a previous study will be used to inform our design: https://github.com/ieco-lab/lydemaprLinks to an external site., and NetworkX to create graph structures.
+Aggregate data from US locations compiled by a previous study will be used to inform our design: https://github.com/ieco-lab/lydemapr, and NetworkX to create graph structures.
 
  
 
@@ -35,7 +35,7 @@ Geospatial nodes - Nodes representing different areas of illinois. These nodes w
 Longitude and Latitude - used as a method of establishing distance between nodes.
 Population - Higher population areas will have a better chance of detecting and destroying SLF
 Lanternfly density: initial lanternfly levels for an area. Most of these will be zero at the beginning.
-Tree density: SLFs primary host tree is another invasive species from East Asia known as the “tree of heaven”, but is known to use more than 170 different plants as potential hostsLinks to an external site., a number of which, like walnut and maple trees, are common in Illinois (our state tree the white oak is fortunately spared). Higher tree density will result in faster lanternfly spread.
+Tree density: SLFs primary host tree is another invasive species from East Asia known as the “tree of heaven”, but is known to use more than 170 different plants as potential hosts, a number of which, like walnut and maple trees, are common in Illinois (our state tree the white oak is fortunately spared). Higher tree density will result in faster lanternfly spread.
 
 This will mean we have effectively two densities, one for trees of heaven, and another for native trees. High tree of heaven density will increase reproduction rate.
 
@@ -43,11 +43,11 @@ Certain nodes will be “checkpoints” along routes between larger population c
 
 Routes and Vehicles - SLFs are what is known as a “hitchhiker” pest. While they have wings, they only fly short distances, and mostly remain in a localized area. They primarily spread by laying eggs on shipping containers and trade goods.
 
-There are a number of trainLinks to an external site. and truckLinks to an external site. routes throughout illinois. These will be weighted edges between the geospatial nodes. We will use OSMnx for this part.
+There are a number of train and truck routes throughout illinois. These will be weighted edges between the geospatial nodes. We will use OSMnx for this part.
 
 Trucks and Trains (inherited from a generic Vehicle class) will “travel” along edges. These classes will have an “infested rate” and “detection rate”. Infested rate is the likelihood a vehicle will have an egg nest, which will increase if the geonode it is leaving has higher lanternfly density. “Detection rate” will be used to simulate the length of vehicles, with higher levels for trains and lower levels for trucks (but will increase for number of cars a truck has) 
 
-Seasons - SLF have a life cycle of one generation per yearLinks to an external site.. While the adults and nymphs die off during the winter, their egg masses are resistant to the cold and can survive. This is an opportune time to find egg nests and destroy them. Seasons will be used to simulate the slow down in colder months, as well as be triggers for SLF to transition to the next phase of their life cycle.
+Seasons - SLF have a life cycle of one generation per year. While the adults and nymphs die off during the winter, their egg masses are resistant to the cold and can survive. This is an opportune time to find egg nests and destroy them. Seasons will be used to simulate the slow down in colder months, as well as be triggers for SLF to transition to the next phase of their life cycle.
 
 Local level
 
@@ -61,7 +61,7 @@ LanternFly
 Will have a life cycle based on age, corresponding to seasons. Will only be able to reproduce while adults.
 Considering having “hunger” levels, which will make SLF prioritize navigating to trees, otherwise adults will try to mate then lay eggs.
 
-Wasp:  SLF have a natural predator in the form of a parasitoid waspLinks to an external site..
+Wasp:  SLF have a natural predator in the form of a parasitoid wasp.
 Wasps will hunt SLFs, killing adults and destroying nests.
 
 For any any SLF killed by a wasp, another wasp will be created.
@@ -94,7 +94,7 @@ Truck inspections - At each checkpoint node, there is the possibility of egg nes
 This may be set at a global uniform level, or may vary from checkpoint to checkpoint.
 
 Bug smashing and egg destruction - Areas will have different levels of “awareness” of the SLF problem, and will represent more active measures being taken to deal with them. The effectiveness of bug smashing will be (population × awareness)
-The Chinese Needle Snake approachLinks to an external site.: In addition to regular culling efforts, certain areas will have the parasitoid wasp introduced into the population. 
+The Chinese Needle Snake approach: In addition to regular culling efforts, certain areas will have the parasitoid wasp introduced into the population. 
 
 Deforestation - The degree/rate that trees of heaven are removed from areas.
 
