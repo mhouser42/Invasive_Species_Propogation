@@ -14,23 +14,22 @@ class Location:
         self.ToH_density = ToH_density # "tree of heaven density"
         self.OT_density = OT_density  # "Other trees density"
         self.quarantine = quarantine
-
         _ToH_density_list = []
 
-    def track_ToH_density(self, ToH_density, _ToH_density_list):
-        _ToH_density_list = _ToH_density_list.append(ToH_density)
-        return _ToH_density_list
+    def track_ToH_density(self):
+        self._ToH_density_list = self._ToH_density_list.append(self.ToH_density)
+        return self._ToH_density_list
 
-    def ToH_killing_OT(self, OT_density, _ToH_density_list):
-        if _ToH_density_list[-1] > _ToH_density_list[-2]:
-            OT_density = OT_density - (_ToH_density_list[-1] - _ToH_density_list[-2])
-        return OT_density
+    def ToH_killing_OT(self):
+        if self._ToH_density_list[-1] > self._ToH_density_list[-2]:
+            self.OT_density = self.OT_density - (_ToH_density_list[-1] - _ToH_density_list[-2])
+        return self.OT_density
 
 
-    def deforrestation(self, OT_density, ToH_density):
-        OT_density = OT_density/2
-        ToH_density = ToH_density/2
-        return OT_density, ToH_density
+    def deforrestation(self):
+        self.OT_density = self.OT_density/2
+        self.ToH_density = self.ToH_density/2
+        return self.OT_density, self.ToH_density
 
 
 class City(Location):
@@ -44,16 +43,16 @@ class Vehicle:
         self.avg_dist_per_day = avg_dist_per_day
         self.infection_prob = infection_prob
         self.avg_range = avg_range
-    def avg_dist(self, avg_range):
-        avg_dist_per_day = float(random.normal(loc=avg_range, scale=1))  # in miles
-        return avg_dist_per_day
-    def make_trip(self, infection_prob):
-        infect_rand = float(random.normal(loc=0, scale=1))
-        if infect_rand > 0:
-            self.infection_prob = infect_rand * 0.01
+    def avg_dist(self):
+        self.avg_dist_per_day = float(random.normal(loc=self.avg_range, scale=1))  # in miles
+        return self.avg_dist_per_day
+    def make_trip(self):
+        self.infect_rand = float(random.normal(loc=0, scale=1))
+        if self.infect_rand > 0:
+            self.infection_prob =self.infect_rand * 0.01
         else:
             self.infection_prob = 0
-        return infection_prob
+        return self.infection_prob
 
 
 class Truck(Vehicle):
@@ -72,32 +71,47 @@ class Insect:
         self.hunger = hunger
         self.oldest = oldest
 
-    def old_age(self, age, oldest):
-        if age > oldest:
+    def ageing(self):
+        self.age += 1
+        if self.age > self.oldest:
             del self
+
+    def print_status(self):
+        print(f'I am {self.age} weeks old,\n'
+              f'My hunger level is {self.hunger}\n'
+              f'I live to be {self.oldest}.')
 
 
 class SLF(Insect):
-    def __init__(self, age, hunger):
-        Insect.__init__(age, hunger, 8)
-
-    def seek_food(self, hunger):
-        if hunger >= 10:
+    def __init__(self, age, hunger, oldest):
+        super().__init__(age, hunger, oldest)
+        self.oldest = 8
+        self._kid_counter = 0
+    def seek_food(self):
+        if self.hunger >= 10:
             # Prioritize heading towards areas with trees over laying eggs
+            pass
 
+    def propagate(self):
+        if (self.age >= 3) and (self.hunger <= 6) and (random.choice([0, 1]) > 0):
+            # SLF(0, 0, 8)
+            self._kid_counter += 1
+            print('made a kid!')
+        return self._kid_counter
 
-    def propagate(self, age, hunger):
-        if (age >= 3) and (hunger <= 6) and (random.choice([0, 1]) > 0):
-            self.SLF(0, 0)
-
+    def print_status(self):
+        print(f'I am {self.age} weeks old,\n'
+              f' My hunger level is {self.hunger},\n'
+              f' and I have made {self._kid_counter} kids.')
 
 class Wasp(Insect):
     def __init__(self, age, hunger):
         Insect.__init__(age, hunger, 5)
 
 
-    def hunt(self, hunger):
-        if hunger >= 10:
+    def hunt(self):
+        if self.hunger >= 10:
             # Prioritize hunting SLF
-        for  # SLF killed
-            self.Wasp(0, 0)
+            pass
+        # for  # SLF killed
+            Wasp(0, 0)
