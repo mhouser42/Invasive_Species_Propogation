@@ -34,8 +34,10 @@ if __name__ == '__main__':
                                                                  'Type': 'type',
                                                                  'Population 2020': 'pop_2020',
                                                                  'Land area sq mi': 'LA_sqmi'})
-    cdf['Population density'] = cdf['Population density'].astype(str)
+    cdf['Population density'] = cdf['Population density'].astype(str).str.replace(',', '')
     cdf[['PD_sqmi', 'PD_km2']] = cdf['Population density'].str.split('/', n=1, expand=True)
+
+    cdf['pop_2020'] = cdf['pop_2020'].str.replace(',', '')
     cdf.drop(columns=['PD_km2', 'Population density', 'Land area km2'], inplace=True)
 
     cdf.set_index('name').to_csv('data/city_data.csv')

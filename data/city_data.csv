@@ -1,737 +1,737 @@
 name,type,pop_2020,LA_sqmi,PD_sqmi
-Chicago,City,"2,746,388",227.73,"12,059.8"
-Aurora,City,"180,542",45.023,"4,010.0"
-Joliet,City,"150,362",64.516,"2,330.6"
-Naperville,City,"149,540",39.077,"3,826.8"
-Rockford,City,"148,655",64.544,"2,303.2"
-Elgin,City,"114,797",38.027,"3,018.8"
-Springfield‡[d],City,"114,394",61.138,"1,871.1"
-Peoria,City,"113,150",47.965,"2,359.0"
-Waukegan,City,"89,321",24.225,"3,687.1"
-Champaign,City,"88,302",22.928,"3,851.3"
-Cicero,Town,"85,268",5.865,"14,538.4"
-Schaumburg,Village,"78,723",19.293,"4,080.4"
-Bloomington,City,"78,680",27.129,"2,900.2"
-Evanston,City,"78,110",7.779,"10,041.1"
-Arlington Heights,Village,"77,676",16.605,"4,677.9"
-Bolingbrook,Village,"73,922",24.845,"2,975.3"
-Decatur,City,"70,522",42.894,"1,644.1"
-Palatine,Village,"67,908",13.598,"4,994.0"
-Skokie,Village,"67,824",10.064,"6,739.3"
-Des Plaines,City,"60,675",14.238,"4,261.5"
-Orland Park,Village,"58,703",22.028,"2,664.9"
-Oak Lawn,Village,"58,362",8.571,"6,809.2"
-Berwyn,City,"57,250",3.904,"14,664.4"
-Mount Prospect,Village,"56,852",10.719,"5,303.9"
-Tinley Park,Village,"55,971",16.096,"3,477.3"
-Oak Park,Village,"54,583",4.7,"11,613.4"
-Wheaton,City,"53,970",11.319,"4,768.1"
-Normal,Town,"52,736",18.296,"2,882.4"
-Hoffman Estates,Village,"52,530",21.065,"2,493.7"
-Downers Grove,Village,"50,247",14.643,"3,431.5"
-Glenview,Village,"48,705",14.001,"3,478.7"
-Elmhurst,City,"45,786",10.218,"4,480.9"
-Plainfield,Village,"44,762",24.722,"1,810.6"
-Lombard,Village,"44,476",10.22,"4,351.9"
-Buffalo Grove,Village,"43,212",9.563,"4,518.7"
-Moline,City,"42,985",16.753,"2,565.8"
-Belleville,City,"42,404",23.222,"1,826.0"
-Bartlett,Village,"41,105",15.726,"2,613.8"
-DeKalb,City,"40,290",16.15,"2,494.7"
-Crystal Lake,City,"40,269",18.918,"2,128.6"
-Romeoville,Village,"39,863",19.074,"2,089.9"
-Carol Stream,Village,"39,854",9.119,"4,370.4"
-Park Ridge,City,"39,656",7.088,"5,594.8"
-Streamwood,Village,"39,577",7.798,"5,075.3"
-Quincy,City,"39,463",15.765,"2,503.2"
-Wheeling,Village,"39,137",8.672,"4,513.0"
-Urbana,City,"38,336",11.83,"3,240.6"
-Carpentersville,Village,"37,983",7.883,"4,818.3"
-Hanover Park,Village,"37,470",6.422,"5,834.6"
-Rock Island,City,"37,108",16.872,"2,199.4"
-Calumet City,City,"36,033",7.181,"5,017.8"
-Addison,Village,"35,702",9.829,"3,632.3"
-Northbrook,Village,"35,222",13.24,"2,660.3"
-Oswego,Village,"34,585",14.888,"2,323.0"
-Woodridge,Village,"34,158",9.645,"3,541.5"
-Glendale Heights,Village,"33,176",5.385,"6,160.8"
-St. Charles,City,"33,081",14.401,"2,297.1"
-Elk Grove Village,Village,"32,812",11.639,"2,819.1"
-O'Fallon,City,"32,289",15.559,"2,075.3"
-Pekin,City,"31,731",15.716,"2,019.0"
-Mundelein,Village,"31,560",9.585,"3,292.6"
-Niles,Village,"30,912",5.848,"5,285.9"
-North Chicago,City,"30,759",7.993,"3,848.2"
-Gurnee,Village,"30,706",13.503,"2,274.0"
-Highland Park,City,"30,176",12.241,"2,465.2"
-Galesburg,City,"30,052",17.743,"1,693.7"
-Algonquin,Village,"29,700",12.302,"2,414.2"
-Burbank,City,"29,439",4.17,"7,059.7"
-Danville,City,"29,204",17.856,"1,635.5"
-Lansing,Village,"29,076",7.462,"3,896.5"
-Lake in the Hills,Village,"28,982",10.203,"2,840.5"
-Glen Ellyn,Village,"28,846",6.85,"4,211.1"
-Wilmette,Village,"28,170",5.403,"5,213.8"
-Huntley,Village,"27,740",14.289,"1,941.4"
-Granite City,City,"27,549",19.024,"1,448.1"
-Chicago Heights,City,"27,480",10.283,"2,672.4"
-Oak Forest,City,"27,478",6.021,"4,563.7"
-Round Lake Beach,Village,"27,252",5.044,"5,402.9"
-New Lenox,Village,"27,214",15.722,"1,731.0"
-McHenry,City,"27,135",14.499,"1,871.5"
-Vernon Hills,Village,"26,850",7.741,"3,468.5"
-Edwardsville,City,"26,808",19.811,"1,353.2"
-Batavia,City,"26,098",10.616,"2,458.4"
-Lockport,City,"26,094",11.53,"2,263.1"
-Alton,City,"25,676",15.681,"1,637.4"
-Woodstock,City,"25,630",13.187,"1,943.6"
-West Chicago,City,"25,614",15.376,"1,665.8"
-Belvidere,City,"25,339",12.064,"2,100.4"
-Morton Grove,Village,"25,297",5.088,"4,971.9"
-Melrose Park,Village,"24,796",4.353,"5,696.3"
-Zion,City,"24,655",9.904,"2,489.4"
-Homer Glen,Village,"24,543",22.125,"1,109.3"
-Elmwood Park,Village,"24,521",1.908,"12,851.7"
-Westmont,Village,"24,429",5.004,"4,881.9"
-Collinsville,City,"24,366",15.077,"1,616.1"
-Lisle,Village,"24,223",6.901,"3,510.1"
-Rolling Meadows,City,"24,200",5.616,"4,309.1"
-Kankakee,City,"24,052",15.057,"1,597.4"
-Freeport,City,"23,973",11.881,"2,017.8"
-South Elgin,Village,"23,865",7.06,"3,380.3"
-Maywood,Village,"23,512",2.717,"8,653.7"
-Loves Park,City,"23,397",16.325,"1,433.2"
-Machesney Park,Village,"22,950",12.685,"1,809.2"
-Roselle,Village,"22,897",5.537,"4,135.3"
-Blue Island,City,"22,558",4.071,"5,541.1"
-East Peoria,City,"22,484",20.411,"1,101.6"
-Bloomingdale,Village,"22,382",6.766,"3,308.0"
-Villa Park,Village,"22,263",4.723,"4,713.7"
-Darien,City,"22,011",6.171,"3,566.8"
-Carbondale,City,"21,857",17.397,"1,256.4"
-Park Forest,Village,"21,687",4.961,"4,371.5"
-Yorkville,City,"21,533",19.997,"1,076.8"
-South Holland,Village,"21,465",7.236,"2,966.4"
-Dolton,Village,"21,426",4.571,"4,687.4"
-Geneva,City,"21,393",9.919,"2,156.8"
-East Moline,City,"21,374",14.596,"1,464.4"
-Grayslake,Village,"21,248",10.9,"1,949.4"
-Libertyville,Village,"20,579",8.808,"2,336.4"
-Crest Hill,City,"20,459",9.052,"2,260.2"
-Harvey,City,"20,324",6.206,"3,274.9"
-Frankfort,Village,"20,296",15.788,"1,285.5"
-Montgomery,Village,"20,262",9.299,"2,178.9"
-Evergreen Park,Village,"19,943",3.163,"6,305.1"
-Mokena,Village,"19,887",8.689,"2,288.8"
-Lake Zurich,Village,"19,759",6.868,"2,877.0"
-Brookfield,Village,"19,476",3.064,"6,356.4"
-Homewood,Village,"19,463",5.216,"3,731.4"
-Lake Forest,City,"19,367",17.2,"1,126.0"
-Deerfield,Village,"19,196",5.528,"3,472.5"
-Matteson,Village,"19,073",9.285,"2,054.2"
-Alsip,Village,"19,063",6.525,"2,921.5"
-Ottawa,City,"18,840",14.657,"1,285.4"
-Bensenville,Village,"18,813",5.53,"3,402.0"
-Bellwood,Village,"18,789",2.398,"7,835.3"
-Round Lake,Village,"18,721",5.557,"3,368.9"
-Sycamore,City,"18,577",10.12,"1,835.7"
-Palos Hills,City,"18,530",4.246,"4,364.1"
-East St. Louis,City,"18,469",13.919,"1,326.9"
-Franklin Park,Village,"18,467",4.772,"3,869.9"
-North Aurora,Village,"18,261",7.557,"2,416.4"
-Shorewood,Village,"18,186",8.069,"2,253.8"
-Bourbonnais,Village,"18,164",9.312,"1,950.6"
-Cary,Village,"17,826",6.232,"2,860.4"
-Godfrey,Village,"17,825",34.395,518.2
-Lemont,Village,"17,629",8.321,"2,118.6"
-Jacksonville,City,"17,616",10.563,"1,667.7"
-Hinsdale,Village,"17,395",4.623,"3,762.7"
-Charleston,City,"17,286",8.884,"1,945.7"
-Morton,Village,"17,117",12.808,"1,336.4"
-Bridgeview,Village,"17,027",4.133,"4,119.8"
-Westchester,Village,"16,892",3.686,"4,582.7"
-Mattoon,City,"16,870",10.314,"1,635.6"
-Marion,City,"16,855",14.392,"1,171.1"
-Country Club Hills,City,"16,775",4.97,"3,375.3"
-Fairview Heights,City,"16,706",11.431,"1,461.5"
-La Grange,Village,"16,321",2.525,"6,463.8"
-Washington,City,"16,071",8.541,"1,881.6"
-Prospect Heights,City,"16,058",4.256,"3,773.0"
-Bradley,Village,"15,419",6.932,"2,224.3"
-Dixon,City,"15,274",7.752,"1,970.3"
-Norridge,Village,"15,251",1.808,"8,435.3"
-Macomb,City,"15,051",10.57,"1,423.9"
-Sterling,City,"14,764",5.791,"2,549.5"
-Antioch,Village,"14,622",8.213,"1,780.3"
-Mount Vernon,City,"14,600",14.583,"1,001.2"
-Hickory Hills,City,"14,505",2.844,"5,100.2"
-Chicago Ridge,Village,"14,433",2.268,"6,363.8"
-Lindenhurst,Village,"14,406",4.527,"3,182.2"
-Swansea,Village,"14,386",6.477,"2,221.1"
-Chatham,Village,"14,377",7.364,"1,952.3"
-Forest Park,Village,"14,339",2.402,"5,969.6"
-Midlothian,Village,"14,325",2.819,"5,081.6"
-Beach Park,Village,"14,249",7.079,"2,012.9"
-Morris,City,"14,163",9.909,"1,429.3"
-Shiloh,Village,"14,098",11.032,"1,277.9"
-Wauconda,Village,"14,084",5.072,"2,776.8"
-Wood Dale,City,"14,012",4.783,"2,929.5"
-Glen Carbon,Village,"13,842",10.25,"1,350.4"
-Western Springs,Village,"13,629",2.785,"4,893.7"
-Warrenville,City,"13,553",5.46,"2,482.2"
-La Grange Park,Village,"13,475",2.233,"6,034.5"
-Lincolnwood,Village,"13,463",2.692,"5,001.1"
-Channahon,Village,"13,383",15.622,856.7
-Hazel Crest,Village,"13,382",3.397,"3,939.4"
-Lincoln,City,"13,288",6.247,"2,127.1"
-Canton,City,"13,242",7.858,"1,685.2"
-Northlake,City,"12,840",3.176,"4,042.8"
-Richton Park,Village,"12,775",4.392,"2,908.7"
-Minooka,Village,"12,758",9.405,"1,356.5"
-Winnetka,Village,"12,744",3.811,"3,344.0"
-Justice,Village,"12,600",2.84,"4,436.6"
-Kewanee,City,"12,509",6.597,"1,896.2"
-Streator,City,"12,500",7.293,"1,714.0"
-Rantoul,Village,"12,371",8.49,"1,457.1"
-Herrin,City,"12,352",9.673,"1,277.0"
-Effingham,City,"12,252",10.309,"1,188.5"
-Centralia,City,"12,182",8.2,"1,485.6"
-Cahokia[a],Village,"12,096",9.753,"1,240.2"
-Palos Heights,City,"12,068",3.774,"3,197.7"
-Plano,City,"11,847",8.979,"1,319.4"
-River Forest,Village,"11,717",2.48,"4,724.6"
-Schiller Park,Village,"11,709",2.77,"4,227.1"
-Markham,City,"11,661",5.405,"2,157.4"
-Burr Ridge,Village,"11,192",7.143,"1,566.8"
-Summit,Village,"11,161",2.119,"5,267.1"
-Pontiac,City,"11,150",8.382,"1,330.2"
-Waterloo,City,"11,013",8.132,"1,354.3"
-Columbia,City,"10,999",10.303,"1,067.6"
-Roscoe,Village,"10,983",10.265,"1,069.9"
-Fox Lake,Village,"10,978",7.833,"1,401.5"
-Worth,Village,"10,970",2.369,"4,630.6"
-Troy,City,"10,960",5.62,"1,950.2"
-Campton Hills,Village,"10,885",16.89,644.5
-Crestwood,Village,"10,826",3.049,"3,550.7"
-Lyons,Village,"10,817",2.207,"4,901.2"
-Barrington,Village,"10,722",4.608,"2,326.8"
-Riverdale,Village,"10,663",3.575,"2,982.7"
-River Grove,Village,"10,612",2.391,"4,438.3"
-Taylorville,City,"10,506",10.315,"1,018.5"
-Wood River,City,"10,464",6.975,"1,500.2"
-Pingree Grove,Village,"10,365",3.637,"2,849.9"
-Highland,City,"9,991",6.751,"1,479.9"
-Sauk Village,Village,"9,921",3.992,"2,485.2"
-Peru,City,"9,896",9.987,990.9
-Winfield,Village,"9,835",3.09,"3,182.8"
-Flossmoor,Village,"9,704",3.661,"2,650.6"
-Steger,Village,"9,584",3.404,"2,815.5"
-LaSalle,City,"9,582",13.457,712.0
-Itasca,Village,"9,543",5.022,"1,900.2"
-Harvard,City,"9,469",8.355,"1,133.3"
-Rochelle,City,"9,446",13.296,710.4
-Mahomet,Village,"9,434",9.722,970.4
-Manhattan,Village,"9,385",6.681,"1,404.7"
-Bethalto,Village,"9,310",7.591,"1,226.5"
-Riverside,Village,"9,298",1.978,"4,700.7"
-Sugar Grove,Village,"9,278",11.748,789.8
-Willowbrook,Village,"9,236",2.572,"3,591.0"
-Manteno,Village,"9,210",5.344,"1,723.4"
-Lynwood,Village,"9,116",4.964,"1,836.4"
-Harwood Heights,Village,"9,065",0.825,"10,987.9"
-Hawthorn Woods,Village,"9,062",8.046,"1,126.3"
-Monmouth,City,"8,902",4.242,"2,098.5"
-Savoy,Village,"8,857",3.233,"2,739.6"
-Glencoe,Village,"8,849",3.718,"2,380.0"
-Rock Falls,City,"8,789",3.983,"2,206.6"
-Mascoutah,City,"8,754",9.578,914.0
-Lake Villa,Village,"8,741",6.515,"1,341.7"
-Clarendon Hills,Village,"8,702",1.81,"4,807.7"
-Olney,City,"8,701",6.931,"1,255.4"
-Glenwood,Village,"8,662",3.264,"2,653.8"
-Crete,Village,"8,465",9.409,899.7
-Long Grove,Village,"8,366",12.387,675.4
-Gilberts,Village,"8,366",5.489,"1,524.1"
-Jerseyville,City,"8,337",5.237,"1,591.9"
-Hillside,Village,"8,320",3.168,"2,626.3"
-Paris,City,"8,291",5.676,"1,460.7"
-Maryville,Village,"8,221",5.676,"1,448.4"
-Harrisburg,City,"8,219",6.612,"1,243.0"
-Oak Brook,Village,"8,163",7.959,"1,025.6"
-Island Lake,Village,"8,051",3.348,"2,404.7"
-Silvis,City,"8,003",4.285,"1,867.7"
-Broadview,Village,"7,998",1.777,"4,500.8"
-South Beloit,City,"7,989",6.144,"1,300.3"
-Lincolnshire,Village,"7,940",4.559,"1,741.6"
-Park City,City,"7,885",1.157,"6,815.0"
-Rockton,Village,"7,863",6.862,"1,145.9"
-Princeton,City,"7,832",8.24,950.5
-West Dundee,Village,"7,686",3.637,"2,113.3"
-Round Lake Park,Village,"7,680",2.063,"3,722.7"
-Hampshire,Village,"7,667",9.505,806.6
-Inverness,Village,"7,616",6.534,"1,165.6"
-Marengo,City,"7,568",8.536,886.6
-Vandalia,City,"7,458",8.147,915.4
-North Riverside,Village,"7,426",1.644,"4,517.0"
-Salem,City,"7,282",6.991,"1,041.6"
-West Frankfort,City,"7,275",4.98,"1,460.8"
-Sandwich,City,"7,221",4.736,"1,524.7"
-Robinson,City,"7,150",4.699,"1,521.6"
-University Park,Village,"7,145",10.727,666.1
-Stickney,Village,"7,110",1.924,"3,695.4"
-Murphysboro,City,"7,093",5.248,"1,351.6"
-Greenville,City,"7,083",6.309,"1,122.7"
-Mendota,City,"7,061",5.056,"1,396.6"
-Calumet Park,Village,"7,025",1.117,"6,289.2"
-Mount Carmel,City,"7,015",4.809,"1,458.7"
-Clinton,City,"7,004",3.572,"1,960.8"
-Orland Hills,Village,"6,893",1.145,"6,020.1"
-Chester,City,"6,814",5.806,"1,173.6"
-Benton,City,"6,709",5.48,"1,224.3"
-Winthrop Harbor,Village,"6,705",4.637,"1,446.0"
-Litchfield,City,"6,605",8.989,734.8
-Geneseo,City,"6,539",4.646,"1,407.4"
-Countryside,City,"6,420",2.878,"2,230.7"
-Johnsburg,Village,"6,355",7.163,887.2
-Braidwood,City,"6,194",5.296,"1,169.6"
-Lakemoor,Village,"6,182",5.263,"1,174.6"
-Elburn,Village,"6,175",3.608,"1,711.5"
-Chillicothe,City,"6,128",5.274,"1,161.9"
-Volo,Village,"6,122",3.915,"1,563.7"
-Mount Zion,Village,"6,019",4.227,"1,423.9"
-Metropolis,City,"5,969",6.02,991.5
-Beardstown,City,"5,951",3.619,"1,644.4"
-Bartonville,Village,"5,945",8.05,738.5
-Monticello,City,"5,941",3.852,"1,542.3"
-Peoria Heights,Village,"5,908",2.492,"2,370.8"
-Hillsboro,City,"5,902",8.262,714.4
-Pontoon Beach,Village,"5,876",9.96,590.0
-Willow Springs,Village,"5,857",4.155,"1,409.6"
-Carterville,City,"5,848",5.266,"1,110.5"
-Du Quoin,City,"5,827",6.979,834.9
-East Alton,Village,"5,786",5.318,"1,088.0"
-Northfield,Village,"5,751",3.23,"1,780.5"
-Carlinville,City,"5,710",3.369,"1,694.9"
-Coal City,Village,"5,705",5.617,"1,015.7"
-Wilmington,City,"5,664",13.803,410.3
-Posen,Village,"5,632",1.169,"4,817.8"
-Lake Bluff,Village,"5,616",4.075,"1,378.2"
-Spring Valley,City,"5,582",7.356,758.8
-Spring Grove,Village,"5,487",9.046,606.6
-Berkeley,Village,"5,338",1.402,"3,807.4"
-Genoa,City,"5,298",2.59,"2,045.6"
-Eureka,City,"5,227",2.684,"1,947.5"
-Pana,City,"5,199",3.855,"1,348.6"
-Monee,Village,"5,128",4.472,"1,146.7"
-Lake Barrington,Village,"5,100",5.736,889.1
-Milan,Village,"5,097",6.254,815.0
-South Barrington,Village,"5,077",7.427,683.6
-Highwood,City,"5,074",0.721,"7,037.4"
-Pinckneyville,City,"5,066",4.106,"1,233.8"
-Staunton,City,"5,054",3.974,"1,271.8"
-Poplar Grove,Village,"5,049",7.663,658.9
-Colona,City,"5,045",3.818,"1,321.4"
-Creve Coeur,Village,"4,934",4.231,"1,166.2"
-Hoopeston,City,"4,915",3.686,"1,333.4"
-Palos Park,Village,"4,899",6.445,760.1
-Fairfield,City,"4,883",4.028,"1,212.3"
-Carmi,City,"4,865",2.589,"1,879.1"
-Marseilles,City,"4,845",9.08,533.6
-Flora,City,"4,803",4.69,"1,024.1"
-Olympia Fields,Village,"4,718",2.939,"1,605.3"
-Beecher,Village,"4,713",2.728,"1,727.6"
-Fox River Grove,Village,"4,702",1.711,"2,748.1"
-Lebanon,City,"4,691",2.695,"1,740.6"
-Watseka,City,"4,679",2.944,"1,589.3"
-Shelbyville,City,"4,674",4.076,"1,146.7"
-Sherman,Village,"4,673",3.127,"1,494.4"
-Breese,City,"4,641",2.669,"1,738.9"
-Tuscola,City,"4,636",2.878,"1,610.8"
-Robbins,Village,"4,629",1.449,"3,194.6"
-Freeburg,Village,"4,582",6.836,670.3
-Stone Park,Village,"4,576",0.344,"13,302.3"
-Auburn,City,"4,574",4.124,"1,109.1"
-Paxton,City,"4,450",3.036,"1,465.7"
-Sullivan,City,"4,413",2.769,"1,593.7"
-Caseyville,Village,"4,400",7.266,605.6
-Cortland,Town,"4,398",3.649,"1,205.3"
-Hometown,City,"4,343",0.479,"9,066.8"
-Anna,City,"4,303",3.558,"1,209.4"
-Lakewood,Village,"4,283",4.587,933.7
-West Peoria,City,"4,263",2.106,"2,024.2"
-Centreville[a],City,"4,232",4.167,"1,015.6"
-Pittsfield,City,"4,206",4.782,879.5
-Lawrenceville,City,"4,164",2.164,"1,924.2"
-Peotone,Village,"4,150",2.001,"2,074.0"
-Green Oaks,Village,"4,128",3.985,"1,035.9"
-Barrington Hills,Village,"4,114",27.004,152.3
-Sparta,City,"4,095",11.17,366.6
-Kildeer,Village,"4,091",4.23,967.1
-Morrison,City,"4,085",2.518,"1,622.3"
-Millstadt,Village,"4,071",3.491,"1,166.1"
-Indian Head Park,Village,"4,065",0.93,"4,371.0"
-Burnham,Village,"4,046",1.855,"2,181.1"
-Dwight,Village,"4,032",3.297,"1,222.9"
-South Chicago Heights,Village,"4,026",1.581,"2,546.5"
-Smithton,Village,"4,006",4.435,903.3
-Dupo,Village,"3,996",6.377,626.6
-Wonder Lake,Village,"3,973",4.964,800.4
-Rosemont,Village,"3,952",1.792,"2,205.4"
-Marshall,City,"3,947",3.666,"1,076.7"
-Metamora,Village,"3,904",2.263,"1,725.1"
-Coal Valley,Village,"3,873",3.112,"1,244.5"
-Rochester,Village,"3,863",2.646,"1,459.9"
-St. Joseph,Village,"3,810",2.083,"1,829.1"
-Red Bud,City,"3,804",2.623,"1,450.2"
-Riverwoods,Village,"3,790",3.967,955.4
-Byron,City,"3,784",4.65,813.8
-Eldorado,City,"3,743",2.503,"1,495.4"
-Forsyth,Village,"3,734",3.13,"1,193.0"
-Oglesby,City,"3,712",4.992,743.6
-Deer Park,Village,"3,681",3.654,"1,007.4"
-Fulton,City,"3,647",2.338,"1,559.9"
-Fairbury,City,"3,633",1.809,"2,008.3"
-Aledo,City,"3,633",2.368,"1,534.2"
-Tolono,Village,"3,604",2.061,"1,748.7"
-Oregon,City,"3,604",1.927,"1,870.3"
-Hainesville,Village,"3,546",1.847,"1,919.9"
-Riverton,Village,"3,532",3.121,"1,131.7"
-Wadsworth,Village,"3,517",9.857,356.8
-Le Roy,City,"3,512",2.404,"1,460.9"
-Gibson City,City,"3,475",2.321,"1,497.2"
-New Baden,Village,"3,428",1.825,"1,878.4"
-Germantown Hills,Village,"3,412",1.636,"2,085.6"
-Johnston City,City,"3,384",2.116,"1,599.2"
-Galena,City,"3,308",4.492,736.4
-South Jacksonville,Village,"3,302",2.273,"1,452.7"
-Carlyle,City,"3,253",3.425,949.8
-Virden,City,"3,231",1.889,"1,710.4"
-Sleepy Hollow,Village,"3,214",2.019,"1,591.9"
-North Barrington,Village,"3,171",4.712,673.0
-Madison,City,"3,171",13.955,227.2
-Gillespie,City,"3,168",1.484,"2,134.8"
-Westville,Village,"3,167",1.678,"1,887.4"
-East Dundee,Village,"3,152",2.839,"1,110.3"
-Georgetown,City,"3,143",1.616,"1,944.9"
-Momence,City,"3,117",1.569,"1,986.6"
-Nashville,City,"3,105",3.079,"1,008.4"
-Rushville,City,"3,005",1.652,"1,819.0"
-Dixmoor,Village,"2,973",1.249,"2,380.3"
-Havana,City,"2,963",2.776,"1,067.4"
-Abingdon,City,"2,951",1.425,"2,070.9"
-Winnebago,Village,"2,940",1.934,"1,520.2"
-Arcola,City,"2,927",2.023,"1,446.9"
-Cherry Valley,Village,"2,905",8.405,345.6
-Knoxville,City,"2,901",2.35,"1,234.5"
-Mount Morris,Village,"2,861",1.56,"1,834.0"
-Heyworth,Village,"2,791",3.026,922.3
-Savanna,City,"2,783",2.616,"1,063.8"
-Newton,City,"2,777",2.088,"1,330.0"
-Lena,Village,"2,772",2.651,"1,045.6"
-El Paso,City,"2,756",2.145,"1,284.8"
-Hamilton,City,"2,753",3.561,773.1
-Oakbrook Terrace,City,"2,751",1.306,"2,106.4"
-Bushnell,City,"2,718",2.117,"1,283.9"
-Christopher,City,"2,697",1.622,"1,662.8"
-Trenton,City,"2,690",1.88,"1,430.9"
-Pawnee,Village,"2,678",1.332,"2,010.5"
-McLeansboro,City,"2,675",2.817,949.6
-Tilton,Village,"2,660",3.788,702.2
-Diamond,Village,"2,640",1.9,"1,389.5"
-Sumner,City,"2,631",1.398,"1,882.0"
-Round Lake Heights,Village,"2,622",0.575,"4,560.0"
-Washington Park,Village,"2,592",2.521,"1,028.2"
-Marquette Heights,City,"2,541",0.974,"2,608.8"
-Kenilworth,Village,"2,514",0.607,"4,141.7"
-Davis Junction,Village,"2,512",4.2,598.1
-Carthage,City,"2,490",2.491,999.6
-Carrollton,City,"2,485",1.902,"1,306.5"
-Villa Grove,City,"2,472",1.502,"1,645.8"
-Galva,City,"2,470",2.755,896.6
-Sheridan,Village,"2,431",2.121,"1,146.2"
-Casey,City,"2,404",2.263,"1,062.3"
-Farmington,City,"2,389",1.505,"1,587.4"
-Thornton,Village,"2,386",2.375,"1,004.6"
-Seneca,Village,"2,353",6.417,366.7
-Aviston,Village,"2,340",1.6,"1,462.5"
-Henry,City,"2,320",1.797,"1,291.0"
-White Hall,City,"2,295",2.577,890.6
-Polo,City,"2,291",1.334,"1,717.4"
-Wayne,Village,"2,286",5.73,399.0
-Amboy,City,"2,278",6.368,357.7
-Tremont,Village,"2,277",1.12,"2,033.0"
-Fairmont City,Village,"2,265",6.205,365.0
-Petersburg,City,"2,258",1.562,"1,445.6"
-Arthur,Village,"2,231",1.337,"1,668.7"
-Elwood,Village,"2,229",13.641,163.4
-Brighton,Village,"2,221",1.921,"1,156.2"
-Altamont,City,"2,216",1.489,"1,488.2"
-Nokomis,City,"2,142",1.261,"1,698.7"
-Pecatonica,Village,"2,090",1.283,"1,629.0"
-Lexington,City,"2,090",2.047,"1,021.0"
-Richmond,Village,"2,089",4.29,486.9
-Cambridge,Village,"2,086",1.991,"1,047.7"
-Mason City,City,"2,077",1.014,"2,048.3"
-Oakwood Hills,Village,"2,076",1.088,"1,908.1"
-Fisher,Village,"2,062",1.33,"1,550.4"
-Elmwood,City,"2,058",1.396,"1,474.2"
-Lewistown,City,"2,041",2,"1,020.5"
-Mount Olive,City,"2,015",1.153,"1,747.6"
-Rockdale,Village,"2,012",1.411,"1,425.9"
-Mount Sterling,City,"2,006",1.108,"1,810.5"
-Hinckley,Village,"2,006",0.847,"2,368.4"
-Catlin,Village,"1,983",0.849,"2,335.7"
-Athens,City,"1,977",1.682,"1,175.4"
-Albion,City,"1,971",2.136,922.8
-Merrionette Park,Village,"1,969",0.375,"5,250.7"
-Prairie Grove,Village,"1,963",5.677,345.8
-Roanoke,Village,"1,960",0.939,"2,087.3"
-New Athens,Village,"1,955",2.112,925.7
-Prophetstown,City,"1,946",1.339,"1,453.3"
-Steeleville,Village,"1,930",1.523,"1,267.2"
-Minonk,City,"1,928",2.4,803.3
-South Roxana,Village,"1,891",2.158,876.3
-Sesser,City,"1,888",1.03,"1,833.0"
-Mackinaw,Village,"1,879",1.189,"1,580.3"
-Lacon,City,"1,878",1.6,"1,173.8"
-Bellevue,Village,"1,878",2.224,844.4
-Carbon Cliff,Village,"1,846",2.095,881.1
-Marissa,Village,"1,833",7.212,254.2
-Farmer City,City,"1,828",2.395,763.3
-Ford Heights,Village,"1,813",1.946,931.7
-Bridgeport,City,"1,800",1.072,"1,679.1"
-Somonauk,Village,"1,786",2.488,717.8
-Girard,City,"1,785",0.934,"1,911.1"
-Hampton,Village,"1,779",1.461,"1,217.7"
-Moweaqua,Village,"1,764",2.123,830.9
-Orion,Village,"1,754",0.944,"1,858.1"
-Hudson,Village,"1,753",0.818,"2,143.0"
-Gilman,City,"1,738",2.433,714.3
-Cairo,City,"1,733",6.987,248.0
-Stockton,Village,"1,728",1.877,920.6
-Chenoa,City,"1,720",2.43,707.8
-Jonesboro,City,"1,711",2.7,633.7
-Phoenix,Village,"1,708",0.464,"3,681.0"
-Jerome,Village,"1,692",0.462,"3,662.3"
-Carrier Mills,Village,"1,672",1.208,"1,384.1"
-Atlanta,City,"1,669",1.249,"1,336.3"
-Port Byron,Village,"1,668",2.428,687.0
-Kirkland,Village,"1,650",1.226,"1,345.8"
-Ina,Village,"1,641",2.405,682.3
-Princeville,Village,"1,636",1.695,965.2
-De Pue,Village,"1,633",2.775,588.5
-Bunker Hill,City,"1,630",1.274,"1,279.4"
-Teutopolis,Village,"1,618",2.043,792.0
-Earlville,City,"1,613",1.201,"1,343.0"
-Thomson,Village,"1,610",2.219,725.6
-Dunlap,Village,"1,603",2.308,694.5
-Southern View,Village,"1,596",0.647,"2,466.8"
-Port Barrington,Village,"1,584",1.16,"1,365.5"
-Roodhouse,City,"1,578",1.127,"1,400.2"
-Maroa,City,"1,577",1.763,894.5
-Winchester,City,"1,574",1.129,"1,394.2"
-Delavan,City,"1,568",1.44,"1,088.9"
-Alorton[a],Village,"1,566",1.808,866.2
-Limestone,Village,"1,558",2.622,594.2
-Manito,Village,"1,552",1.513,"1,025.8"
-Grayville,City,"1,550",2.127,728.7
-Mount Pulaski,City,"1,537",1.134,"1,355.4"
-Herscher,Village,"1,521",1.813,838.9
-Erie,Village,"1,518",1.38,"1,100.0"
-Virginia,City,"1,514",1.207,"1,254.3"
-Warsaw,City,"1,510",6.52,231.6
-East Dubuque,City,"1,505",2.742,548.9
-Cambria,Village,"1,505",1.415,"1,063.6"
-Lanark,City,"1,504",1.121,"1,341.7"
-Hodgkins,Village,"1,500",2.712,553.1
-Venice,City,"1,498",1.849,810.2
-Zeigler,City,"1,484",1.359,"1,092.0"
-Bement,Village,"1,484",0.778,"1,907.5"
-Mount Carroll,City,"1,479",2.003,738.4
-North Pekin,Village,"1,478",1.392,"1,061.8"
-Benld,City,"1,464",1.06,"1,381.1"
-Gridley,Village,"1,456",1.233,"1,180.9"
-Roxana,Village,"1,454",7.101,204.8
-Leland Grove,City,"1,454",0.628,"2,315.3"
-Crainville,Village,"1,443",1.653,873.0
-Forreston,Village,"1,435",0.943,"1,521.7"
-Waterman,Village,"1,433",1.451,987.6
-Maple Park,Village,"1,433",2.154,665.3
-Williamsville,Village,"1,425",1.548,920.5
-De Soto,Village,"1,407",0.912,"1,542.8"
-Grandview,Village,"1,405",0.335,"4,194.0"
-Neoga,City,"1,398",1.39,"1,005.8"
-Capron,Village,"1,395",0.768,"1,816.4"
-Philo,Village,"1,392",0.829,"1,679.1"
-Durand,Village,"1,390",0.919,"1,512.5"
-New Berlin,Village,"1,381",1.13,"1,222.1"
-Oblong,Village,"1,371",1.086,"1,262.4"
-Okawville,Village,"1,369",2.025,676.0
-Hebron,Village,"1,368",1.931,708.4
-Gardner,Village,"1,366",2.912,469.1
-Greenup,Village,"1,365",1.75,780.0
-Granville,Village,"1,359",1.307,"1,039.8"
-St. Jacob,Village,"1,358",0.832,"1,632.2"
-Clifton,Village,"1,352",0.93,"1,453.8"
-Kincaid,Village,"1,349",0.817,"1,651.2"
-Vienna,City,"1,343",2.837,473.4
-Toluca,City,"1,340",1.062,"1,261.8"
-Onarga,Village,"1,333",1.674,796.3
-Oakwood,Village,"1,325",0.928,"1,427.8"
-Germantown,Village,"1,324",1.014,"1,305.7"
-Warren,Village,"1,323",1.033,"1,280.7"
-North Utica,Village,"1,323",3.455,382.9
-Cerro Gordo,Village,"1,316",0.729,"1,805.2"
-Chrisman,City,"1,312",0.719,"1,824.8"
-Walnut,Village,"1,311",0.801,"1,636.7"
-Harristown,Village,"1,310",1.797,729.0
-Barry,City,"1,303",1.432,909.9
-Wyoming,City,"1,300",0.854,"1,522.2"
-East Hazel Crest,Village,"1,297",0.784,"1,654.3"
-Grant Park,Village,"1,294",3.413,379.1
-Ladd,Village,"1,263",1.209,"1,044.7"
-Long Creek,Village,"1,261",2.825,446.4
-Bethany,Village,"1,255",0.977,"1,284.5"
-St. Elmo,City,"1,254",1.483,845.6
-Hanna City,Village,"1,253",1.278,980.4
-Valmeyer,Village,"1,233",3.417,360.8
-Palestine,Village,"1,233",0.789,"1,562.7"
-Tower Lakes,Village,"1,226",0.919,"1,334.1"
-Hillcrest,Village,"1,224",3.549,344.9
-Rossville,Village,"1,221",1.398,873.4
-Ashland,Village,"1,218",0.748,"1,628.3"
-Sidney,Village,"1,208",0.624,"1,935.9"
-Downs,Village,"1,201",2.966,404.9
-Waverly,City,"1,194",1.036,"1,152.5"
-Toulon,City,"1,193",1.017,"1,173.1"
-Hartford,Village,"1,185",5.166,229.4
-Chatsworth,Town,"1,185",2.757,429.8
-Cuba,City,"1,184",0.543,"2,180.5"
-Andalusia,Village,"1,184",1.175,"1,007.7"
-Macon,City,"1,177",1.451,811.2
-La Harpe,City,"1,175",1.364,861.4
-Toledo,Village,"1,161",0.888,"1,307.4"
-St. Anne,Village,"1,161",0.83,"1,398.8"
-Milford,Village,"1,158",0.671,"1,725.8"
-Sandoval,Village,"1,157",0.996,"1,161.6"
-Assumption,City,"1,155",0.99,"1,166.7"
-Minier,Village,"1,154",0.569,"2,028.1"
-Norris City,Village,"1,145",1.172,977.0
-Malta,Village,"1,143",0.612,"1,867.6"
-Divernon,Village,"1,139",0.763,"1,492.8"
-Louisville,Village,"1,136",0.828,"1,372.0"
-Oquawka,Village,"1,134",1.469,772.0
-Blue Mound,Village,"1,133",0.585,"1,936.8"
-Bull Valley,Village,"1,128",9.128,123.6
-Camp Point,Village,"1,121",1.134,988.5
-Albers,Village,"1,121",0.846,"1,325.1"
-Martinsville,City,"1,118",2.021,553.2
-Atwood,Village,"1,116",0.614,"1,817.6"
-Third Lake,Village,"1,111",0.586,"1,895.9"
-Warrensburg,Village,"1,110",0.728,"1,524.7"
-Kingston,Village,"1,108",0.984,"1,126.0"
-Colchester,City,"1,108",1.15,963.5
-Big Rock,Village,"1,104",4.318,255.7
-Central City,Village,"1,098",0.565,"1,943.4"
-Griggsville,City,"1,097",1.106,991.9
-Worden,Village,"1,096",0.713,"1,537.2"
-Danvers,Village,"1,089",0.803,"1,356.2"
-Edinburg,Village,"1,085",0.625,"1,736.0"
-"Windsor, Shelby County, Illinois",City,"1,079",0.63,"1,712.7"
-Stillman Valley,Village,"1,075",0.57,"1,886.0"
-Cobden,Village,"1,074",1.219,881.1
-Homer,Village,"1,073",0.98,"1,094.9"
-Lovington,Village,"1,069",0.544,"1,965.1"
-Royalton,Village,"1,068",1.115,957.8
-Goreville,Village,"1,068",2.686,397.6
-Greenfield,City,"1,059",1.714,617.9
-Shawneetown,City,"1,054",0.734,"1,436.0"
-Chebanse,Village,"1,044",1.19,877.3
-Forrest,Village,"1,041",0.648,"1,606.5"
-Thomasboro,Village,"1,034",0.995,"1,039.2"
-Washburn,Village,"1,032",0.72,"1,433.3"
-Lily Lake,Village,"1,032",2.717,379.8
-Milledgeville,Village,"1,026",0.69,"1,487.0"
-Payson,Village,"1,025",1.17,876.1
-Bannockburn,Village,"1,013",2.028,499.5
-Flanagan,Village,"1,010",0.574,"1,759.6"
-Odell,Village,"1,003",1.077,931.3
+Chicago,City,2746388,227.73,12059.8
+Aurora,City,180542,45.023,4010.0
+Joliet,City,150362,64.516,2330.6
+Naperville,City,149540,39.077,3826.8
+Rockford,City,148655,64.544,2303.2
+Elgin,City,114797,38.027,3018.8
+Springfield‡[d],City,114394,61.138,1871.1
+Peoria,City,113150,47.965,2359.0
+Waukegan,City,89321,24.225,3687.1
+Champaign,City,88302,22.928,3851.3
+Cicero,Town,85268,5.865,14538.4
+Schaumburg,Village,78723,19.293,4080.4
+Bloomington,City,78680,27.129,2900.2
+Evanston,City,78110,7.779,10041.1
+Arlington Heights,Village,77676,16.605,4677.9
+Bolingbrook,Village,73922,24.845,2975.3
+Decatur,City,70522,42.894,1644.1
+Palatine,Village,67908,13.598,4994.0
+Skokie,Village,67824,10.064,6739.3
+Des Plaines,City,60675,14.238,4261.5
+Orland Park,Village,58703,22.028,2664.9
+Oak Lawn,Village,58362,8.571,6809.2
+Berwyn,City,57250,3.904,14664.4
+Mount Prospect,Village,56852,10.719,5303.9
+Tinley Park,Village,55971,16.096,3477.3
+Oak Park,Village,54583,4.7,11613.4
+Wheaton,City,53970,11.319,4768.1
+Normal,Town,52736,18.296,2882.4
+Hoffman Estates,Village,52530,21.065,2493.7
+Downers Grove,Village,50247,14.643,3431.5
+Glenview,Village,48705,14.001,3478.7
+Elmhurst,City,45786,10.218,4480.9
+Plainfield,Village,44762,24.722,1810.6
+Lombard,Village,44476,10.22,4351.9
+Buffalo Grove,Village,43212,9.563,4518.7
+Moline,City,42985,16.753,2565.8
+Belleville,City,42404,23.222,1826.0
+Bartlett,Village,41105,15.726,2613.8
+DeKalb,City,40290,16.15,2494.7
+Crystal Lake,City,40269,18.918,2128.6
+Romeoville,Village,39863,19.074,2089.9
+Carol Stream,Village,39854,9.119,4370.4
+Park Ridge,City,39656,7.088,5594.8
+Streamwood,Village,39577,7.798,5075.3
+Quincy,City,39463,15.765,2503.2
+Wheeling,Village,39137,8.672,4513.0
+Urbana,City,38336,11.83,3240.6
+Carpentersville,Village,37983,7.883,4818.3
+Hanover Park,Village,37470,6.422,5834.6
+Rock Island,City,37108,16.872,2199.4
+Calumet City,City,36033,7.181,5017.8
+Addison,Village,35702,9.829,3632.3
+Northbrook,Village,35222,13.24,2660.3
+Oswego,Village,34585,14.888,2323.0
+Woodridge,Village,34158,9.645,3541.5
+Glendale Heights,Village,33176,5.385,6160.8
+St. Charles,City,33081,14.401,2297.1
+Elk Grove Village,Village,32812,11.639,2819.1
+O'Fallon,City,32289,15.559,2075.3
+Pekin,City,31731,15.716,2019.0
+Mundelein,Village,31560,9.585,3292.6
+Niles,Village,30912,5.848,5285.9
+North Chicago,City,30759,7.993,3848.2
+Gurnee,Village,30706,13.503,2274.0
+Highland Park,City,30176,12.241,2465.2
+Galesburg,City,30052,17.743,1693.7
+Algonquin,Village,29700,12.302,2414.2
+Burbank,City,29439,4.17,7059.7
+Danville,City,29204,17.856,1635.5
+Lansing,Village,29076,7.462,3896.5
+Lake in the Hills,Village,28982,10.203,2840.5
+Glen Ellyn,Village,28846,6.85,4211.1
+Wilmette,Village,28170,5.403,5213.8
+Huntley,Village,27740,14.289,1941.4
+Granite City,City,27549,19.024,1448.1
+Chicago Heights,City,27480,10.283,2672.4
+Oak Forest,City,27478,6.021,4563.7
+Round Lake Beach,Village,27252,5.044,5402.9
+New Lenox,Village,27214,15.722,1731.0
+McHenry,City,27135,14.499,1871.5
+Vernon Hills,Village,26850,7.741,3468.5
+Edwardsville,City,26808,19.811,1353.2
+Batavia,City,26098,10.616,2458.4
+Lockport,City,26094,11.53,2263.1
+Alton,City,25676,15.681,1637.4
+Woodstock,City,25630,13.187,1943.6
+West Chicago,City,25614,15.376,1665.8
+Belvidere,City,25339,12.064,2100.4
+Morton Grove,Village,25297,5.088,4971.9
+Melrose Park,Village,24796,4.353,5696.3
+Zion,City,24655,9.904,2489.4
+Homer Glen,Village,24543,22.125,1109.3
+Elmwood Park,Village,24521,1.908,12851.7
+Westmont,Village,24429,5.004,4881.9
+Collinsville,City,24366,15.077,1616.1
+Lisle,Village,24223,6.901,3510.1
+Rolling Meadows,City,24200,5.616,4309.1
+Kankakee,City,24052,15.057,1597.4
+Freeport,City,23973,11.881,2017.8
+South Elgin,Village,23865,7.06,3380.3
+Maywood,Village,23512,2.717,8653.7
+Loves Park,City,23397,16.325,1433.2
+Machesney Park,Village,22950,12.685,1809.2
+Roselle,Village,22897,5.537,4135.3
+Blue Island,City,22558,4.071,5541.1
+East Peoria,City,22484,20.411,1101.6
+Bloomingdale,Village,22382,6.766,3308.0
+Villa Park,Village,22263,4.723,4713.7
+Darien,City,22011,6.171,3566.8
+Carbondale,City,21857,17.397,1256.4
+Park Forest,Village,21687,4.961,4371.5
+Yorkville,City,21533,19.997,1076.8
+South Holland,Village,21465,7.236,2966.4
+Dolton,Village,21426,4.571,4687.4
+Geneva,City,21393,9.919,2156.8
+East Moline,City,21374,14.596,1464.4
+Grayslake,Village,21248,10.9,1949.4
+Libertyville,Village,20579,8.808,2336.4
+Crest Hill,City,20459,9.052,2260.2
+Harvey,City,20324,6.206,3274.9
+Frankfort,Village,20296,15.788,1285.5
+Montgomery,Village,20262,9.299,2178.9
+Evergreen Park,Village,19943,3.163,6305.1
+Mokena,Village,19887,8.689,2288.8
+Lake Zurich,Village,19759,6.868,2877.0
+Brookfield,Village,19476,3.064,6356.4
+Homewood,Village,19463,5.216,3731.4
+Lake Forest,City,19367,17.2,1126.0
+Deerfield,Village,19196,5.528,3472.5
+Matteson,Village,19073,9.285,2054.2
+Alsip,Village,19063,6.525,2921.5
+Ottawa,City,18840,14.657,1285.4
+Bensenville,Village,18813,5.53,3402.0
+Bellwood,Village,18789,2.398,7835.3
+Round Lake,Village,18721,5.557,3368.9
+Sycamore,City,18577,10.12,1835.7
+Palos Hills,City,18530,4.246,4364.1
+East St. Louis,City,18469,13.919,1326.9
+Franklin Park,Village,18467,4.772,3869.9
+North Aurora,Village,18261,7.557,2416.4
+Shorewood,Village,18186,8.069,2253.8
+Bourbonnais,Village,18164,9.312,1950.6
+Cary,Village,17826,6.232,2860.4
+Godfrey,Village,17825,34.395,518.2
+Lemont,Village,17629,8.321,2118.6
+Jacksonville,City,17616,10.563,1667.7
+Hinsdale,Village,17395,4.623,3762.7
+Charleston,City,17286,8.884,1945.7
+Morton,Village,17117,12.808,1336.4
+Bridgeview,Village,17027,4.133,4119.8
+Westchester,Village,16892,3.686,4582.7
+Mattoon,City,16870,10.314,1635.6
+Marion,City,16855,14.392,1171.1
+Country Club Hills,City,16775,4.97,3375.3
+Fairview Heights,City,16706,11.431,1461.5
+La Grange,Village,16321,2.525,6463.8
+Washington,City,16071,8.541,1881.6
+Prospect Heights,City,16058,4.256,3773.0
+Bradley,Village,15419,6.932,2224.3
+Dixon,City,15274,7.752,1970.3
+Norridge,Village,15251,1.808,8435.3
+Macomb,City,15051,10.57,1423.9
+Sterling,City,14764,5.791,2549.5
+Antioch,Village,14622,8.213,1780.3
+Mount Vernon,City,14600,14.583,1001.2
+Hickory Hills,City,14505,2.844,5100.2
+Chicago Ridge,Village,14433,2.268,6363.8
+Lindenhurst,Village,14406,4.527,3182.2
+Swansea,Village,14386,6.477,2221.1
+Chatham,Village,14377,7.364,1952.3
+Forest Park,Village,14339,2.402,5969.6
+Midlothian,Village,14325,2.819,5081.6
+Beach Park,Village,14249,7.079,2012.9
+Morris,City,14163,9.909,1429.3
+Shiloh,Village,14098,11.032,1277.9
+Wauconda,Village,14084,5.072,2776.8
+Wood Dale,City,14012,4.783,2929.5
+Glen Carbon,Village,13842,10.25,1350.4
+Western Springs,Village,13629,2.785,4893.7
+Warrenville,City,13553,5.46,2482.2
+La Grange Park,Village,13475,2.233,6034.5
+Lincolnwood,Village,13463,2.692,5001.1
+Channahon,Village,13383,15.622,856.7
+Hazel Crest,Village,13382,3.397,3939.4
+Lincoln,City,13288,6.247,2127.1
+Canton,City,13242,7.858,1685.2
+Northlake,City,12840,3.176,4042.8
+Richton Park,Village,12775,4.392,2908.7
+Minooka,Village,12758,9.405,1356.5
+Winnetka,Village,12744,3.811,3344.0
+Justice,Village,12600,2.84,4436.6
+Kewanee,City,12509,6.597,1896.2
+Streator,City,12500,7.293,1714.0
+Rantoul,Village,12371,8.49,1457.1
+Herrin,City,12352,9.673,1277.0
+Effingham,City,12252,10.309,1188.5
+Centralia,City,12182,8.2,1485.6
+Cahokia[a],Village,12096,9.753,1240.2
+Palos Heights,City,12068,3.774,3197.7
+Plano,City,11847,8.979,1319.4
+River Forest,Village,11717,2.48,4724.6
+Schiller Park,Village,11709,2.77,4227.1
+Markham,City,11661,5.405,2157.4
+Burr Ridge,Village,11192,7.143,1566.8
+Summit,Village,11161,2.119,5267.1
+Pontiac,City,11150,8.382,1330.2
+Waterloo,City,11013,8.132,1354.3
+Columbia,City,10999,10.303,1067.6
+Roscoe,Village,10983,10.265,1069.9
+Fox Lake,Village,10978,7.833,1401.5
+Worth,Village,10970,2.369,4630.6
+Troy,City,10960,5.62,1950.2
+Campton Hills,Village,10885,16.89,644.5
+Crestwood,Village,10826,3.049,3550.7
+Lyons,Village,10817,2.207,4901.2
+Barrington,Village,10722,4.608,2326.8
+Riverdale,Village,10663,3.575,2982.7
+River Grove,Village,10612,2.391,4438.3
+Taylorville,City,10506,10.315,1018.5
+Wood River,City,10464,6.975,1500.2
+Pingree Grove,Village,10365,3.637,2849.9
+Highland,City,9991,6.751,1479.9
+Sauk Village,Village,9921,3.992,2485.2
+Peru,City,9896,9.987,990.9
+Winfield,Village,9835,3.09,3182.8
+Flossmoor,Village,9704,3.661,2650.6
+Steger,Village,9584,3.404,2815.5
+LaSalle,City,9582,13.457,712.0
+Itasca,Village,9543,5.022,1900.2
+Harvard,City,9469,8.355,1133.3
+Rochelle,City,9446,13.296,710.4
+Mahomet,Village,9434,9.722,970.4
+Manhattan,Village,9385,6.681,1404.7
+Bethalto,Village,9310,7.591,1226.5
+Riverside,Village,9298,1.978,4700.7
+Sugar Grove,Village,9278,11.748,789.8
+Willowbrook,Village,9236,2.572,3591.0
+Manteno,Village,9210,5.344,1723.4
+Lynwood,Village,9116,4.964,1836.4
+Harwood Heights,Village,9065,0.825,10987.9
+Hawthorn Woods,Village,9062,8.046,1126.3
+Monmouth,City,8902,4.242,2098.5
+Savoy,Village,8857,3.233,2739.6
+Glencoe,Village,8849,3.718,2380.0
+Rock Falls,City,8789,3.983,2206.6
+Mascoutah,City,8754,9.578,914.0
+Lake Villa,Village,8741,6.515,1341.7
+Clarendon Hills,Village,8702,1.81,4807.7
+Olney,City,8701,6.931,1255.4
+Glenwood,Village,8662,3.264,2653.8
+Crete,Village,8465,9.409,899.7
+Long Grove,Village,8366,12.387,675.4
+Gilberts,Village,8366,5.489,1524.1
+Jerseyville,City,8337,5.237,1591.9
+Hillside,Village,8320,3.168,2626.3
+Paris,City,8291,5.676,1460.7
+Maryville,Village,8221,5.676,1448.4
+Harrisburg,City,8219,6.612,1243.0
+Oak Brook,Village,8163,7.959,1025.6
+Island Lake,Village,8051,3.348,2404.7
+Silvis,City,8003,4.285,1867.7
+Broadview,Village,7998,1.777,4500.8
+South Beloit,City,7989,6.144,1300.3
+Lincolnshire,Village,7940,4.559,1741.6
+Park City,City,7885,1.157,6815.0
+Rockton,Village,7863,6.862,1145.9
+Princeton,City,7832,8.24,950.5
+West Dundee,Village,7686,3.637,2113.3
+Round Lake Park,Village,7680,2.063,3722.7
+Hampshire,Village,7667,9.505,806.6
+Inverness,Village,7616,6.534,1165.6
+Marengo,City,7568,8.536,886.6
+Vandalia,City,7458,8.147,915.4
+North Riverside,Village,7426,1.644,4517.0
+Salem,City,7282,6.991,1041.6
+West Frankfort,City,7275,4.98,1460.8
+Sandwich,City,7221,4.736,1524.7
+Robinson,City,7150,4.699,1521.6
+University Park,Village,7145,10.727,666.1
+Stickney,Village,7110,1.924,3695.4
+Murphysboro,City,7093,5.248,1351.6
+Greenville,City,7083,6.309,1122.7
+Mendota,City,7061,5.056,1396.6
+Calumet Park,Village,7025,1.117,6289.2
+Mount Carmel,City,7015,4.809,1458.7
+Clinton,City,7004,3.572,1960.8
+Orland Hills,Village,6893,1.145,6020.1
+Chester,City,6814,5.806,1173.6
+Benton,City,6709,5.48,1224.3
+Winthrop Harbor,Village,6705,4.637,1446.0
+Litchfield,City,6605,8.989,734.8
+Geneseo,City,6539,4.646,1407.4
+Countryside,City,6420,2.878,2230.7
+Johnsburg,Village,6355,7.163,887.2
+Braidwood,City,6194,5.296,1169.6
+Lakemoor,Village,6182,5.263,1174.6
+Elburn,Village,6175,3.608,1711.5
+Chillicothe,City,6128,5.274,1161.9
+Volo,Village,6122,3.915,1563.7
+Mount Zion,Village,6019,4.227,1423.9
+Metropolis,City,5969,6.02,991.5
+Beardstown,City,5951,3.619,1644.4
+Bartonville,Village,5945,8.05,738.5
+Monticello,City,5941,3.852,1542.3
+Peoria Heights,Village,5908,2.492,2370.8
+Hillsboro,City,5902,8.262,714.4
+Pontoon Beach,Village,5876,9.96,590.0
+Willow Springs,Village,5857,4.155,1409.6
+Carterville,City,5848,5.266,1110.5
+Du Quoin,City,5827,6.979,834.9
+East Alton,Village,5786,5.318,1088.0
+Northfield,Village,5751,3.23,1780.5
+Carlinville,City,5710,3.369,1694.9
+Coal City,Village,5705,5.617,1015.7
+Wilmington,City,5664,13.803,410.3
+Posen,Village,5632,1.169,4817.8
+Lake Bluff,Village,5616,4.075,1378.2
+Spring Valley,City,5582,7.356,758.8
+Spring Grove,Village,5487,9.046,606.6
+Berkeley,Village,5338,1.402,3807.4
+Genoa,City,5298,2.59,2045.6
+Eureka,City,5227,2.684,1947.5
+Pana,City,5199,3.855,1348.6
+Monee,Village,5128,4.472,1146.7
+Lake Barrington,Village,5100,5.736,889.1
+Milan,Village,5097,6.254,815.0
+South Barrington,Village,5077,7.427,683.6
+Highwood,City,5074,0.721,7037.4
+Pinckneyville,City,5066,4.106,1233.8
+Staunton,City,5054,3.974,1271.8
+Poplar Grove,Village,5049,7.663,658.9
+Colona,City,5045,3.818,1321.4
+Creve Coeur,Village,4934,4.231,1166.2
+Hoopeston,City,4915,3.686,1333.4
+Palos Park,Village,4899,6.445,760.1
+Fairfield,City,4883,4.028,1212.3
+Carmi,City,4865,2.589,1879.1
+Marseilles,City,4845,9.08,533.6
+Flora,City,4803,4.69,1024.1
+Olympia Fields,Village,4718,2.939,1605.3
+Beecher,Village,4713,2.728,1727.6
+Fox River Grove,Village,4702,1.711,2748.1
+Lebanon,City,4691,2.695,1740.6
+Watseka,City,4679,2.944,1589.3
+Shelbyville,City,4674,4.076,1146.7
+Sherman,Village,4673,3.127,1494.4
+Breese,City,4641,2.669,1738.9
+Tuscola,City,4636,2.878,1610.8
+Robbins,Village,4629,1.449,3194.6
+Freeburg,Village,4582,6.836,670.3
+Stone Park,Village,4576,0.344,13302.3
+Auburn,City,4574,4.124,1109.1
+Paxton,City,4450,3.036,1465.7
+Sullivan,City,4413,2.769,1593.7
+Caseyville,Village,4400,7.266,605.6
+Cortland,Town,4398,3.649,1205.3
+Hometown,City,4343,0.479,9066.8
+Anna,City,4303,3.558,1209.4
+Lakewood,Village,4283,4.587,933.7
+West Peoria,City,4263,2.106,2024.2
+Centreville[a],City,4232,4.167,1015.6
+Pittsfield,City,4206,4.782,879.5
+Lawrenceville,City,4164,2.164,1924.2
+Peotone,Village,4150,2.001,2074.0
+Green Oaks,Village,4128,3.985,1035.9
+Barrington Hills,Village,4114,27.004,152.3
+Sparta,City,4095,11.17,366.6
+Kildeer,Village,4091,4.23,967.1
+Morrison,City,4085,2.518,1622.3
+Millstadt,Village,4071,3.491,1166.1
+Indian Head Park,Village,4065,0.93,4371.0
+Burnham,Village,4046,1.855,2181.1
+Dwight,Village,4032,3.297,1222.9
+South Chicago Heights,Village,4026,1.581,2546.5
+Smithton,Village,4006,4.435,903.3
+Dupo,Village,3996,6.377,626.6
+Wonder Lake,Village,3973,4.964,800.4
+Rosemont,Village,3952,1.792,2205.4
+Marshall,City,3947,3.666,1076.7
+Metamora,Village,3904,2.263,1725.1
+Coal Valley,Village,3873,3.112,1244.5
+Rochester,Village,3863,2.646,1459.9
+St. Joseph,Village,3810,2.083,1829.1
+Red Bud,City,3804,2.623,1450.2
+Riverwoods,Village,3790,3.967,955.4
+Byron,City,3784,4.65,813.8
+Eldorado,City,3743,2.503,1495.4
+Forsyth,Village,3734,3.13,1193.0
+Oglesby,City,3712,4.992,743.6
+Deer Park,Village,3681,3.654,1007.4
+Fulton,City,3647,2.338,1559.9
+Fairbury,City,3633,1.809,2008.3
+Aledo,City,3633,2.368,1534.2
+Tolono,Village,3604,2.061,1748.7
+Oregon,City,3604,1.927,1870.3
+Hainesville,Village,3546,1.847,1919.9
+Riverton,Village,3532,3.121,1131.7
+Wadsworth,Village,3517,9.857,356.8
+Le Roy,City,3512,2.404,1460.9
+Gibson City,City,3475,2.321,1497.2
+New Baden,Village,3428,1.825,1878.4
+Germantown Hills,Village,3412,1.636,2085.6
+Johnston City,City,3384,2.116,1599.2
+Galena,City,3308,4.492,736.4
+South Jacksonville,Village,3302,2.273,1452.7
+Carlyle,City,3253,3.425,949.8
+Virden,City,3231,1.889,1710.4
+Sleepy Hollow,Village,3214,2.019,1591.9
+North Barrington,Village,3171,4.712,673.0
+Madison,City,3171,13.955,227.2
+Gillespie,City,3168,1.484,2134.8
+Westville,Village,3167,1.678,1887.4
+East Dundee,Village,3152,2.839,1110.3
+Georgetown,City,3143,1.616,1944.9
+Momence,City,3117,1.569,1986.6
+Nashville,City,3105,3.079,1008.4
+Rushville,City,3005,1.652,1819.0
+Dixmoor,Village,2973,1.249,2380.3
+Havana,City,2963,2.776,1067.4
+Abingdon,City,2951,1.425,2070.9
+Winnebago,Village,2940,1.934,1520.2
+Arcola,City,2927,2.023,1446.9
+Cherry Valley,Village,2905,8.405,345.6
+Knoxville,City,2901,2.35,1234.5
+Mount Morris,Village,2861,1.56,1834.0
+Heyworth,Village,2791,3.026,922.3
+Savanna,City,2783,2.616,1063.8
+Newton,City,2777,2.088,1330.0
+Lena,Village,2772,2.651,1045.6
+El Paso,City,2756,2.145,1284.8
+Hamilton,City,2753,3.561,773.1
+Oakbrook Terrace,City,2751,1.306,2106.4
+Bushnell,City,2718,2.117,1283.9
+Christopher,City,2697,1.622,1662.8
+Trenton,City,2690,1.88,1430.9
+Pawnee,Village,2678,1.332,2010.5
+McLeansboro,City,2675,2.817,949.6
+Tilton,Village,2660,3.788,702.2
+Diamond,Village,2640,1.9,1389.5
+Sumner,City,2631,1.398,1882.0
+Round Lake Heights,Village,2622,0.575,4560.0
+Washington Park,Village,2592,2.521,1028.2
+Marquette Heights,City,2541,0.974,2608.8
+Kenilworth,Village,2514,0.607,4141.7
+Davis Junction,Village,2512,4.2,598.1
+Carthage,City,2490,2.491,999.6
+Carrollton,City,2485,1.902,1306.5
+Villa Grove,City,2472,1.502,1645.8
+Galva,City,2470,2.755,896.6
+Sheridan,Village,2431,2.121,1146.2
+Casey,City,2404,2.263,1062.3
+Farmington,City,2389,1.505,1587.4
+Thornton,Village,2386,2.375,1004.6
+Seneca,Village,2353,6.417,366.7
+Aviston,Village,2340,1.6,1462.5
+Henry,City,2320,1.797,1291.0
+White Hall,City,2295,2.577,890.6
+Polo,City,2291,1.334,1717.4
+Wayne,Village,2286,5.73,399.0
+Amboy,City,2278,6.368,357.7
+Tremont,Village,2277,1.12,2033.0
+Fairmont City,Village,2265,6.205,365.0
+Petersburg,City,2258,1.562,1445.6
+Arthur,Village,2231,1.337,1668.7
+Elwood,Village,2229,13.641,163.4
+Brighton,Village,2221,1.921,1156.2
+Altamont,City,2216,1.489,1488.2
+Nokomis,City,2142,1.261,1698.7
+Pecatonica,Village,2090,1.283,1629.0
+Lexington,City,2090,2.047,1021.0
+Richmond,Village,2089,4.29,486.9
+Cambridge,Village,2086,1.991,1047.7
+Mason City,City,2077,1.014,2048.3
+Oakwood Hills,Village,2076,1.088,1908.1
+Fisher,Village,2062,1.33,1550.4
+Elmwood,City,2058,1.396,1474.2
+Lewistown,City,2041,2.0,1020.5
+Mount Olive,City,2015,1.153,1747.6
+Rockdale,Village,2012,1.411,1425.9
+Mount Sterling,City,2006,1.108,1810.5
+Hinckley,Village,2006,0.847,2368.4
+Catlin,Village,1983,0.849,2335.7
+Athens,City,1977,1.682,1175.4
+Albion,City,1971,2.136,922.8
+Merrionette Park,Village,1969,0.375,5250.7
+Prairie Grove,Village,1963,5.677,345.8
+Roanoke,Village,1960,0.939,2087.3
+New Athens,Village,1955,2.112,925.7
+Prophetstown,City,1946,1.339,1453.3
+Steeleville,Village,1930,1.523,1267.2
+Minonk,City,1928,2.4,803.3
+South Roxana,Village,1891,2.158,876.3
+Sesser,City,1888,1.03,1833.0
+Mackinaw,Village,1879,1.189,1580.3
+Lacon,City,1878,1.6,1173.8
+Bellevue,Village,1878,2.224,844.4
+Carbon Cliff,Village,1846,2.095,881.1
+Marissa,Village,1833,7.212,254.2
+Farmer City,City,1828,2.395,763.3
+Ford Heights,Village,1813,1.946,931.7
+Bridgeport,City,1800,1.072,1679.1
+Somonauk,Village,1786,2.488,717.8
+Girard,City,1785,0.934,1911.1
+Hampton,Village,1779,1.461,1217.7
+Moweaqua,Village,1764,2.123,830.9
+Orion,Village,1754,0.944,1858.1
+Hudson,Village,1753,0.818,2143.0
+Gilman,City,1738,2.433,714.3
+Cairo,City,1733,6.987,248.0
+Stockton,Village,1728,1.877,920.6
+Chenoa,City,1720,2.43,707.8
+Jonesboro,City,1711,2.7,633.7
+Phoenix,Village,1708,0.464,3681.0
+Jerome,Village,1692,0.462,3662.3
+Carrier Mills,Village,1672,1.208,1384.1
+Atlanta,City,1669,1.249,1336.3
+Port Byron,Village,1668,2.428,687.0
+Kirkland,Village,1650,1.226,1345.8
+Ina,Village,1641,2.405,682.3
+Princeville,Village,1636,1.695,965.2
+De Pue,Village,1633,2.775,588.5
+Bunker Hill,City,1630,1.274,1279.4
+Teutopolis,Village,1618,2.043,792.0
+Earlville,City,1613,1.201,1343.0
+Thomson,Village,1610,2.219,725.6
+Dunlap,Village,1603,2.308,694.5
+Southern View,Village,1596,0.647,2466.8
+Port Barrington,Village,1584,1.16,1365.5
+Roodhouse,City,1578,1.127,1400.2
+Maroa,City,1577,1.763,894.5
+Winchester,City,1574,1.129,1394.2
+Delavan,City,1568,1.44,1088.9
+Alorton[a],Village,1566,1.808,866.2
+Limestone,Village,1558,2.622,594.2
+Manito,Village,1552,1.513,1025.8
+Grayville,City,1550,2.127,728.7
+Mount Pulaski,City,1537,1.134,1355.4
+Herscher,Village,1521,1.813,838.9
+Erie,Village,1518,1.38,1100.0
+Virginia,City,1514,1.207,1254.3
+Warsaw,City,1510,6.52,231.6
+East Dubuque,City,1505,2.742,548.9
+Cambria,Village,1505,1.415,1063.6
+Lanark,City,1504,1.121,1341.7
+Hodgkins,Village,1500,2.712,553.1
+Venice,City,1498,1.849,810.2
+Zeigler,City,1484,1.359,1092.0
+Bement,Village,1484,0.778,1907.5
+Mount Carroll,City,1479,2.003,738.4
+North Pekin,Village,1478,1.392,1061.8
+Benld,City,1464,1.06,1381.1
+Gridley,Village,1456,1.233,1180.9
+Roxana,Village,1454,7.101,204.8
+Leland Grove,City,1454,0.628,2315.3
+Crainville,Village,1443,1.653,873.0
+Forreston,Village,1435,0.943,1521.7
+Waterman,Village,1433,1.451,987.6
+Maple Park,Village,1433,2.154,665.3
+Williamsville,Village,1425,1.548,920.5
+De Soto,Village,1407,0.912,1542.8
+Grandview,Village,1405,0.335,4194.0
+Neoga,City,1398,1.39,1005.8
+Capron,Village,1395,0.768,1816.4
+Philo,Village,1392,0.829,1679.1
+Durand,Village,1390,0.919,1512.5
+New Berlin,Village,1381,1.13,1222.1
+Oblong,Village,1371,1.086,1262.4
+Okawville,Village,1369,2.025,676.0
+Hebron,Village,1368,1.931,708.4
+Gardner,Village,1366,2.912,469.1
+Greenup,Village,1365,1.75,780.0
+Granville,Village,1359,1.307,1039.8
+St. Jacob,Village,1358,0.832,1632.2
+Clifton,Village,1352,0.93,1453.8
+Kincaid,Village,1349,0.817,1651.2
+Vienna,City,1343,2.837,473.4
+Toluca,City,1340,1.062,1261.8
+Onarga,Village,1333,1.674,796.3
+Oakwood,Village,1325,0.928,1427.8
+Germantown,Village,1324,1.014,1305.7
+Warren,Village,1323,1.033,1280.7
+North Utica,Village,1323,3.455,382.9
+Cerro Gordo,Village,1316,0.729,1805.2
+Chrisman,City,1312,0.719,1824.8
+Walnut,Village,1311,0.801,1636.7
+Harristown,Village,1310,1.797,729.0
+Barry,City,1303,1.432,909.9
+Wyoming,City,1300,0.854,1522.2
+East Hazel Crest,Village,1297,0.784,1654.3
+Grant Park,Village,1294,3.413,379.1
+Ladd,Village,1263,1.209,1044.7
+Long Creek,Village,1261,2.825,446.4
+Bethany,Village,1255,0.977,1284.5
+St. Elmo,City,1254,1.483,845.6
+Hanna City,Village,1253,1.278,980.4
+Valmeyer,Village,1233,3.417,360.8
+Palestine,Village,1233,0.789,1562.7
+Tower Lakes,Village,1226,0.919,1334.1
+Hillcrest,Village,1224,3.549,344.9
+Rossville,Village,1221,1.398,873.4
+Ashland,Village,1218,0.748,1628.3
+Sidney,Village,1208,0.624,1935.9
+Downs,Village,1201,2.966,404.9
+Waverly,City,1194,1.036,1152.5
+Toulon,City,1193,1.017,1173.1
+Hartford,Village,1185,5.166,229.4
+Chatsworth,Town,1185,2.757,429.8
+Cuba,City,1184,0.543,2180.5
+Andalusia,Village,1184,1.175,1007.7
+Macon,City,1177,1.451,811.2
+La Harpe,City,1175,1.364,861.4
+Toledo,Village,1161,0.888,1307.4
+St. Anne,Village,1161,0.83,1398.8
+Milford,Village,1158,0.671,1725.8
+Sandoval,Village,1157,0.996,1161.6
+Assumption,City,1155,0.99,1166.7
+Minier,Village,1154,0.569,2028.1
+Norris City,Village,1145,1.172,977.0
+Malta,Village,1143,0.612,1867.6
+Divernon,Village,1139,0.763,1492.8
+Louisville,Village,1136,0.828,1372.0
+Oquawka,Village,1134,1.469,772.0
+Blue Mound,Village,1133,0.585,1936.8
+Bull Valley,Village,1128,9.128,123.6
+Camp Point,Village,1121,1.134,988.5
+Albers,Village,1121,0.846,1325.1
+Martinsville,City,1118,2.021,553.2
+Atwood,Village,1116,0.614,1817.6
+Third Lake,Village,1111,0.586,1895.9
+Warrensburg,Village,1110,0.728,1524.7
+Kingston,Village,1108,0.984,1126.0
+Colchester,City,1108,1.15,963.5
+Big Rock,Village,1104,4.318,255.7
+Central City,Village,1098,0.565,1943.4
+Griggsville,City,1097,1.106,991.9
+Worden,Village,1096,0.713,1537.2
+Danvers,Village,1089,0.803,1356.2
+Edinburg,Village,1085,0.625,1736.0
+"Windsor, Shelby County, Illinois",City,1079,0.63,1712.7
+Stillman Valley,Village,1075,0.57,1886.0
+Cobden,Village,1074,1.219,881.1
+Homer,Village,1073,0.98,1094.9
+Lovington,Village,1069,0.544,1965.1
+Royalton,Village,1068,1.115,957.8
+Goreville,Village,1068,2.686,397.6
+Greenfield,City,1059,1.714,617.9
+Shawneetown,City,1054,0.734,1436.0
+Chebanse,Village,1044,1.19,877.3
+Forrest,Village,1041,0.648,1606.5
+Thomasboro,Village,1034,0.995,1039.2
+Washburn,Village,1032,0.72,1433.3
+Lily Lake,Village,1032,2.717,379.8
+Milledgeville,Village,1026,0.69,1487.0
+Payson,Village,1025,1.17,876.1
+Bannockburn,Village,1013,2.028,499.5
+Flanagan,Village,1010,0.574,1759.6
+Odell,Village,1003,1.077,931.3
 Morrisonville,Village,997,1.035,963.3
-South Pekin,Village,996,0.515,"1,934.0"
-Colfax,Village,996,0.553,"1,801.1"
+South Pekin,Village,996,0.515,1934.0
+Colfax,Village,996,0.553,1801.1
 Wayne City,Village,994,1.722,577.2
-McCullom Lake,Village,988,0.347,"2,847.3"
+McCullom Lake,Village,988,0.347,2847.3
 Wamac,City,985,1.405,701.1
 Rosiclare,City,980,1.939,505.4
-Mazon,Village,979,0.602,"1,626.2"
-Wenona,City,974,0.736,"1,323.4"
+Mazon,Village,979,0.602,1626.2
+Wenona,City,974,0.736,1323.4
 Energy,Village,974,1.194,815.7
 Newark,Village,973,1.124,865.7
-Ashton,Village,967,0.67,"1,443.3"
-Sheldon,Village,965,0.753,"1,281.5"
+Ashton,Village,967,0.67,1443.3
+Sheldon,Village,965,0.753,1281.5
 Atkinson,Town,965,1.921,502.3
 Rapids City,Village,964,1.626,592.9
-Leland,Village,951,0.534,"1,780.9"
+Leland,Village,951,0.534,1780.9
 Nauvoo,City,950,3.386,280.6
 Raymond,Village,949,1.258,754.4
 Goodfield,Village,936,1.622,577.1
 Odin,Village,935,1.003,932.2
 Hamel,Village,929,1.19,780.7
-Astoria,Town,929,0.586,"1,585.3"
-Mansfield,Village,928,0.508,"1,826.8"
-Pleasant Hill,Village,924,0.765,"1,207.8"
-Beckemeyer,Village,923,0.613,"1,505.7"
-Argenta,Village,913,0.653,"1,398.2"
-Marine,Village,912,0.746,"1,222.5"
+Astoria,Town,929,0.586,1585.3
+Mansfield,Village,928,0.508,1826.8
+Pleasant Hill,Village,924,0.765,1207.8
+Beckemeyer,Village,923,0.613,1505.7
+Argenta,Village,913,0.653,1398.2
+Marine,Village,912,0.746,1222.5
 Ramsey,Village,911,1.111,820.0
-Gifford,Village,911,0.444,"2,051.8"
+Gifford,Village,911,0.444,2051.8
 Timberlane,Village,906,1.746,518.9
 Percy,Village,906,0.979,925.4
-Franklin Grove,Village,896,0.467,"1,918.6"
-Roseville,Village,892,0.739,"1,207.0"
-Oreana,Village,891,0.468,"1,903.8"
+Franklin Grove,Village,896,0.467,1918.6
+Roseville,Village,892,0.739,1207.0
+Oreana,Village,891,0.468,1903.8
 Dieterich,Village,890,1.366,651.5
 Wyanet,Village,886,0.946,936.6
 Annawan,Town,884,2.135,414.1
-Mendon,Village,872,0.857,"1,017.5"
-Viola,Village,869,0.838,"1,037.0"
+Mendon,Village,872,0.857,1017.5
+Viola,Village,869,0.838,1037.0
 Glasford,Village,866,0.908,953.7
 Albany,Village,864,1.071,806.7
 Shabbona,Village,863,1.283,672.6
 Hanover,Village,863,1.122,769.2
 Ridgway,Village,851,0.88,967.0
 Clay City,Village,847,1.782,475.3
-Illiopolis,Village,846,0.677,"1,249.6"
+Illiopolis,Village,846,0.677,1249.6
 Ringwood,Village,844,3.864,218.4
 Essex,Village,841,2.327,361.4
-Elkville,Village,838,0.767,"1,092.6"
-Stonington,Village,837,0.457,"1,831.5"
-Coulterville,Village,834,0.569,"1,465.7"
+Elkville,Village,838,0.767,1092.6
+Stonington,Village,837,0.457,1831.5
+Coulterville,Village,834,0.569,1465.7
 Stronghurst,Village,833,0.873,954.2
-Paw Paw,Village,830,0.572,"1,451.0"
+Paw Paw,Village,830,0.572,1451.0
 Hopedale,Village,830,0.882,941.0
 Galatia,Village,827,1.952,423.7
 Meredosia,Village,826,0.864,956.0
 Sheffield,Village,821,1.169,702.3
-Cissna Park,Village,817,0.725,"1,126.9"
+Cissna Park,Village,817,0.725,1126.9
 Loami,Village,812,1.012,802.4
 Pleasant Plains,Village,808,1.335,605.2
 Dallas City,City,805,2.374,339.1
-Spaulding,Village,801,0.75,"1,068.0"
-Shannon,Village,801,0.482,"1,661.8"
+Spaulding,Village,801,0.75,1068.0
+Shannon,Village,801,0.482,1661.8
 Hardin,Village,801,2.128,376.4
 New Milford,Village,794,2.543,312.2
 Enfield,Village,794,1.011,785.4
-Alexis,Village,793,0.475,"1,669.5"
+Alexis,Village,793,0.475,1669.5
 Forest View,Village,792,1.168,678.1
-Pearl City,Village,790,0.641,"1,232.4"
+Pearl City,Village,790,0.641,1232.4
 Ridge Farm,Village,787,3.056,257.5
 West Salem,Village,786,1.56,503.8
 Witt,City,785,1.237,634.6
-Newman,City,778,0.613,"1,269.2"
+Newman,City,778,0.613,1269.2
 Brimfield,Village,778,0.821,947.6
 Hennepin,Village,769,5.307,144.9
-Orangeville,Village,766,0.676,"1,133.1"
+Orangeville,Village,766,0.676,1133.1
 Hurst,City,764,0.887,861.3
 Livingston,Village,763,1.04,733.7
 East Galesburg,Village,763,1.365,559.0
@@ -739,59 +739,59 @@ Woodhull,Village,754,0.882,854.9
 Tilden,Village,750,0.975,769.2
 Ashkum,Village,750,0.835,898.2
 Tonica,Village,749,1.363,549.5
-Piper City,Village,745,0.555,"1,342.3"
+Piper City,Village,745,0.555,1342.3
 Greenview,Village,745,0.859,867.3
 Wataga,Village,744,0.829,897.5
 McLean,Village,743,1.177,631.3
-Tiskilwa,Village,740,0.517,"1,431.3"
+Tiskilwa,Village,740,0.517,1431.3
 Oakland,City,739,0.783,943.8
 Kinmundy,City,733,1.198,611.9
-Ogden,Village,729,0.588,"1,239.8"
-Brookport,City,725,0.653,"1,110.3"
+Ogden,Village,729,0.588,1239.8
+Brookport,City,725,0.653,1110.3
 Taylor Springs,Village,724,1.05,689.5
 Braceville,Village,724,3.111,232.7
-Stewardson,Village,721,0.61,"1,182.0"
-South Wilmington,Village,710,0.492,"1,443.1"
-Matherville,Village,707,0.391,"1,808.2"
-Avon,Village,704,0.444,"1,585.6"
+Stewardson,Village,721,0.61,1182.0
+South Wilmington,Village,710,0.492,1443.1
+Matherville,Village,707,0.391,1808.2
+Avon,Village,704,0.444,1585.6
 Pocahontas,Village,697,0.783,890.2
 Oneida,City,696,0.763,912.2
 Elizabeth,Village,694,0.9,771.1
 Sherrard,Village,692,0.928,745.7
 Brownstown,Village,690,0.76,907.9
-Tampico,Village,689,0.394,"1,748.7"
-Potomac,Village,689,0.488,"1,411.9"
+Tampico,Village,689,0.394,1748.7
+Potomac,Village,689,0.488,1411.9
 Farmersville,Village,689,0.703,980.1
 La Moille,Village,679,1.156,587.4
 Kirkwood,Village,678,0.939,722.0
-Bradford,Village,676,0.398,"1,698.5"
-Alpha,Village,675,0.309,"2,184.5"
-Cordova,Village,671,0.574,"1,169.0"
+Bradford,Village,676,0.398,1698.5
+Alpha,Village,675,0.309,2184.5
+Cordova,Village,671,0.574,1169.0
 Kansas,Village,670,1.022,655.6
-Windsor,Village,668,0.438,"1,525.1"
+Windsor,Village,668,0.438,1525.1
 Watson,Village,668,1.092,611.7
-Deer Creek,Village,667,0.535,"1,246.7"
+Deer Creek,Village,667,0.535,1246.7
 Findlay,Village,664,0.924,718.6
 Aroma Park,Village,664,1.882,352.8
 Dalzell,Village,663,0.82,808.5
-Cedarville,Village,663,0.459,"1,444.4"
+Cedarville,Village,663,0.459,1444.4
 Mechanicsburg,Village,662,1.036,639.0
 Mounds,City,661,1.207,547.6
 Dongola,Village,661,1.088,607.5
 West City,Village,656,1.608,408.0
 Saybrook,Village,654,0.802,815.5
 Brooklyn,Village,649,0.811,800.2
-Golden,Village,648,0.642,"1,009.3"
+Golden,Village,648,0.642,1009.3
 Coffeen,City,647,1.161,557.3
-Yates City,Village,642,0.493,"1,302.2"
+Yates City,Village,642,0.493,1302.2
 Clayton,Village,639,0.884,722.9
 Ashmore,Village,637,0.805,791.3
-Bartelso,Village,635,0.431,"1,473.3"
-Cisne,Village,634,0.63,"1,006.3"
+Bartelso,Village,635,0.431,1473.3
+Cisne,Village,634,0.63,1006.3
 Noble,Village,633,1.017,622.4
-Thayer,Village,632,0.61,"1,036.1"
-Green Valley,Village,630,0.301,"2,093.0"
-Golconda,City,630,0.51,"1,235.3"
+Thayer,Village,632,0.61,1036.1
+Green Valley,Village,630,0.301,2093.0
+Golconda,City,630,0.51,1235.3
 Bluford,Village,630,1.561,403.6
 St. Libory,Village,628,0.972,646.1
 Creston,Village,627,1.146,547.1
@@ -804,23 +804,23 @@ Woodlawn,Village,617,0.852,724.2
 Millington,Village,617,0.708,871.5
 New Boston,City,613,0.941,651.4
 Niantic,Village,612,1.039,589.0
-Fairmount,Village,612,0.317,"1,930.6"
+Fairmount,Village,612,0.317,1930.6
 Franklin,Village,610,0.829,735.8
 Ursa,Village,609,0.69,882.6
 Palmyra,Village,605,0.999,605.6
 Bedford Park,Village,602,5.934,101.4
 Stanford,Village,600,0.662,906.3
 Hopkins Park,Village,597,4.137,144.3
-Danforth,Village,594,0.478,"1,242.7"
-Davis,Village,589,0.405,"1,454.3"
+Danforth,Village,594,0.478,1242.7
+Davis,Village,589,0.405,1454.3
 Bismarck,Village,582,0.743,783.3
 Irvington,Village,581,1.01,575.2
-Willisville,Village,579,0.389,"1,488.4"
+Willisville,Village,579,0.389,1488.4
 Williamsfield,Village,575,1.231,467.1
 Vermont,Village,570,1.258,453.1
 Blandinsville,Village,569,0.875,650.3
 St. Francisville,City,568,0.745,762.4
-Murrayville,Village,567,0.496,"1,143.1"
+Murrayville,Village,567,0.496,1143.1
 Godley,Village,566,1.083,522.6
 Pittsburg,Village,565,2.065,273.6
 Damiansville,Village,564,0.822,686.1
@@ -829,21 +829,21 @@ Andover,Village,555,0.991,560.0
 Valier,Village,554,1.124,492.9
 Ava,City,553,1.057,523.2
 Augusta,Village,553,0.691,800.3
-Crescent City,Village,552,0.456,"1,210.5"
+Crescent City,Village,552,0.456,1210.5
 Union,Village,551,0.836,659.1
 Pesotum,Village,550,0.569,966.6
 Keithsburg,City,550,2.558,215.0
-Carlock,Village,548,0.395,"1,387.3"
+Carlock,Village,548,0.395,1387.3
 Makanda,Village,547,5.281,103.6
 Evansville,Village,547,0.788,694.2
 Tamaroa,Village,544,0.958,567.8
-Liberty,Village,543,0.391,"1,388.7"
+Liberty,Village,543,0.391,1388.7
 Farina,Village,540,1.457,370.6
 Equality,Village,539,0.877,614.6
 Lyndon,Village,537,0.757,709.4
 Wilsonville,Village,536,0.956,560.7
 Westfield,Village,536,0.978,548.1
-Indian Creek,Village,536,0.267,"2,007.5"
+Indian Creek,Village,536,0.267,2007.5
 Burlington,Village,535,6.855,78.0
 Mettawa,Village,533,5.449,97.8
 Strasburg,Village,531,0.541,981.5
@@ -851,17 +851,17 @@ Junction City,Village,527,0.684,770.5
 Chandlerville,Village,527,0.794,663.7
 Mound City,City,526,0.675,779.3
 Patoka,Village,525,1.115,470.9
-St. David,Village,522,0.299,"1,745.8"
+St. David,Village,522,0.299,1745.8
 Mulberry Grove,Village,520,1.003,518.4
 Hoyleton,Village,520,0.76,684.2
-Cullom,Village,520,0.335,"1,552.2"
+Cullom,Village,520,0.335,1552.2
 Mark,Village,519,1.065,487.3
 Elsah,Village,519,1.092,475.3
 Dawson,Village,519,0.792,655.3
-Trout Valley,Village,515,0.428,"1,203.3"
-Grand Ridge,Village,515,0.462,"1,114.7"
-Cowden,Village,515,0.402,"1,281.1"
-Golf,Village,514,0.448,"1,147.3"
+Trout Valley,Village,515,0.428,1203.3
+Grand Ridge,Village,515,0.462,1114.7
+Cowden,Village,515,0.402,1281.1
+Golf,Village,514,0.448,1147.3
 Wapella,Village,513,0.551,931.0
 Iuka,Village,512,0.733,698.5
 Shipman,Town,511,1.32,387.1
@@ -870,19 +870,19 @@ Hammond,Village,508,0.757,671.1
 Creal Springs,City,505,1.027,491.7
 Dahlgren,Village,504,1.017,495.6
 Prairie du Rocher,Village,502,0.571,879.2
-Dakota,Village,500,0.249,"2,008.0"
-Woodson,Village,498,0.394,"1,264.0"
-Reynolds,Village,498,0.368,"1,353.3"
+Dakota,Village,500,0.249,2008.0
+Woodson,Village,498,0.394,1264.0
+Reynolds,Village,498,0.368,1353.3
 Congerville,Village,497,0.963,516.1
 Rankin,Village,495,0.579,854.9
-Buckley,Village,495,0.316,"1,566.5"
+Buckley,Village,495,0.316,1566.5
 Sidell,Village,489,0.927,527.5
-Fithian,Village,488,0.383,"1,274.2"
+Fithian,Village,488,0.383,1274.2
 Thompsonville,Village,486,2.031,239.3
 Tower Hill,Village,485,1.005,482.6
 Buda,Village,482,1.014,475.3
-Chadwick,Village,481,0.311,"1,546.6"
-San Jose,Village,479,0.414,"1,157.0"
+Chadwick,Village,481,0.311,1546.6
+San Jose,Village,479,0.414,1157.0
 Grand Tower,City,479,1.248,383.8
 Hutsonville,Village,478,0.622,768.5
 Oak Grove,Village,476,0.658,723.4
@@ -890,29 +890,29 @@ Chapin,Village,475,0.998,476.0
 Spring Bay,Village,474,0.683,694.0
 Dix,Village,469,2.074,226.1
 Lenzburg,Village,468,1.155,405.2
-Emden,Village,467,0.235,"1,987.2"
+Emden,Village,467,0.235,1987.2
 Ullin,Village,466,2.811,165.8
 Ohio,Village,465,0.753,617.5
-Tovey,Village,464,0.223,"2,080.7"
-Bowen,Village,464,0.428,"1,084.1"
+Tovey,Village,464,0.223,2080.7
+Bowen,Village,464,0.428,1084.1
 Altona,Village,463,0.938,493.6
 Ashley,City,462,1.128,409.6
 St. Rose[c],Village,459,0.591,776.6
 Pierron,Village,459,0.734,625.3
-Allendale,Village,458,0.307,"1,491.9"
+Allendale,Village,458,0.307,1491.9
 Sun River Terrace,Village,455,0.573,794.1
 Dalton City,Village,454,0.534,850.2
 Mount Auburn,Village,452,0.997,453.4
-Kaneville,Village,452,0.285,"1,586.0"
+Kaneville,Village,452,0.285,1586.0
 Camargo,Village,452,1.259,359.0
 Elkhart,Village,450,1.942,231.7
-Ipava,Village,447,0.268,"1,667.9"
-De Land,Village,447,0.424,"1,054.2"
-Buffalo,Village,447,0.345,"1,295.7"
+Ipava,Village,447,0.268,1667.9
+De Land,Village,447,0.424,1054.2
+Buffalo,Village,447,0.345,1295.7
 Versailles,Village,446,0.933,478.0
 Cornell,Village,446,0.654,682.0
 Hoffman,Village,439,0.506,867.6
-Norwood,Village,437,0.307,"1,423.5"
+Norwood,Village,437,0.307,1423.5
 Scales Mound,Village,436,0.628,694.3
 Plymouth,Village,436,0.565,771.7
 Cherry,Village,435,0.514,846.3
@@ -923,21 +923,21 @@ Towanda,Village,431,0.744,579.3
 Tamms,Village,430,2.332,184.4
 Karnak,Village,430,1.806,238.1
 Sorento,Village,429,0.798,537.6
-Hecker,Village,429,0.253,"1,695.7"
+Hecker,Village,429,0.253,1695.7
 Beecher City,Village,428,0.895,478.2
 Neponset,Village,427,1.016,420.3
 Fairview,Village,426,4.215,101.1
 Lostant,Village,423,1.122,377.0
 Hopewell,Village,421,1.135,370.9
 Hillsdale,Village,417,0.648,643.5
-Melvin,Village,416,0.346,"1,202.3"
-Naplate,Village,412,0.16,"2,575.0"
-Benson,Village,412,0.163,"2,527.6"
+Melvin,Village,416,0.346,1202.3
+Naplate,Village,412,0.16,2575.0
+Benson,Village,412,0.163,2527.6
 Monroe Center,Village,411,1.212,339.1
 Buckner,Village,409,0.872,469.0
 Waltonville,Village,408,1.24,329.0
 Prairie City,Village,407,1.008,403.8
-Saunemin,Village,406,0.231,"1,757.6"
+Saunemin,Village,406,0.231,1757.6
 Keyesport,Village,406,0.72,563.9
 Lomax,Village,404,1.189,339.8
 Sadorus,Village,402,1.027,391.4
@@ -946,29 +946,29 @@ Industry,Village,399,0.46,867.4
 Edgewood,Village,398,1.013,392.9
 Hull,Village,392,1.825,214.8
 East Carondelet,Village,390,1.177,331.4
-Bondville,Village,388,0.251,"1,545.8"
-Waynesville,Village,381,0.319,"1,194.4"
+Bondville,Village,388,0.251,1545.8
+Waynesville,Village,381,0.319,1194.4
 Xenia,Village,380,0.493,770.8
-Sublette,Village,380,0.321,"1,183.8"
+Sublette,Village,380,0.321,1183.8
 Medora,Village,379,0.38,997.4
-Varna,Village,375,0.297,"1,262.6"
+Varna,Village,375,0.297,1262.6
 Bonnie,Village,374,1.275,293.3
 Irving,Village,373,0.897,415.8
 Joy,Village,372,0.428,869.2
-Carbon Hill,Village,372,0.178,"2,089.9"
-Weldon,Village,369,0.267,"1,382.0"
+Carbon Hill,Village,372,0.178,2089.9
+Weldon,Village,369,0.267,1382.0
 Dowell,Village,368,0.39,943.6
 Arenzville,Village,367,0.768,477.9
 Sparland,Village,366,0.572,639.9
-Good Hope,Village,363,0.3,"1,210.0"
-Humboldt,Village,361,0.343,"1,052.5"
+Good Hope,Village,363,0.3,1210.0
+Humboldt,Village,361,0.343,1052.5
 Cutler,Village,361,0.468,771.4
 Herrick,Village,358,0.366,978.1
 Belgium,Village,358,0.434,824.9
 Loda,Village,356,1.467,242.7
 Jeffersonville,Village,355,1.012,350.8
 Bay View Gardens,Village,354,0.569,622.1
-Table Grove,Village,353,0.282,"1,251.8"
+Table Grove,Village,353,0.282,1251.8
 Bonfield,Village,351,0.492,713.4
 New Douglas,Village,350,1.048,334.0
 London Mills,Village,350,0.684,511.7
@@ -977,13 +977,13 @@ Summerfield,Village,347,0.495,701.0
 Apple River,Village,347,0.705,492.2
 Bellflower,Village,346,0.361,958.4
 Roberts,Village,345,0.481,717.3
-Secor,Village,342,0.29,"1,179.3"
-Grantfork,Village,341,0.337,"1,011.9"
+Secor,Village,342,0.29,1179.3
+Grantfork,Village,341,0.337,1011.9
 Panama,Village,337,0.365,923.3
 New Canton,Town,334,0.881,379.1
-Martinton,Village,334,0.274,"1,219.0"
-Latham,Village,333,0.273,"1,219.8"
-Sigel,Town,329,0.281,"1,170.8"
+Martinton,Village,334,0.274,1219.0
+Latham,Village,333,0.273,1219.8
+Sigel,Town,329,0.281,1170.8
 Middletown,Village,329,0.341,964.8
 Ellis Grove,Village,328,0.491,668.0
 Orient,City,327,0.745,438.9
@@ -995,72 +995,72 @@ St. Peter,Village,322,0.521,618.0
 Seatonville,Village,321,0.496,647.2
 Hanaford,Village,320,1.008,317.5
 Alto Pass,Village,319,2.134,149.5
-Malden,Village,318,0.272,"1,169.1"
+Malden,Village,318,0.272,1169.1
 Alma,Village,318,1.132,280.9
 Coalton,Village,317,0.53,598.1
 Broadlands,Village,316,0.322,981.4
 Perry,Village,314,0.386,813.5
 Baldwin,Village,314,0.666,471.5
 Ruma,Village,313,0.742,421.8
-Lee,Village,313,0.198,"1,580.8"
-Easton,Village,312,0.24,"1,300.0"
+Lee,Village,313,0.198,1580.8
+Easton,Village,312,0.24,1300.0
 Mount Clare,Village,311,1.538,202.2
-Kenney,Village,311,0.282,"1,102.8"
+Kenney,Village,311,0.282,1102.8
 Kampsville,Village,310,1.02,303.9
-Armington,Village,310,0.285,"1,087.7"
+Armington,Village,310,0.285,1087.7
 Campbell Hill,Village,309,0.462,668.8
 Belle Rive,Village,309,1.026,301.2
 Ransom,Village,308,0.999,308.3
 Ludlow,Village,308,0.397,775.8
-Beaverville,Village,306,0.275,"1,112.7"
+Beaverville,Village,306,0.275,1112.7
 Fillmore,Village,305,1.016,300.2
-Fayetteville,Village,302,0.296,"1,020.3"
+Fayetteville,Village,302,0.296,1020.3
 Loraine,Village,300,0.844,355.5
 Ewing,Village,300,1.009,297.3
 Biggsville,Village,300,0.337,890.2
 Manlius,Village,298,0.319,934.2
 Kane,Village,296,0.544,544.1
-Royal,Village,293,0.183,"1,601.1"
-Rock City,Village,293,0.134,"2,186.6"
+Royal,Village,293,0.183,1601.1
+Rock City,Village,293,0.134,2186.6
 Virgil,Village,289,2.183,132.4
 East Cape Girardeau,Village,289,1.961,147.4
 Sibley,Village,288,0.481,598.8
 Olmsted,Village,285,3.365,84.7
 Raleigh,Village,284,1.976,143.7
-Little York,Village,283,0.223,"1,269.1"
+Little York,Village,283,0.223,1269.1
 Nebo,Village,282,0.434,649.8
 Winslow,Village,281,0.458,613.5
 Bureau Junction,Village,281,1.446,194.3
 Bath,Village,279,0.365,764.4
 Millbrook,Village,277,1.846,150.1
-Arrowsmith,Village,276,0.197,"1,401.0"
+Arrowsmith,Village,276,0.197,1401.0
 New Holland,Village,275,0.31,887.1
-McNabb,Village,275,0.177,"1,553.7"
-Hindsboro,Village,275,0.269,"1,022.3"
+McNabb,Village,275,0.177,1553.7
+Hindsboro,Village,275,0.269,1022.3
 Elliott,Village,274,0.498,550.2
-Compton,Village,274,0.158,"1,734.2"
+Compton,Village,274,0.158,1734.2
 Brocton,Village,273,0.572,477.3
-Plainville,Village,271,0.235,"1,153.2"
+Plainville,Village,271,0.235,1153.2
 Lisbon,Village,271,2.117,128.0
 East Gillespie,Village,269,0.319,843.3
 Victoria,Village,268,0.451,594.2
 Sawyerville,Village,268,0.988,271.3
 Freeman Spur,Village,268,0.399,671.7
 Kingston Mines,Village,266,1.444,184.2
-Henderson,Village,266,0.265,"1,003.8"
+Henderson,Village,266,0.265,1003.8
 Cedar Point,Village,266,1.021,260.5
 Manchester,Village,265,1.063,249.3
 Kilbourne,Village,265,0.889,298.1
 Ivesdale,Village,265,0.716,370.1
-Hartsburg,Village,262,0.15,"1,746.7"
-Dunfermline,Village,262,0.147,"1,782.3"
+Hartsburg,Village,262,0.15,1746.7
+Dunfermline,Village,262,0.147,1782.3
 Allerton,Village,262,0.679,385.9
 Mapleton,Village,261,0.885,294.9
 Rutland,Village,259,0.694,373.2
 Addieville,Village,259,0.993,260.8
 McClure,Village,256,1.528,167.5
 Magnolia,Village,256,0.313,817.9
-Cisco,Village,254,0.182,"1,395.6"
+Cisco,Village,254,0.182,1395.6
 Donovan,Village,251,0.328,765.2
 McCook,Village,249,2.614,95.3
 Woodland,Village,248,0.49,506.1
@@ -1079,14 +1079,14 @@ Steward,Village,229,0.269,851.3
 Kappa,Village,229,0.357,641.5
 Cave-In-Rock,Village,228,0.374,609.6
 Indianola,Village,227,0.388,585.1
-Lerna,Village,226,0.115,"1,965.2"
+Lerna,Village,226,0.115,1965.2
 Troy Grove,Village,225,0.687,327.5
 Standard,Village,225,0.711,316.5
 Stonefort,Village,224,1.454,154.1
 Forest City,Village,222,0.523,424.5
 Plattville,Village,220,2.259,97.4
 Elizabethtown,Village,220,0.705,312.1
-Maquon,Village,218,0.162,"1,345.7"
+Maquon,Village,218,0.162,1345.7
 Gays,Village,218,0.386,564.8
 Cypress,Village,217,0.753,288.2
 Palmer,Village,216,0.995,217.1
@@ -1096,7 +1096,7 @@ Sammons Point,Village,214,1.851,115.6
 Milton,Village,214,0.386,554.4
 Curran,Village,213,1.975,107.8
 White City,Village,212,1.212,174.9
-Bulpitt,Village,212,0.069,"3,072.5"
+Bulpitt,Village,212,0.069,3072.5
 Menominee,Village,211,1.914,110.2
 Montrose,Village,210,0.637,329.7
 Henning,Village,210,1.524,137.8
@@ -1104,14 +1104,14 @@ Bardolph,Village,210,0.617,340.4
 Rio,Village,209,0.312,669.9
 Owaneco,Village,209,0.458,456.3
 Omaha,Village,209,0.744,280.9
-Verona,Village,208,0.165,"1,260.6"
+Verona,Village,208,0.165,1260.6
 Thebes,Village,208,1.745,119.2
 Buncombe,Village,207,1.187,174.4
 Wellington,Village,206,0.238,865.5
 Mineral,Village,206,0.553,372.5
-Long Point,Village,204,0.185,"1,102.7"
+Long Point,Village,204,0.185,1102.7
 Vermilion,Village,203,0.546,371.8
-Clear Lake[b],Village,203,0.092,"2,206.5"
+Clear Lake[b],Village,203,0.092,2206.5
 Nilwood,Town,201,0.465,432.3
 Reddick,Village,199,0.239,832.6
 Oakdale,Village,199,1.582,125.8
@@ -1135,7 +1135,7 @@ Bone Gap,Village,181,0.583,310.5
 Hooppole,Village,180,0.372,483.9
 Harvel,Village,178,0.718,247.9
 Mill Shoals,Village,176,0.767,229.5
-Kempton,Village,176,0.165,"1,066.7"
+Kempton,Village,176,0.165,1066.7
 Fieldon,Village,176,0.202,871.3
 Rockbridge,Village,175,0.737,237.4
 New Minden,Village,175,0.277,631.8
@@ -1150,7 +1150,7 @@ Chesterfield,Village,170,0.541,314.2
 Batchtown,Village,170,1.863,91.3
 Banner,Village,169,1.29,131.0
 Arlington,Village,169,0.395,427.8
-Colp,Village,168,0.134,"1,253.7"
+Colp,Village,168,0.134,1253.7
 Bryant,Village,168,0.248,677.4
 Royal Lakes,Village,167,0.466,358.4
 Coleta,Village,167,0.37,451.4
@@ -1176,11 +1176,11 @@ Donnellson,Village,153,0.37,413.5
 New Grand Chain,Village,150,1.043,143.8
 Maeystown,Village,150,0.298,503.4
 Concord,Village,150,0.249,602.4
-Coatsburg,Village,150,0.132,"1,136.4"
+Coatsburg,Village,150,0.132,1136.4
 Hettick,Village,149,0.365,408.2
-Eldred,Village,149,0.134,"1,111.9"
-Campus,Village,149,0.092,"1,619.6"
-Lima,Village,148,0.135,"1,096.3"
+Eldred,Village,149,0.134,1111.9
+Campus,Village,149,0.092,1619.6
+Lima,Village,148,0.135,1096.3
 Elvaston,Village,147,0.799,184.0
 Cantrall,Village,144,0.25,576.0
 Sauget,Village,141,4.581,30.8
@@ -1198,16 +1198,16 @@ Papineau,Village,133,0.208,639.4
 Iroquois,Village,133,0.567,234.6
 Dorchester,Village,133,0.722,184.2
 Allenville,Village,132,0.609,216.7
-West Brooklyn,Village,131,0.085,"1,541.2"
+West Brooklyn,Village,131,0.085,1541.2
 Symerton,Village,128,0.157,815.3
 Nelson,Village,127,0.216,588.0
 Ferris,Village,127,1.967,64.6
-Ridott,Village,124,0.074,"1,675.7"
-Garrett,Village,122,0.108,"1,129.6"
+Ridott,Village,124,0.074,1675.7
+Garrett,Village,122,0.108,1129.6
 Venedy,Village,121,0.281,430.6
 New Salem,Village,121,1.049,115.3
 Media,Village,121,1.698,71.3
-Leonore,Village,121,0.089,"1,359.6"
+Leonore,Village,121,0.089,1359.6
 St. Augustine,Village,119,0.593,200.7
 Mound Station,Village,117,0.519,225.4
 Browning,Village,117,0.31,377.4
@@ -1225,13 +1225,13 @@ Stoy,Village,108,0.932,115.9
 Nora,Village,107,0.83,128.9
 Vernon,Village,103,0.882,116.8
 Pearl,Village,103,1.505,68.4
-Raritan,Village,102,0.095,"1,073.7"
+Raritan,Village,102,0.095,1073.7
 Jeisyville,Village,102,0.122,836.1
 Tennessee,Village,101,0.425,237.6
 Strawn,Village,101,0.51,198.0
 Springerton,Village,101,0.126,801.6
 Marietta,Village,101,0.273,370.0
-Emington,Village,101,0.083,"1,216.9"
+Emington,Village,101,0.083,1216.9
 Naples,Town,100,0.605,165.3
 Pontoosuc,Village,99,1.406,70.4
 Hamburg,Village,99,0.522,189.7
@@ -1241,15 +1241,15 @@ Mount Erie,Village,98,0.384,255.2
 La Rose,Village,98,0.255,384.3
 Iola,Village,98,0.964,101.7
 Wheeler,Village,96,0.576,166.7
-Lynnville,Village,96,0.077,"1,246.8"
+Lynnville,Village,96,0.077,1246.8
 Fidelity,Village,96,0.101,950.5
 Walnut Hill,Village,95,0.38,250.0
-Liverpool,Village,94,0.084,"1,119.0"
+Liverpool,Village,94,0.084,1119.0
 Hillview,Village,94,0.816,115.2
 Scottville,Village,93,0.997,93.3
 Wilmington,Village,91,0.786,115.8
 Maunie,Village,91,0.159,572.3
-Kinsman,Village,90,0.068,"1,323.5"
+Kinsman,Village,90,0.068,1323.5
 Sailor Springs,Village,89,0.26,342.3
 Rose Hill,Village,89,0.634,140.4
 Belknap,Village,88,1.057,83.3
@@ -1257,14 +1257,14 @@ Otterville,Town,87,1.006,86.5
 Exeter,Village,87,0.69,126.1
 Ellisville,Village,87,0.271,321.0
 Old Ripley,Village,82,0.154,532.5
-East Brooklyn,Village,80,0.052,"1,538.5"
+East Brooklyn,Village,80,0.052,1538.5
 Basco,Village,80,0.222,360.4
 Adeline,Village,78,0.266,293.2
 New Bedford,Village,76,0.155,490.3
 Detroit,Village,76,0.251,302.8
-Foosland,Village,75,0.069,"1,087.0"
+Foosland,Village,75,0.069,1087.0
 Johnsonville,Village,72,0.213,338.0
-Irwin,Village,68,0.045,"1,511.1"
+Irwin,Village,68,0.045,1511.1
 Yale,Village,67,0.575,116.5
 Golden Gate,Village,65,0.079,822.8
 El Dara,Village,63,1.011,62.3
@@ -1275,7 +1275,7 @@ Topeka,Village,60,0.137,438.0
 Bingham,Village,60,0.274,219.0
 Mill Creek,Village,59,0.376,156.9
 Junction,Village,56,0.826,67.8
-Union Hill,Village,55,0.046,"1,195.7"
+Union Hill,Village,55,0.046,1195.7
 Ripley,Village,53,0.379,139.8
 Keenes,Village,50,0.13,384.6
 Belle Prairie City,Town,49,0.438,111.9
@@ -1297,5 +1297,5 @@ Time,Village,26,0.254,102.4
 Kaskaskia,Village,21,0.106,198.1
 Florence,Village,17,0.276,61.6
 Valley City,Village,14,0.27,51.9
-Total municipalities,—,"11,170,271","4,873.41","2,291.7"
-Illinois,—,"12,812,508","55,499.00",230.9
+,,,,nan
+,,,,nan
