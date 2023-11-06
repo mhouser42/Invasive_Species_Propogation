@@ -3,6 +3,8 @@ python program to process data from various sources
 """
 
 import pandas as pd
+from bs4 import BeautifulSoup
+import requests
 
 
 def get_IL_df(df: pd.DataFrame, years=5, columns=['ObjectID', 'Status',
@@ -27,6 +29,17 @@ def get_IL_df(df: pd.DataFrame, years=5, columns=['ObjectID', 'Status',
 
 
 if __name__ == '__main__':
+    # processing city data
+    cdf = pd.read_csv('data/orig_city_data.csv').rename(columns={'Name': 'name',
+                                                                 'Type': 'type',
+                                                                 'Population 2020': 'pop_2020',
+                                                                 'Land area sq mi': 'LA_sqmi'})
+    cdf['Population density'] = cdf['Population density'].astype(str)
+    cdf[['PD_sqmi', 'PD_km2']] = cdf['Population density'].str.split('/', n=1, expand=True)
+    cdf.drop(columns=['PD_km2', 'Population density', 'Land area km2'], inplace=True)
+
+    cdf.set_index('name').to_csv('data/city_data.csv')
+
     # processing tree of heaven data
     path = 'data/tree'
     toh_df = get_IL_df(pd.read_csv(f'{path}/mappings.csv', encoding='latin-1',
