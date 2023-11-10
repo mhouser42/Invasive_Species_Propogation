@@ -1,4 +1,6 @@
 .idea/
+.ipynb_checkpoints/
+cache/
 R-lib/
 lyde_EDA.ipynb
 playground.ipynb
