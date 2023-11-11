@@ -4,118 +4,15 @@
 This file is for the creation of county network
 """
 
-# [
-#     'Adams'
-#     'Alexander'
-#     'Bond'
-#     'Boone'
-#     'Brown'
-#     'Bureau'
-#     'Calhoun'
-#     'Carroll'
-#     'Cass'
-#     'Champaign'
-#     'Christian'
-#     'Clark'
-#     'Clay'
-#     'Clinton'
-#     'Coles'
-#     'Cook'
-#     'Crawford'
-#     'Cumberland'
-#     'DeKalb'
-#     'DeWitt'
-#     'Douglas'
-#     'DuPage'
-#     'Edgar'
-#     'Edwards'
-#     'Effingham'
-#     'Fayette'
-#     'Ford'
-#     'Franklin'
-#     'Fulton'
-#     'Gallatin'
-#     'Greene'
-#     'Grundy'
-#     'Hamilton'
-#     'Hancock'
-#     'Hardin'
-#     'Henderson'
-#     'Henry'
-#     'Iroquois'
-#     'Jackson'
-#     'Jasper'
-#     'Jefferson'
-#     'Jersey'
-#     'Jo Daviess'
-#     'Johnson'
-#     'Kane'
-#     'Kankakee'
-#     'Kendall'
-#     'Knox'
-#     'Lake'
-#     'LaSalle'
-#     'Lawrence'
-#     'Lee'
-#     'Livingston'
-#     'Logan'
-#     'Macon'
-#     'Macoupin'
-#     'Madison'
-#     'Marion'
-#     'Marshall'
-#     'Mason'
-#     'Massac'
-#     'McDonough'
-#     'McHenry'
-#     'McLean'
-#     'Menard'
-#     'Mercer'
-#     'Monroe'
-#     'Montgomery'
-#     'Morgan'
-#     'Moultrie'
-#     'Ogle'
-#     'Peoria'
-#     'Perry'
-#     'Piatt'
-#     'Pike'
-#     'Pope'
-#     'Pulaski'
-#     'Putnam'
-#     'Randolph'
-#     'Richland'
-#     'Rock Island'
-#     'Saint Clair'
-#     'Saline'
-#     'Sangamon'
-#     'Schuyler'
-#     'Scott'
-#     'Shelby'
-#     'Stark'
-#     'Stephenson'
-#     'Tazewell'
-#     'Union'
-#     'Vermilion'
-#     'Wabash'
-#     'Warren'
-#     'Washington'
-#     'Wayne'
-#     'White'
-#     'Whiteside'
-#     'Will'
-#     'Williamson'
-#     'Winnebago'
-#     'Woodford']
+import pandas as pd
+import matplotlib.pyplot as plt
+import networkx as nx
 
+counties = pd.read_csv('data/counties_parsed.csv')
 
+fig, ax = plt.subplots(figsize=(15,8))
+G = nx.from_pandas_edgelist(counties, 'origin', 'destination', create_using=nx.Graph())
+nx.draw(G, with_labels=True)
+plt.show()
 
-# fig, ax = plt.subplots(figsize=(15,8))
-#
-# relationships = pd.DataFrame({'from': ['A', 'A', 'A'],
-#                               'to':   ['B', 'C', 'D']})
-#
-# G = nx.from_pandas_edgelist(relationships, 'from', 'to', create_using=nx.Graph())
-#
-# nx.draw(G, with_labels=True)
 

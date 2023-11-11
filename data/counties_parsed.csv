@@ -1,4 +1,5 @@
-﻿Adams,Hancock
+﻿origin,destination
+Adams,Hancock
 Adams,Brown
 Adams,Schuyler
 Adams,Pike
@@ -25,7 +26,7 @@ Bureau,Stark
 Bureau,Henry
 Calhoun,Greene
 Calhoun,Jersey
-Calhoun,Illinois"
+Calhoun,Pike
 Carroll,Stephenson
 Carroll,Ogle
 Carroll,Whiteside
@@ -168,7 +169,6 @@ Jefferson,Perry
 Jefferson,Washington
 Jersey,Macoupin
 Jersey,Madison
-Jersey,St.Charles
 JoDaviess,Stephenson
 Johnson,Williamson
 Johnson,Saline
