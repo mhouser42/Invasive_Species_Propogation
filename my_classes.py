@@ -8,22 +8,27 @@ from numpy import random
 
 
 class Location:
-    def __init__(self, name, lat=None, lon=None, geo=None, bbox_n=None, bbox_s=None, bbox_e=None, bbox_w=None,
+    def __init__(self, name, lat=None, lon=None, geometry=None, bbox_n=None, bbox_s=None, bbox_e=None, bbox_w=None,
                  pop=None, popdense_sqmi=None, slf_count=None, ToH_density=None, quarantine=False):
         self.name = name
-        self.lat, self.lon, self.geo = lat, lon, geo
+        self.lat, self.lon, self.geometry = lat, lon, geometry
         self.bbox_n, self.bbox_s, self.bbox_e, self.bbox_w = bbox_n, bbox_s, bbox_e, bbox_w
         self.pop, self.popdense_sqmi = pop, popdense_sqmi
         self.slf_count = slf_count
-        self.ToH_density = ToH_density  # "tree of heaven density"
         self.quarantine = quarantine
-        _ToH_density_list = []
 
     def __hash__(self):
         return hash(self.name)
 
     def __eq__(self, other):
         return self.name == other.name
+
+
+class County(Location):
+    def __init__(self, name, toh_density=None, *args, **kwargs):
+        super().__init__(name, *args, **kwargs)
+        self.toh_density = toh_density
+        _ToH_density_list = []
 
     def track_ToH_density(self):
         self._ToH_density_list = self._ToH_density_list.append(self.ToH_density)
@@ -37,6 +42,11 @@ class Location:
     def deforrestation(self):
         self.ToH_density = self.ToH_density/2
         return self.ToH_density
+
+
+class City(Location):
+    pass
+
 
 class Vehicle:
     def __init__(self, infection_prob, avg_dist_per_day, avg_range):

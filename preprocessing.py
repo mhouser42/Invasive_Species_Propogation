@@ -78,14 +78,19 @@ def get_IL_df(df: pd.DataFrame, years=5, columns=['ObjectID', 'Status',
 
 
 def handle_counties():
-    """
-    gets counties, there current population and population density from a website.
-    """
-    r = requests.get(
-        'http://www.usa.com/rank/illinois-state--population-density--county-rank.htm?hl=&hlst=&wist=&yr=&dis=&sb=DESC&plow=&phigh=&ps=')
-    soup = BeautifulSoup(r.text, 'html.parser')
+    request = requests.get('http://www.usa.com/rank/illinois-state--population-density--county-rank.htm?hl=&hlst=&wist=&yr=&dis=&sb=DESC&plow=&phigh=&ps=')
+    soup = BeautifulSoup(request.text, 'html.parser')
     data = []
     table = soup.find_all('table')[1]
+
+    change_map = {'Dupage': 'DuPage',
+                  'Mchenry': 'McHenry',
+                  'Saint Clair': 'St. Clair',
+                  'Dekalb': 'DeKalb',
+                  'Mclean': 'McLean',
+                  'La Salle': 'LaSalle',
+                  'Mcdonough': 'McDonough',
+                  'Dewitt': 'DeWitt'}
 
     for row in table.find_all('tr')[1:]:
         cols = row.find_all('td')
@@ -93,8 +98,12 @@ def handle_counties():
         pop_dense = float(cols[1].replace(',', '').replace('/sq mi', ''))
 
         county, pop = cols[2].replace(',', '').split('/')
-        county = county.replace(' IL', '')
+        county = county.replace(' IL', '').strip()
         pop = int(pop)
+
+        if county in change_map:
+            county = change_map[county]
+
         data.append({'name': county, 'pop': pop, 'PD_sqmi': pop_dense})
 
     pd.DataFrame(data).to_csv('data/location/counties.csv', index=False)

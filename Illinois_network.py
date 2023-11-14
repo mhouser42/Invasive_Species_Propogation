@@ -6,18 +6,18 @@ This file is for the creation of county network
 
 import time
 from tqdm import tqdm
-from typing import Dict
+import pickle
 
 import pandas as pd
-import matplotlib.pyplot as plt
 import networkx as nx
 import osmnx as ox
-from my_classes import Location
+from my_classes import City, County
 
 
-def construct_county_nodes(CG: nx.Graph, df: pd.DataFrame):
+def construct_nodes(CG: nx.Graph, df: pd.DataFrame, is_county=True):
     """
     takes a dataframe of county information, finds geolocation with OSMnx
+    :param is_county: 
     :param CG: graph to be populated
     :param df: dataframe with county information
     :return count_dict: a dictionary to reference nodes by name
@@ -28,11 +28,16 @@ def construct_county_nodes(CG: nx.Graph, df: pd.DataFrame):
     pbar = tqdm(df.iterrows(), desc='Creating Graph')
     for index, row in pbar:
         name, pop, pop_dense = row['name'], row['pop'], row['PD_sqmi']
-        pbar.set_postfix_str(f'Working on {name}, IL')
+        pbar.set_postfix_str(f'Working on {name} {"County" if is_county else ""}, IL')
 
-        gdf = ox.geocode_to_gdf(f'{name}, IL').iloc[0]
-
-        node = Location(name, lat=gdf['lat'], lon=gdf['lon'], geo=gdf['geometry'],
+        gdf = ox.geocode_to_gdf(f'{name} {"County" if is_county else ""}, IL').iloc[0]
+        if is_county:
+            node = County(name, lat=gdf['lat'], lon=gdf['lon'], geometry=gdf['geometry'],
+                          bbox_n=gdf['bbox_north'], bbox_s=gdf['bbox_south'],
+                          bbox_e=gdf['bbox_east'], bbox_w=gdf['bbox_west'],
+                          pop=pop, popdense_sqmi=pop_dense)
+        else:
+            node = City(name, lat=gdf['lat'], lon=gdf['lon'], geometry=gdf['geometry'],
                         bbox_n=gdf['bbox_north'], bbox_s=gdf['bbox_south'],
                         bbox_e=gdf['bbox_east'], bbox_w=gdf['bbox_west'],
                         pop=pop, popdense_sqmi=pop_dense)
@@ -46,7 +51,7 @@ def construct_county_nodes(CG: nx.Graph, df: pd.DataFrame):
     return county_dict
 
 
-def populate_edges(CG: nx.Graph, edge_df: pd.DataFrame, county_dict: dict):
+def construct_edges(CG: nx.Graph, edge_df: pd.DataFrame, county_dict: dict):
     """
     takes a graph with nodes, a dataframe instructions, and a dictionary of nodes
     :param CG:
@@ -63,6 +68,8 @@ if __name__ == '__main__':
     edf = pd.read_csv(f'{path}/county_edges.csv')  # for edges
     CG = nx.Graph()
 
-    county_dict = construct_county_nodes(CG, ndf)
-    populate_edges(CG, edf, county_dict)
+    county_dict = construct_nodes(CG, ndf)
+    construct_edges(CG, edf, county_dict)
 
+    pickle.dump(CG, open('data/location/IL_graph.dat', 'wb'))
+    pickle.dump(county_dict, open('data/location/graph_handler.dat', 'wb'))
