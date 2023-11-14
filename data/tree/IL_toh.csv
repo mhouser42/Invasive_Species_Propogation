@@ -1,4 +1,4 @@
-ObjectID,ObsDate,DateEnt,DateUp,Location,Latitude,Longitude,InfestAcre,Density,Habitat
+id,obs_date,ent_date,date_up,county,lat,lon,infest_acre,Density,habitat
 1817248,08-19-11,08-20-11,2020-08-20,"""Union""",37.53436,-89.21081,0.28,,Forests: Hardwood
 1817258,08-19-11,08-20-11,2020-08-20,"""Union""",37.53583,-89.21013,0.0,,Forests: Hardwood
 4206190,03-14-15,03-17-15,2020-08-20,"""Union""",37.52952,-89.27091,0.11,Medium,

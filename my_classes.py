@@ -1,4 +1,4 @@
-# classes.py
+# my_classes.py
 
 """
 This file will contain the classes to be used in the MC simulation
@@ -8,11 +8,22 @@ from numpy import random
 
 
 class Location:
-    def __init__(self, ToH_density, OT_density, quarantine):
-        self.ToH_density = ToH_density # "tree of heaven density"
-        self.OT_density = OT_density  # "Other trees density"
+    def __init__(self, name, lat=None, lon=None, geo=None, bbox_n=None, bbox_s=None, bbox_e=None, bbox_w=None,
+                 pop=None, popdense_sqmi=None, slf_count=None, ToH_density=None, quarantine=False):
+        self.name = name
+        self.lat, self.lon, self.geo = lat, lon, geo
+        self.bbox_n, self.bbox_s, self.bbox_e, self.bbox_w = bbox_n, bbox_s, bbox_e, bbox_w
+        self.pop, self.popdense_sqmi = pop, popdense_sqmi
+        self.slf_count = slf_count
+        self.ToH_density = ToH_density  # "tree of heaven density"
         self.quarantine = quarantine
         _ToH_density_list = []
+
+    def __hash__(self):
+        return hash(self.name)
+
+    def __eq__(self, other):
+        return self.name == other.name
 
     def track_ToH_density(self):
         self._ToH_density_list = self._ToH_density_list.append(self.ToH_density)
@@ -23,29 +34,9 @@ class Location:
             self.OT_density = self.OT_density - (_ToH_density_list[-1] - _ToH_density_list[-2])
         return self.OT_density
 
-
     def deforrestation(self):
-        self.OT_density = self.OT_density/2
         self.ToH_density = self.ToH_density/2
-        return self.OT_density, self.ToH_density
-
-
-class City(Location):
-    def __init__(self, lat, lng, ToH_density, OT_density, quarantine, population):
-        super().__init__(lat, lng, ToH_density, OT_density, quarantine)
-        self.population = population
-
-
-class County(Location):  # the same as City for now, just creating it to import into the network notebook
-    def __init__(self, ToH_density, OT_density, quarantine, population, name):
-        super().__init__(ToH_density, OT_density, quarantine)
-        self.population = population
-        self.name = name
-
-    def __str__(self):
-        return f'{self.name} County with a population of {self.population}'
-
-
+        return self.ToH_density
 
 class Vehicle:
     def __init__(self, infection_prob, avg_dist_per_day, avg_range):
