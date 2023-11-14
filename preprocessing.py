@@ -3,6 +3,8 @@ python program to process data from various sources
 """
 import time
 from tqdm import tqdm
+import requests
+from bs4 import BeautifulSoup
 
 import pandas as pd
 from geopy.geocoders import Nominatim
@@ -24,10 +26,11 @@ def get_geoloc(name: str, locator: Nominatim, attempts=5):
             return geoloc
         else:
             time.sleep(.5)
-            return get_geoloc(name, locator, attempts=attempts-1)
+            return get_geoloc(name, locator, attempts=attempts - 1)
     except TypeError as e:
         print(e)
         pass
+
 
 def get_IL_geocoords(df: pd.DataFrame, locator: Nominatim, col='name') -> pd.DataFrame:
     """
@@ -54,9 +57,9 @@ def get_IL_geocoords(df: pd.DataFrame, locator: Nominatim, col='name') -> pd.Dat
 
 
 def get_IL_df(df: pd.DataFrame, years=5, columns=['ObjectID', 'Status',
-                                         'ObsDate', 'DateEnt', 'DateUp',
-                                         'Location', 'Latitude', 'Longitude',
-                                         'InfestAcre', 'Density', 'Habitat', 'Verified']) -> pd.DataFrame:
+                                                  'ObsDate', 'DateEnt', 'DateUp',
+                                                  'Location', 'Latitude', 'Longitude',
+                                                  'InfestAcre', 'Density', 'Habitat', 'Verified']) -> pd.DataFrame:
     """
     Take a dataframe of recorded Tree of Heaven observations and returns all positive rows that are in Illinois.
     :param df: Dataframe of invasive species data. obtained from www.eddmaps.org
@@ -74,9 +77,35 @@ def get_IL_df(df: pd.DataFrame, years=5, columns=['ObjectID', 'Status',
     return IL_df
 
 
-if __name__ == '__main__':
-    locator = Nominatim(user_agent='info_pls')
+def handle_counties():
+    """
+    gets counties, there current population and population density from a website.
+    """
+    r = requests.get(
+        'http://www.usa.com/rank/illinois-state--population-density--county-rank.htm?hl=&hlst=&wist=&yr=&dis=&sb=DESC&plow=&phigh=&ps=')
+    soup = BeautifulSoup(r.text, 'html.parser')
+    data = []
+    table = soup.find_all('table')[1]
 
+    for row in table.find_all('tr')[1:]:
+        cols = row.find_all('td')
+        cols = [val.text.strip() for val in cols]
+        pop_dense = float(cols[1].replace(',', '').replace('/sq mi', ''))
+
+        county, pop = cols[2].replace(',', '').split('/')
+        county = county.replace(' IL', '')
+        pop = int(pop)
+        data.append({'name': county, 'pop': pop, 'PD_sqmi': pop_dense})
+
+    pd.DataFrame(data).to_csv('data/location/counties.csv', index=False)
+
+
+def handle_cities():
+    """
+    processes city data
+    """
+    path = 'data/location'
+    locator = Nominatim(user_agent='info_pls')
     # processing city data
     cdf = pd.read_csv('data/orig_city_data.csv').rename(columns={'Name': 'name',
                                                                  'Type': 'type',
@@ -84,19 +113,20 @@ if __name__ == '__main__':
                                                                  'Land area sq mi': 'LA_sqmi'})
     cdf['Population density'] = cdf['Population density'].astype(str).str.replace(',', '')
     cdf[['PD_sqmi', 'PD_km2']] = cdf['Population density'].str.split('/', n=1, expand=True)
-
     cdf['pop_2020'] = cdf['pop_2020'].str.replace(',', '')
     cdf.drop(columns=['PD_km2', 'Population density', 'Land area km2'], inplace=True)
-
     cdf = get_IL_geocoords(cdf, locator)  # getting geocoordinates for all cities
-
     cols = cdf.columns.tolist()  # reordering columns
     cols = cols[:2] + cols[-2:] + cols[2:-2]
     cdf = cdf[cols]
+    cdf.set_index('name').to_csv(f'{path}/city_data.csv')
 
-    cdf.set_index('name').to_csv('data/city_data.csv')
 
-    # processing tree of heaven data
+def handle_toh():
+    """
+    processes Tree of Heaven data
+    """
+
     path = 'data/tree'
     toh_df = get_IL_df(pd.read_csv(f'{path}/mappings.csv', encoding='latin-1',
                                    low_memory=False).rename(columns={'objectid': 'ObjectID'}))
@@ -105,15 +135,23 @@ if __name__ == '__main__':
                                 'DateEnt', 'DateUp',
                                 'Location', 'Latitude', 'Longitude',
                                 'InfestAcre', 'Density', 'Verified'])
-
-
     # handling duplicates in rev_df
     rev_df = rev_df.sort_values(by='DateUp', ascending=False).drop_duplicates(subset='ObjectID', keep='first')
-
     toh_df.set_index('ObjectID', inplace=True)
     rev_df.set_index('ObjectID', inplace=True)
-
     toh_df.update(rev_df[['Density', 'InfestAcre']])
     toh_df['Location'] = toh_df['Location'].str.replace(', Illinois, United States', '')
-
+    # changing names and saving to csv
+    toh_df.reset_index(inplace=True)
+    toh_df.rename(columns={'ObjectID': 'id', 'ObsDate': 'obs_date', 'DateEnt': 'ent_date', 'DateUp': 'date_up',
+                           'Location': 'county', 'Latitude': 'lat', 'Longitude': 'lon',
+                           'InfestAcre': 'infest_acre', 'Density': 'Density', 'Habitat': 'habitat'
+                           }, inplace=True)
+    toh_df.set_index('id', inplace=True)
     toh_df.to_csv(f'{path}/IL_toh.csv')
+
+
+if __name__ == '__main__':
+    handle_counties()
+    handle_cities()
+    handle_toh()
