@@ -8,9 +8,7 @@ from numpy import random
 
 
 class Location:
-    def __init__(self, lat, lng, ToH_density, OT_density, quarantine):
-        self.lat = lat
-        self.lng = lng
+    def __init__(self, ToH_density, OT_density, quarantine):
         self.ToH_density = ToH_density # "tree of heaven density"
         self.OT_density = OT_density  # "Other trees density"
         self.quarantine = quarantine
@@ -36,6 +34,17 @@ class City(Location):
     def __init__(self, lat, lng, ToH_density, OT_density, quarantine, population):
         super().__init__(lat, lng, ToH_density, OT_density, quarantine)
         self.population = population
+
+
+class County(Location):  # the same as City for now, just creating it to import into the network notebook
+    def __init__(self, ToH_density, OT_density, quarantine, population, name):
+        super().__init__(ToH_density, OT_density, quarantine)
+        self.population = population
+        self.name = name
+
+    def __str__(self):
+        return f'{self.name} County with a population of {self.population}'
+
 
 
 class Vehicle:
