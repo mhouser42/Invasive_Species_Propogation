@@ -35,12 +35,12 @@ def construct_nodes(CG: nx.Graph, df: pd.DataFrame, is_county=True):
             node = County(name, lat=gdf['lat'], lon=gdf['lon'], geometry=gdf['geometry'],
                           bbox_n=gdf['bbox_north'], bbox_s=gdf['bbox_south'],
                           bbox_e=gdf['bbox_east'], bbox_w=gdf['bbox_west'],
-                          pop=pop, popdense_sqmi=pop_dense)
+                          pop=pop, popdense_sqmi=pop_dense, centroid=gdf['geometry'].centroid)
         else:
             node = City(name, lat=gdf['lat'], lon=gdf['lon'], geometry=gdf['geometry'],
                         bbox_n=gdf['bbox_north'], bbox_s=gdf['bbox_south'],
                         bbox_e=gdf['bbox_east'], bbox_w=gdf['bbox_west'],
-                        pop=pop, popdense_sqmi=pop_dense)
+                        pop=pop, popdense_sqmi=pop_dense, centroid=gdf['geometry'].centroid)
         CG.add_node(node)
         county_dict[name] = node
         count += 1
