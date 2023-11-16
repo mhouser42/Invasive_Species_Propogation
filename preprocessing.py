@@ -116,19 +116,19 @@ def handle_cities():
     path = 'data/location'
     locator = Nominatim(user_agent='info_pls')
     # processing city data
-    cdf = pd.read_csv('data/orig_city_data.csv').rename(columns={'Name': 'name',
+    cdf = pd.read_csv('data/orig_city_data.csv', encoding='').rename(columns={'Name': 'name',
                                                                  'Type': 'type',
-                                                                 'Population 2020': 'pop_2020',
+                                                                 'Population 2020': 'pop',
                                                                  'Land area sq mi': 'LA_sqmi'})
     cdf['Population density'] = cdf['Population density'].astype(str).str.replace(',', '')
     cdf[['PD_sqmi', 'PD_km2']] = cdf['Population density'].str.split('/', n=1, expand=True)
-    cdf['pop_2020'] = cdf['pop_2020'].str.replace(',', '')
+    cdf['pop'] = cdf['pop'].str.replace(',', '')
     cdf.drop(columns=['PD_km2', 'Population density', 'Land area km2'], inplace=True)
     cdf = get_IL_geocoords(cdf, locator)  # getting geocoordinates for all cities
     cols = cdf.columns.tolist()  # reordering columns
     cols = cols[:2] + cols[-2:] + cols[2:-2]
     cdf = cdf[cols]
-    cdf.set_index('name').to_csv(f'{path}/city_data.csv')
+    cdf.set_index('name').to_csv(f'{path}/cities.csv', encoding='latin1')
 
 
 def handle_toh():
