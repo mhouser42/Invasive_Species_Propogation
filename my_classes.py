@@ -25,7 +25,7 @@ class Location:
     def __eq__(self, other):
         return self.name == other.name and type(self) == type(other)
 
-    def update_month(self):
+    def update_week(self):
         pass
 
 

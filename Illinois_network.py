@@ -53,7 +53,7 @@ def construct_nodes(CG: nx.Graph, df: pd.DataFrame, is_county=True):
     return handler
 
 
-def construct_edges(CG: nx.Graph, edge_df: pd.DataFrame, handler: dict, rel='adjacent'):
+def construct_edges(CG: nx.Graph, edge_df: pd.DataFrame, handler: dict):
     """
     takes a graph with nodes, a dataframe instructions, and a dictionary of nodes
     :param CG:
@@ -61,17 +61,18 @@ def construct_edges(CG: nx.Graph, edge_df: pd.DataFrame, handler: dict, rel='adj
     :param handler:
     :param rel:
     """
-    src_h = handler['C'] if rel == 'adjacent' else handler['c']
-    tgt_h = handler['C'] if rel != 'interstate' else handler['c']
+    # src_h = handler['C'] if rel == 'adjacent' else handler['c']  # code from when we were trying City and County nodes
+    # tgt_h = handler['C'] if rel != 'interstate' else handler['c']
 
     edges = []
     for i, row in edge_df.iterrows():
         src = row.iloc[0]
         tgt = row.iloc[1]
-        irel = row.iloc[2]
+        rel = row.iloc[2]
         weight = row.iloc[3]
         try:
-            edge = (src_h[src], tgt_h[tgt], {'weight': weight, 'rel': irel})
+            # edge = (src_h[src], tgt_h[tgt], {'weight': weight, 'rel': irel})  # for city/county handler
+            edge = (handler[src], handler[tgt], {'weight': weight, 'rel': rel})
             edges.append(edge)  # appending to list as it is more efficient to add all edges at once
         except KeyError as e:
             print(f'Key error: {e}: This node doesn\'t exist in the handler')
@@ -81,25 +82,33 @@ def construct_edges(CG: nx.Graph, edge_df: pd.DataFrame, handler: dict, rel='adj
 if __name__ == '__main__':
     path = 'data/location'
     county_df = pd.read_csv(f'{path}/counties.csv')  # for nodes
-    edge_df = pd.read_csv(f'{path}/edges.csv')  # for edges
-    city_df = pd.read_csv(f'{path}/target_cities.csv')
+    edge_df = pd.read_csv(f'{path}/county_edges.csv')  # for edges
+    # city_df = pd.read_csv(f'{path}/target_cities.csv')
 
     CG = nx.Graph()
 
-    # adding county and city nodes to graph and consolodating handlers
+    # adding nodes
     county_dict = construct_nodes(CG, county_df)
-    city_dict = construct_nodes(CG, city_df, is_county=False)
-    handler = {'C': county_dict, 'c': city_dict}
 
     # adding edges
-    adjacent_e = edge_df[(edge_df['type'] == 'adjacent') & (edge_df['weight'] == 1)]
-    interstate_e = edge_df[(edge_df['type'] == 'interstate') & (edge_df['weight']) == .1]
-    constituent_e = edge_df[(edge_df['type'] == 'constituent')]
-
-    construct_edges(CG, adjacent_e, handler)
-    construct_edges(CG, interstate_e, handler, rel='interstate')
-    construct_edges(CG, constituent_e, handler, rel='constituent')
-
+    construct_edges(CG, edge_df, county_dict)
     # pickling
     pickle.dump(CG, open(f'{path}/IL_graph.dat', 'wb'))
-    pickle.dump(handler, open(f'{path}/graph_handler.dat', 'wb'))
+    pickle.dump(county_dict, open(f'{path}/graph_handler_counties.dat', 'wb'))
+
+    # city_dict = construct_nodes(CG, city_df, is_county=False)
+    # handler = {'C': county_dict, 'c': city_dict}
+
+    # adding edges
+    # # adjacent_e = edge_df[(edge_df['type'] == 'adjacent') & (edge_df['weight'] == 1)]
+    # interstate_e = edge_df[(edge_df['type'] == 'interstate') | (edge_df['weight']) == .1]
+    # constituent_e = edge_df[(edge_df['type'] == 'constituent')]
+    #
+    # construct_edges(CG, adjacent_e, county_dict)
+    # construct_edges(CG, interstate_e, county_dict, rel='interstate')
+    # construct_edges(CG, constituent_e, handler, rel='constituent')
+
+    # # pickling
+    # pickle.dump(CG, open(f'{path}/IL_graph.dat', 'wb'))
+    # pickle.dump(CG, open(f'{path}/graph_handler_counties'))
+    # pickle.dump(handler, open(f'{path}/graph_handler.dat', 'wb'))
