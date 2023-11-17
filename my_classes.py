@@ -24,10 +24,7 @@ class Location:
         self.slf_count = slf_count
         self.quarantine = quarantine
         self.centroid = centroid
-        self.infection = 0
-
-        CG = pickle.load(open('data/location/IL_graph.dat', 'rb'))
-        self.neighbors = [neighbor.name for neighbor in CG.neighbors(name)]
+        self.infection = infection
 
     def get_neighbor_objects(self, graph):
         for node in graph.nodes():
