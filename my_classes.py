@@ -5,9 +5,14 @@ This file will contain the classes to be used in the MC simulation
 """
 
 from numpy import random
+import pandas as pd
+import pickle
+
+
 
 
 class Location:
+
     def __init__(self, name, infection=None, lat=None, lon=None, geometry=None, bbox_n=None, bbox_s=None,
                  bbox_e=None, bbox_w=None, pop=None, popdense_sqmi=None, slf_count=None, egg_count=None,
                  ToH_density=None, quarantine=False, centroid=False):
@@ -21,6 +26,23 @@ class Location:
         self.centroid = centroid
         self.infection = 0
 
+        CG = pickle.load(open('data/location/IL_graph.dat', 'rb'))
+        self.neighbors = [neighbor.name for neighbor in CG.neighbors(name)]
+
+    def get_neighbor_objects(self, graph):
+        for node in graph.nodes():
+            if hasattr(node, 'name') and node.name == self.name:
+                return[neighbor for neighbor in graph.neighbors(node)]
+        return []
+
+    def get_my_object(self, graph):
+        node_list = []
+        for node in graph.nodes():
+            if hasattr(node, 'name') and node.name == self.name:
+                node_list.append(node)
+        return node
+
+
     def __hash__(self):
         return hash((self.name, type(self)))
 
@@ -28,7 +50,8 @@ class Location:
         return self.name == other.name and type(self) == type(other)
 
     def update_week(self):
-        pass
+        CG = pickle.load(open(f'data/location/IL_graph.dat', 'rb'))
+        return neighbors
 
 
 class County(Location):
