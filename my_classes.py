@@ -46,9 +46,9 @@ class Location:
     def __eq__(self, other):
         return self.name == other.name and type(self) == type(other)
 
-    def update_week(self):
-        CG = pickle.load(open(f'data/location/IL_graph.dat', 'rb'))
-        return neighbors
+    # def update_week(self):
+    #     CG = pickle.load(open(f'data/location/IL_graph.dat', 'rb'))
+    #     return neighbors
 
 
 class County(Location):
