@@ -164,7 +164,7 @@ Jackson,Union,adjacent,1
 Jackson,Randolph,adjacent,1
 Jasper,Richland,adjacent,1
 Jefferson,Marion,adjacent,1
-Jefferson,Wayne,interstate,1
+Jefferson,Wayne,interstate,0.5
 Jefferson,Perry,adjacent,1
 Jefferson,Washington,interstate,0.5
 Jersey,Macoupin,adjacent,1
@@ -238,7 +238,7 @@ Monroe,St. Clair,adjacent,1
 Monroe,Randolph,adjacent,1
 Montgomery,Sangamon,adjacent,1
 Montgomery,Shelby,adjacent,1
-Morgan,Sangamon,adjacent,1
+Morgan,Sangamon,interstate,0.5
 Morgan,Pike,adjacent,1
 Morgan,Scott,interstate,0.5
 Moultrie,Piatt,adjacent,1

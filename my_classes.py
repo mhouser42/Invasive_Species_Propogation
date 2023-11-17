@@ -26,8 +26,8 @@ class Location:
         self.centroid = centroid
         self.infection = 0
 
-        CG = pickle.load(open('data/location/IL_graph.dat', 'rb'))
-        self.neighbors = [neighbor.name for neighbor in CG.neighbors(name)]
+        # CG = pickle.load(open('data/location/IL_graph.dat', 'rb'))
+        # self.neighbors = [neighbor.name for neighbor in CG.neighbors(name)]
 
     def get_neighbor_objects(self, graph):
         for node in graph.nodes():
@@ -42,16 +42,15 @@ class Location:
                 node_list.append(node)
         return node
 
-
     def __hash__(self):
         return hash((self.name, type(self)))
 
     def __eq__(self, other):
         return self.name == other.name and type(self) == type(other)
 
-    def update_week(self):
-        CG = pickle.load(open(f'data/location/IL_graph.dat', 'rb'))
-        return neighbors
+    # def update_week(self):
+    #     CG = pickle.load(open(f'data/location/IL_graph.dat', 'rb'))
+    #     return neighbors
 
 
 class County(Location):
