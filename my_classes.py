@@ -26,11 +26,11 @@ class Location:
         self.centroid = centroid
         self.infection = infection
 
-    def get_neighbor_objects(self, graph):
-        for node in graph.nodes():
+    def get_neighbor_objects(self, CG):
+        for node in CG.nodes():
             if hasattr(node, 'name') and node.name == self.name:
-                return[neighbor for neighbor in graph.neighbors(node)]
-        return []
+                neighbors = [neighbor for neighbor in CG.neighbors(node)]
+        return neighbors
 
     def get_my_object(self, graph):
         node_list = []
