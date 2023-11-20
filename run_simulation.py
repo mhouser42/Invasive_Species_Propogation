@@ -3,15 +3,16 @@ from numpy import random
 import pandas as pd
 
 
-def invasion_main():
+def invasion_main(iterations):
     """
     Main Function that sequences the order of events when running this file
     :return:
     """
     CG, schema = set_up()
     schema = set_coefficients(schema)
-    cumulative_df = week(CG, schema)
-    print(cumulative_df)
+    cumulative_df = week(CG, schema, iterations)
+    # print(cumulative_df)
+    return cumulative_df
 
 
 def set_up():
@@ -142,17 +143,17 @@ def set_coefficients(schema):
     return schema
 
 
-def week(CG, schema):
+def week(CG, schema, iterations):
     """
     Takes the initial schema and iterates it through a number of weeks
     :param CG:
     :param schema:
     :return:
     """
-    weeks = input('How many weeks are you running? \n')
+    # weeks = input('How many weeks are you running? \n')
     cumulative_df = make_starting_df(schema)
     week_tracker = 1
-    for i in range(0, int(weeks)):
+    for i in range(0, int(iterations)):
         neighbor_obj = find_neighbor_status(CG, schema)
         schema, cumulative_df = calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker)
         week_tracker += 1
@@ -161,108 +162,6 @@ def week(CG, schema):
 
 
 def make_starting_df(schema):
-    # cumulative_df = pd.DataFrame(['Cook',
-    #                               'DuPage',
-    #                               'Kane',
-    #                               'Will',
-    #                               'Winnebago',
-    #                               'Lake',
-    #                               'McHenry',
-    #                               'St. Clair',
-    #                               'Kendall',
-    #                               'Madison',
-    #                               'Rock Island',
-    #                               'Peoria',
-    #                               'Sangamon',
-    #                               'Tazewell',
-    #                               'Champaign',
-    #                               'Boone',
-    #                               'Macon',
-    #                               'Kankakee',
-    #                               'DeKalb',
-    #                               'Williamson',
-    #                               'McLean',
-    #                               'Grundy',
-    #                               'Coles',
-    #                               'Jackson',
-    #                               'LaSalle',
-    #                               'Franklin',
-    #                               'Vermilion',
-    #                               'Monroe',
-    #                               'Stephenson',
-    #                               'Whiteside',
-    #                               'Adams',
-    #                               'Clinton',
-    #                               'Knox',
-    #                               'Woodford',
-    #                               'Effingham',
-    #                               'Ogle',
-    #                               'Marion',
-    #                               'Jefferson',
-    #                               'Saline',
-    #                               'Massac',
-    #                               'Morgan',
-    #                               'Henry',
-    #                               'Jersey',
-    #                               'Randolph',
-    #                               'McDonough',
-    #                               'Macoupin',
-    #                               'Wabash',
-    #                               'Perry',
-    #                               'Logan',
-    #                               'Lee',
-    #                               'Christian',
-    #                               'Douglas',
-    #                               'Bond',
-    #                               'Lawrence',
-    #                               'Richland',
-    #                               'Crawford',
-    #                               'Moultrie',
-    #                               'Montgomery',
-    #                               'Union',
-    #                               'Fulton',
-    #                               'DeWitt',
-    #                               'Menard',
-    #                               'Bureau',
-    #                               'Piatt',
-    #                               'Livingston',
-    #                               'Johnson',
-    #                               'Jo Daviess',
-    #                               'Cass',
-    #                               'Putnam',
-    #                               'Warren',
-    #                               'Carroll',
-    #                               'Clark',
-    #                               'Cumberland',
-    #                               'Alexander',
-    #                               'Marshall',
-    #                               'Fayette',
-    #                               'Edwards',
-    #                               'Pulaski',
-    #                               'Clay',
-    #                               'Edgar',
-    #                               'White',
-    #                               'Shelby',
-    #                               'Ford',
-    #                               'Mercer',
-    #                               'Iroquois',
-    #                               'Washington',
-    #                               'Mason',
-    #                               'Greene',
-    #                               'Hardin',
-    #                               'Wayne',
-    #                               'Hancock',
-    #                               'Brown',
-    #                               'Scott',
-    #                               'Stark',
-    #                               'Jasper',
-    #                               'Hamilton',
-    #                               'Pike',
-    #                               'Henderson',
-    #                               'Calhoun',
-    #                               'Schuyler',
-    #                               'Gallatin',
-    #                               'Pope'])
     county_list = list(schema[county].name for county in schema)
     starting_infection = list(schema[county].infection for county in schema)
     cumulative_df = pd.DataFrame({'County': county_list})
@@ -325,11 +224,11 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker):
         if all_new_infections > 1:  #
             all_new_infections = 1
         # print(f'{county_net} went from {county.infection} to {all_new_infections}')
-        # setattr(county, 'infection', all_new_infections)
+        setattr(county, 'infection', all_new_infections)
         infection_collector.append(all_new_infections)
     cumulative_df.insert(week_tracker + 1, f'Week {week_tracker}', infection_collector, True)
     return schema, cumulative_df
 
 
 if __name__ == '__main__':
-    invasion_main()
+    invasion_main(10)
