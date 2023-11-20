@@ -1,15 +1,17 @@
 import pickle
 from numpy import random
+import pandas as pd
 
 
-def main():
+def invasion_main():
     """
     Main Function that sequences the order of events when running this file
     :return:
     """
     CG, schema = set_up()
     schema = set_coefficients(schema)
-    week(CG, schema)
+    cumulative_df = week(CG, schema)
+    print(cumulative_df)
 
 
 def set_up():
@@ -148,9 +150,124 @@ def week(CG, schema):
     :return:
     """
     weeks = input('How many weeks are you running? \n')
+    cumulative_df = make_starting_df(schema)
+    week_tracker = 1
     for i in range(0, int(weeks)):
         neighbor_obj = find_neighbor_status(CG, schema)
-        schema = calculate_changes(neighbor_obj, schema)
+        schema, cumulative_df = calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker)
+        week_tracker += 1
+
+    return cumulative_df
+
+
+def make_starting_df(schema):
+    # cumulative_df = pd.DataFrame(['Cook',
+    #                               'DuPage',
+    #                               'Kane',
+    #                               'Will',
+    #                               'Winnebago',
+    #                               'Lake',
+    #                               'McHenry',
+    #                               'St. Clair',
+    #                               'Kendall',
+    #                               'Madison',
+    #                               'Rock Island',
+    #                               'Peoria',
+    #                               'Sangamon',
+    #                               'Tazewell',
+    #                               'Champaign',
+    #                               'Boone',
+    #                               'Macon',
+    #                               'Kankakee',
+    #                               'DeKalb',
+    #                               'Williamson',
+    #                               'McLean',
+    #                               'Grundy',
+    #                               'Coles',
+    #                               'Jackson',
+    #                               'LaSalle',
+    #                               'Franklin',
+    #                               'Vermilion',
+    #                               'Monroe',
+    #                               'Stephenson',
+    #                               'Whiteside',
+    #                               'Adams',
+    #                               'Clinton',
+    #                               'Knox',
+    #                               'Woodford',
+    #                               'Effingham',
+    #                               'Ogle',
+    #                               'Marion',
+    #                               'Jefferson',
+    #                               'Saline',
+    #                               'Massac',
+    #                               'Morgan',
+    #                               'Henry',
+    #                               'Jersey',
+    #                               'Randolph',
+    #                               'McDonough',
+    #                               'Macoupin',
+    #                               'Wabash',
+    #                               'Perry',
+    #                               'Logan',
+    #                               'Lee',
+    #                               'Christian',
+    #                               'Douglas',
+    #                               'Bond',
+    #                               'Lawrence',
+    #                               'Richland',
+    #                               'Crawford',
+    #                               'Moultrie',
+    #                               'Montgomery',
+    #                               'Union',
+    #                               'Fulton',
+    #                               'DeWitt',
+    #                               'Menard',
+    #                               'Bureau',
+    #                               'Piatt',
+    #                               'Livingston',
+    #                               'Johnson',
+    #                               'Jo Daviess',
+    #                               'Cass',
+    #                               'Putnam',
+    #                               'Warren',
+    #                               'Carroll',
+    #                               'Clark',
+    #                               'Cumberland',
+    #                               'Alexander',
+    #                               'Marshall',
+    #                               'Fayette',
+    #                               'Edwards',
+    #                               'Pulaski',
+    #                               'Clay',
+    #                               'Edgar',
+    #                               'White',
+    #                               'Shelby',
+    #                               'Ford',
+    #                               'Mercer',
+    #                               'Iroquois',
+    #                               'Washington',
+    #                               'Mason',
+    #                               'Greene',
+    #                               'Hardin',
+    #                               'Wayne',
+    #                               'Hancock',
+    #                               'Brown',
+    #                               'Scott',
+    #                               'Stark',
+    #                               'Jasper',
+    #                               'Hamilton',
+    #                               'Pike',
+    #                               'Henderson',
+    #                               'Calhoun',
+    #                               'Schuyler',
+    #                               'Gallatin',
+    #                               'Pope'])
+    county_list = list(schema[county].name for county in schema)
+    starting_infection = list(schema[county].infection for county in schema)
+    cumulative_df = pd.DataFrame({'County': county_list})
+    cumulative_df.insert(1, f'Week 0', starting_infection, True)
+    return cumulative_df
 
 
 def find_neighbor_status(CG, schema):
@@ -184,7 +301,7 @@ def get_object(name, schema):
             return schema[county]
 
 
-def calculate_changes(neighbor_obj, schema):
+def calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker):
     """
     SUPER TENTATIVE
     This iterates outcomes of week interactions randomly
@@ -195,7 +312,8 @@ def calculate_changes(neighbor_obj, schema):
     TODO: Figure out how to model the actual math here.
     """
 
-    print('------------------------- Begin New Week -------------------------')
+    # print('------------------------- Begin New Week -------------------------')
+    infection_collector = []
     for county_net in neighbor_obj:
         all_new_infections = 0
         county = get_object(county_net, schema)
@@ -203,11 +321,15 @@ def calculate_changes(neighbor_obj, schema):
             probability = random.normal(0.5, 0.17)  # random.normal(loc= , scale= )
             new_infection = (county.infection + (net_neighbors.infection * probability))/2  # SAMPLE EQUATION
             all_new_infections += new_infection
-        all_new_infections = all_new_infections / (len(neighbor_obj[county_net]))
-        print(f'{county_net} went from {county.infection} to {all_new_infections}')
-        setattr(county, 'infection', all_new_infections)
-    return schema
+        all_new_infections = round(all_new_infections / (len(neighbor_obj[county_net])), 8)
+        if all_new_infections > 1:  #
+            all_new_infections = 1
+        # print(f'{county_net} went from {county.infection} to {all_new_infections}')
+        # setattr(county, 'infection', all_new_infections)
+        infection_collector.append(all_new_infections)
+    cumulative_df.insert(week_tracker + 1, f'Week {week_tracker}', infection_collector, True)
+    return schema, cumulative_df
 
 
 if __name__ == '__main__':
-    main()
+    invasion_main()
