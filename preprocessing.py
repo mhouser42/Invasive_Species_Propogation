@@ -10,6 +10,25 @@ import pandas as pd
 from geopy.geocoders import Nominatim
 
 
+def replace_curly_apostrophes_and_strip(value, replacements=(('“', '"'),
+                                                             ('”', '"'),
+                                                             ('‘', "'"),
+                                                             ('’', "'"))):
+    """
+    Tree of heaven data has wrong kind of quotations around string data. This function handles that by replacing all
+    single and double quotation marks with standard used in python :param value: :param replacements: :return:
+    :param replacements:
+    :param value: value in column to be changed
+    :param replacements
+    """
+
+    if isinstance(value, str):
+        for quote, replacement in replacements:
+            value = value.replace(quote, replacement)
+        value = value.strip()
+    return value
+
+
 def get_geoloc(name: str, locator: Nominatim, attempts=5):
     """
     gets a single geolocation from Nominatim based on name.
@@ -78,7 +97,8 @@ def get_IL_df(df: pd.DataFrame, years=5, columns=['ObjectID', 'Status',
 
 
 def handle_counties():
-    request = requests.get('http://www.usa.com/rank/illinois-state--population-density--county-rank.htm?hl=&hlst=&wist=&yr=&dis=&sb=DESC&plow=&phigh=&ps=')
+    request = requests.get(
+        'http://www.usa.com/rank/illinois-state--population-density--county-rank.htm?hl=&hlst=&wist=&yr=&dis=&sb=DESC&plow=&phigh=&ps=')
     soup = BeautifulSoup(request.text, 'html.parser')
     data = []
     table = soup.find_all('table')[1]
@@ -117,9 +137,9 @@ def handle_cities():
     locator = Nominatim(user_agent='info_pls')
     # processing city data
     cdf = pd.read_csv('data/orig_city_data.csv', encoding='').rename(columns={'Name': 'name',
-                                                                 'Type': 'type',
-                                                                 'Population 2020': 'pop',
-                                                                 'Land area sq mi': 'LA_sqmi'})
+                                                                              'Type': 'type',
+                                                                              'Population 2020': 'pop',
+                                                                              'Land area sq mi': 'LA_sqmi'})
     cdf['Population density'] = cdf['Population density'].astype(str).str.replace(',', '')
     cdf[['PD_sqmi', 'PD_km2']] = cdf['Population density'].str.split('/', n=1, expand=True)
     cdf['pop'] = cdf['pop'].str.replace(',', '')
@@ -145,22 +165,83 @@ def handle_toh():
                                 'Location', 'Latitude', 'Longitude',
                                 'InfestAcre', 'Density', 'Verified'])
     # handling duplicates in rev_df
+    toh_df = update_with_revisits(toh_df, rev_df)
+    # changing names and saving to csv
+    toh_df.reset_index(inplace=True)
+    toh_df.rename(columns={'ObjectID': 'id', 'ObsDate': 'obs_date', 'DateEnt': 'ent_date', 'DateUp': 'date_up',
+                           'Location': 'county', 'Latitude': 'lat', 'Longitude': 'lon',
+                           'InfestAcre': 'infest_acre', 'Density': 'density', 'Habitat': 'habitat'
+                           }, inplace=True)
+
+    toh_df = handle_string_errors(toh_df)
+    toh_df = calc_infest_index(toh_df)
+
+    toh_df.set_index('id', inplace=True)
+    toh_df.to_csv(f'{path}/IL_toh.csv')
+
+
+def handle_string_errors(df):
+    """
+    handles some common name errors in dataframe
+    :param df:
+    """
+    df['county'] = df['county'].str.replace('"', '')
+    change_map = {
+        'Dupage': 'DuPage',
+        'Mchenry': 'McHenry',
+        'Saint Clair': 'St. Clair',
+        'Dekalb': 'DeKalb',
+        'Mclean': 'McLean',
+        'La Salle': 'LaSalle',
+        'Mcdonough': 'McDonough',
+        'De Witt': 'DeWitt'
+    }
+    df['county'] = df['county'].replace(change_map)
+    return df
+
+
+def calc_infest_index(toh_df, keep_nulls=False):
+    """
+    :param toh_df:
+    :param keep_nulls:
+    """
+    toh_df = toh_df.copy()
+    if not keep_nulls:
+        toh_df.dropna(subset=['infest_acre', 'density'], inplace=True)
+        toh_df = toh_df[(toh_df['infest_acre'] != 0) & (toh_df['density'] != 0)]
+    density_mapping = {'<5%': .04,
+                       '>25%': .3,
+                       '>50%': .55,
+                       '5-25%': .15,
+                       '25-50%': .375,
+                       '50-75%': .625,
+                       'High': .625,
+                       'Low': .04,
+                       'Medium': .375
+                       }
+    toh_df['density'] = toh_df['density'].map(density_mapping).astype(float)
+    toh_df['infest_acre'] = pd.to_numeric(toh_df['infest_acre'])
+    toh_df['infest_index'] = toh_df['density'] * toh_df['infest_acre']
+
+    return toh_df
+
+
+def update_with_revisits(toh_df, rev_df):
+    """
+
+    :param toh_df: Dataframe with Tree of Heaven sightings
+    :param rev_df: Revisits to sight locations
+    :return toh_df: the updated tree of heaven dataframe
+    """
     rev_df = rev_df.sort_values(by='DateUp', ascending=False).drop_duplicates(subset='ObjectID', keep='first')
     toh_df.set_index('ObjectID', inplace=True)
     rev_df.set_index('ObjectID', inplace=True)
     toh_df.update(rev_df[['Density', 'InfestAcre']])
     toh_df['Location'] = toh_df['Location'].str.replace(', Illinois, United States', '')
-    # changing names and saving to csv
-    toh_df.reset_index(inplace=True)
-    toh_df.rename(columns={'ObjectID': 'id', 'ObsDate': 'obs_date', 'DateEnt': 'ent_date', 'DateUp': 'date_up',
-                           'Location': 'county', 'Latitude': 'lat', 'Longitude': 'lon',
-                           'InfestAcre': 'infest_acre', 'Density': 'Density', 'Habitat': 'habitat'
-                           }, inplace=True)
-    toh_df.set_index('id', inplace=True)
-    toh_df.to_csv(f'{path}/IL_toh.csv')
+    return toh_df
 
 
 if __name__ == '__main__':
-    handle_counties()
-    handle_cities()
+    # handle_counties()
+    # handle_cities()
     handle_toh()

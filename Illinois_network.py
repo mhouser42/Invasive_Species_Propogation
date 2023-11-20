@@ -9,9 +9,28 @@ from tqdm import tqdm
 import pickle
 
 import pandas as pd
+import numpy as np
 import networkx as nx
 import osmnx as ox
+from collections import Counter
 from my_classes import City, County
+
+
+
+def get_lower_and_upper_bounds(df: pd.DataFrame, col_name):
+    """
+
+    :param df: dataframe to be accessed
+    :param col_name: string name of column to retrieve boundaries
+    :return:
+    """
+    Q1 = np.percentile(df[col_name], 25)
+    Q3 = np.percentile(df[col_name], 75)
+    IQR = Q3 - Q1
+
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    return lower_bound, upper_bound
 
 
 def construct_nodes(CG: nx.Graph, df: pd.DataFrame, is_county=True):
@@ -79,10 +98,52 @@ def construct_edges(CG: nx.Graph, edge_df: pd.DataFrame, handler: dict):
     CG.add_edges_from(edges)
 
 
+def get_toh_totals_by_county(df, handler):
+    """
+
+    :param df:
+    :param handler:
+    :return:
+    """
+    county_tots = {key: 0 for key in handler.keys()}
+    county_counts = Counter({key: 0 for key in handler.keys()})
+    for index, row in df.iterrows():
+        county = row['county']
+        infest_index = row['infest_index']
+        county_counts[county] += 1
+        county_tots[county] += infest_index
+    return county_tots, county_counts
+
+
+def calc_toh_density_percentiles(df, handler, county_tots, county_counts):
+    """
+
+    :param df:
+    :param handler:
+    :param county_tots:
+    :param county_counts:
+    """
+    try:
+        max_infest = max(df['infest_index'])
+        min_infest = min(df['infest_index'])
+
+        for name, node in handler.items():
+            total = county_tots[name]
+            count = county_counts[name]
+
+            avg_infest = total / count if count != 0 else 0
+            avg_infest = max(min(avg_infest, max_infest), min_infest)
+
+            node.toh_density_percentile = round((avg_infest / max_infest) * 100, 2) if max_infest > 0 else 0
+    except KeyError:
+        print('infest_index does not exist in this dataframe')
+
+
 if __name__ == '__main__':
     path = 'data/location'
     county_df = pd.read_csv(f'{path}/counties.csv')  # for nodes
     edge_df = pd.read_csv(f'{path}/county_edges.csv')  # for edges
+    toh_df = pd.read_csv(f'data/tree/Il_toh.csv')
     # city_df = pd.read_csv(f'{path}/target_cities.csv')
 
     CG = nx.Graph()
@@ -92,6 +153,15 @@ if __name__ == '__main__':
 
     # adding edges
     construct_edges(CG, edge_df, county_dict)
+
+    # adding Tree of Heaven density percentiles
+
+    lower, upper = get_lower_and_upper_bounds(toh_df, 'infest_index')
+    toh_df['infest_index'] = np.clip(toh_df['infest_index'], lower, upper)
+
+    county_tots, county_counts = get_toh_totals_by_county(toh_df, county_dict)
+    calc_toh_density_percentiles(toh_df, county_dict, county_tots, county_counts)
+
     # pickling
     pickle.dump(CG, open(f'{path}/IL_graph.dat', 'wb'))
     pickle.dump(county_dict, open(f'{path}/graph_handler_counties.dat', 'wb'))
