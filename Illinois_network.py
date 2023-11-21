@@ -123,20 +123,21 @@ def calc_toh_density_percentiles(df, handler, county_tots, county_counts):
     :param county_tots:
     :param county_counts:
     """
-    try:
-        max_infest = max(df['infest_index'])
-        min_infest = min(df['infest_index'])
+    lower, upper = get_lower_and_upper_bounds(toh_df, 'infest_index')
+    toh_df['infest_index'] = np.clip(toh_df['infest_index'], lower, upper)
 
-        for name, node in handler.items():
-            total = county_tots[name]
-            count = county_counts[name]
+    max_infest = max(df['infest_index'])
+    min_infest = min(df['infest_index'])
 
-            avg_infest = total / count if count != 0 else 0
-            avg_infest = max(min(avg_infest, max_infest), min_infest)
+    for name, node in handler.items():
+        total = county_tots[name]
+        count = county_counts[name]
 
-            node.toh_density_percentile = round((avg_infest / max_infest) * 100, 2) if max_infest > 0 else 0
-    except KeyError:
-        print('infest_index does not exist in this dataframe')
+        avg_infest = total / count if count != 0 else 0
+        avg_infest = max(min(avg_infest, max_infest), min_infest)
+
+        node.toh_density_percentile = round((avg_infest / max_infest) * 100, 2) if max_infest > 0 else 0
+
 
 
 if __name__ == '__main__':
@@ -155,9 +156,6 @@ if __name__ == '__main__':
     construct_edges(CG, edge_df, county_dict)
 
     # adding Tree of Heaven density percentiles
-
-    lower, upper = get_lower_and_upper_bounds(toh_df, 'infest_index')
-    toh_df['infest_index'] = np.clip(toh_df['infest_index'], lower, upper)
 
     county_tots, county_counts = get_toh_totals_by_county(toh_df, county_dict)
     calc_toh_density_percentiles(toh_df, county_dict, county_tots, county_counts)
