@@ -216,11 +216,13 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker):
     for county_net in neighbor_obj:
         all_new_infections = 0
         county = get_object(county_net, schema)
+        county.infection = county.infection + (county.infection * random.normal(0.025, 0.01))
         for net_neighbors in neighbor_obj[county_net]:
-            probability = random.normal(0.5, 0.17)  # random.normal(loc= , scale= )
-            new_infection = (county.infection + (net_neighbors.infection * probability))/2  # SAMPLE EQUATION
+            probability = random.normal(0.5, 0.17)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
+            # probability = (random.beta(5, 1, size=None))
+            new_infection = net_neighbors.infection * probability  # SAMPLE EQUATION
             all_new_infections += new_infection
-        all_new_infections = round(all_new_infections / (len(neighbor_obj[county_net])), 8)
+        all_new_infections = round(all_new_infections / (len(neighbor_obj[county_net])), 8) + county.infection
         if all_new_infections > 1:  #
             all_new_infections = 1
         # print(f'{county_net} went from {county.infection} to {all_new_infections}')
