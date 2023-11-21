@@ -26,19 +26,18 @@ class Location:
         self.centroid = centroid
         self.infection = infection
 
-    def get_neighbor_objects(self, CG):
-        for node in CG.nodes():
-            if hasattr(node, 'name') and node.name == self.name:
-                neighbors = [neighbor for neighbor in CG.neighbors(node)]
-        return neighbors
-
-    def get_my_object(self, graph):
-        node_list = []
-        for node in graph.nodes():
-            if hasattr(node, 'name') and node.name == self.name:
-                node_list.append(node)
-        return node
-
+    # def get_neighbor_objects(self, CG):
+    #     for node in CG.nodes():
+    #         if hasattr(node, 'name') and node.name == self.name:
+    #             neighbors = [neighbor for neighbor in CG.neighbors(node)]
+    #     return neighbors
+    #
+    # def get_my_object(self, graph):
+    #     node_list = []
+    #     for node in graph.nodes():
+    #         if hasattr(node, 'name') and node.name == self.name:
+    #             node_list.append(node)
+    #     return node
 
     def __hash__(self):
         return hash((self.name, type(self)))
@@ -52,21 +51,24 @@ class Location:
 
 
 class County(Location):
-    def __init__(self, name, toh_density=None, *args, **kwargs):
+    """
+
+    """
+    def __init__(self, name, toh_density_percentile=None, *args, **kwargs):
         super().__init__(name, *args, **kwargs)
-        self.toh_density = toh_density
+        self.toh_density_percentile = toh_density_percentile
         _ToH_density_list = []
 
     def track_ToH_density(self):
-        self._ToH_density_list = self._ToH_density_list.append(self.ToH_density)
+        self._ToH_density_list = self._ToH_density_list.append(self.toh_density_percentile)
         return self._ToH_density_list
 
-    def ToH_killing_OT(self):
-        if self._ToH_density_list[-1] > self._ToH_density_list[-2]:
-            self.OT_density = self.OT_density - (_ToH_density_list[-1] - _ToH_density_list[-2])
-        return self.OT_density
+    # def ToH_killing_OT(self):
+    #     if self._ToH_density_list[-1] > self._ToH_density_list[-2]:
+    #         self.OT_density = self.OT_density - (_ToH_density_list[-1] - _ToH_density_list[-2])
+    #     return self.OT_density
 
-    def deforrestation(self):
+    def deforestation(self):
         return self.ToH_density/2
 
 
