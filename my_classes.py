@@ -26,18 +26,18 @@ class Location:
         self.centroid = centroid
         self.infection = infection
 
-    # def get_neighbor_objects(self, CG):
-    #     for node in CG.nodes():
-    #         if hasattr(node, 'name') and node.name == self.name:
-    #             neighbors = [neighbor for neighbor in CG.neighbors(node)]
-    #     return neighbors
-    #
-    # def get_my_object(self, graph):
-    #     node_list = []
-    #     for node in graph.nodes():
-    #         if hasattr(node, 'name') and node.name == self.name:
-    #             node_list.append(node)
-    #     return node
+    def get_neighbor_objects(self, CG):  # These are used in run_simulation.py
+        for node in CG.nodes():
+            if hasattr(node, 'name') and node.name == self.name:
+                neighbors = [neighbor for neighbor in CG.neighbors(node)]
+        return neighbors
+
+    def get_my_object(self, graph):
+        node_list = []
+        for node in graph.nodes():
+            if hasattr(node, 'name') and node.name == self.name:
+                node_list.append(node)
+        return node
 
     def __hash__(self):
         return hash((self.name, type(self)))
@@ -82,9 +82,11 @@ class Vehicle:
         self.avg_dist_per_day = avg_dist_per_day
         self.infection_prob = infection_prob
         self.avg_range = avg_range
+
     def avg_dist(self):
         self.avg_dist_per_day = float(random.normal(loc=self.avg_range, scale=1))  # in miles
         return self.avg_dist_per_day
+
     def make_trip(self):
         self.infect_rand = float(random.normal(loc=0, scale=1))
         if self.infect_rand > 0:

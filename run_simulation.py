@@ -218,7 +218,7 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker):
         county = get_object(county_net, schema)
         county.infection = county.infection + (county.infection * random.normal(0.025, 0.01))
         for net_neighbors in neighbor_obj[county_net]:
-            probability = random.normal(0.5, 0.17)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
+            probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
             # probability = (random.beta(5, 1, size=None))
             new_infection = net_neighbors.infection * probability  # SAMPLE EQUATION
             all_new_infections += new_infection
