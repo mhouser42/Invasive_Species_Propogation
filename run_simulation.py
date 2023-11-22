@@ -223,8 +223,10 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker):
             new_infection = net_neighbors.infection * probability  # SAMPLE EQUATION
             all_new_infections += new_infection
         all_new_infections = round(all_new_infections / (len(neighbor_obj[county_net])), 8) + county.infection
-        if all_new_infections > 1:  #
+        if all_new_infections > 1:
             all_new_infections = 1
+        if all_new_infections < 0:
+            all_new_infections = 0
         # print(f'{county_net} went from {county.infection} to {all_new_infections}')
         setattr(county, 'infection', all_new_infections)
         infection_collector.append(all_new_infections)
