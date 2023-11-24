@@ -2,6 +2,8 @@
 
 """
 This file will contain the classes to be used in the MC simulation
+
+TODO: Write documentation for the code in this file
 """
 
 from numpy import random
