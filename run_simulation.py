@@ -3,14 +3,16 @@ from numpy import random
 import pandas as pd
 
 
-def invasion_main(iterations):
+def invasion_main(run_mode, iterations):
     """
     Main Function that sequences the order of events when running this file
     :return:
+
+    TODO: Gotta update docstrings and write some tests. I'm pretty sure we'd be graded on that!
     """
     CG, schema = set_up()
     schema = set_coefficients(schema)
-    cumulative_df = week(CG, schema, iterations)
+    cumulative_df = week(CG, schema, iterations, run_mode)
     # print(cumulative_df)
     return cumulative_df
 
@@ -27,12 +29,16 @@ def set_up():
 
 
 def set_coefficients(schema):
+
     """
     Sets coefficients for the class attribues
     Changes the attributes within the schema
     :param schema:
     :return:
+
+    TODO: Make the Dict here reflect actual levels of things
     """
+
     coef_dict = { # This is where we can adjust parameters. Should we save this in an exported JSON?
                  'Cook': {'infection': 0.1},  # The idea was to set up a dict we could use for all attributes we want
                  'DuPage': {'infection': 0},
@@ -143,7 +149,7 @@ def set_coefficients(schema):
     return schema
 
 
-def week(CG, schema, iterations):
+def week(CG, schema, iterations, run_mode):
     """
     Takes the initial schema and iterates it through a number of weeks
     :param CG:
@@ -155,7 +161,7 @@ def week(CG, schema, iterations):
     week_tracker = 1
     for i in range(0, int(iterations)):
         neighbor_obj = find_neighbor_status(CG, schema)
-        schema, cumulative_df = calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker)
+        schema, cumulative_df = calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker, run_mode)
         week_tracker += 1
 
     return cumulative_df
@@ -200,7 +206,7 @@ def get_object(name, schema):
             return schema[county]
 
 
-def calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker):
+def calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker, run_mode):
     """
     SUPER TENTATIVE
     This iterates outcomes of week interactions randomly
@@ -209,9 +215,100 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker):
     :return:
 
     TODO: Figure out how to model the actual math here.
+    TODO: Establish run modes
     """
 
     # print('------------------------- Begin New Week -------------------------')
+    if run_mode == 'Baseline':
+        baseline_calc(neighbor_obj, schema, cumulative_df, week_tracker)
+    elif run_mode == 'Eliminate ToH':
+        ToH_calc(neighbor_obj, schema, cumulative_df, week_tracker)
+    elif run_mode == 'Population-Based Countermeasures':
+        population_calc(neighbor_obj, schema, cumulative_df, week_tracker)
+    elif run_mode == 'Quarantine':
+        quarantine_calc(neighbor_obj, schema, cumulative_df, week_tracker)
+    return schema, cumulative_df
+
+
+def baseline_calc(neighbor_obj, schema, cumulative_df, week_tracker):
+    infection_collector = []
+    for county_net in neighbor_obj:
+        all_new_infections = 0
+        county = get_object(county_net, schema)
+        county.infection = county.infection + (county.infection * random.normal(0.025, 0.01))
+        for net_neighbors in neighbor_obj[county_net]:
+            probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
+            new_infection = net_neighbors.infection * probability  # SAMPLE EQUATION
+            all_new_infections += new_infection
+            all_new_infections = all_new_infections + net_neighbors.
+        all_new_infections = round(all_new_infections / (len(neighbor_obj[county_net])), 8) + county.infection
+        if all_new_infections > 1:
+            all_new_infections = 1
+        if all_new_infections < 0:
+            all_new_infections = 0
+        # print(f'{county_net} went from {county.infection} to {all_new_infections}')
+        setattr(county, 'infection', all_new_infections)
+        infection_collector.append(all_new_infections)
+    cumulative_df.insert(week_tracker + 1, f'Week {week_tracker}', infection_collector, True)
+    return schema, cumulative_df
+
+
+def ToH_calc(neighbor_obj, schema, cumulative_df, week_tracker):
+    """
+    Since ToH are a food source for SLF,
+    this block of code models the efficacy of targeting ToH instead of SLF directly
+    :param neighbor_obj:
+    :param schema:
+    :param cumulative_df:
+    :param week_tracker:
+    :return:
+    """
+    infection_collector = []
+    for county_net in neighbor_obj:
+        all_new_infections = 0
+        county = get_object(county_net, schema)
+        county.infection = county.infection + (county.infection * random.normal(0.025, 0.01))
+        for net_neighbors in neighbor_obj[county_net]:
+            probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
+            # probability = (random.beta(5, 1, size=None))
+            new_infection = net_neighbors.infection * probability  # SAMPLE EQUATION
+            all_new_infections += new_infection
+        all_new_infections = round(all_new_infections / (len(neighbor_obj[county_net])), 8) + county.infection
+        if all_new_infections > 1:
+            all_new_infections = 1
+        if all_new_infections < 0:
+            all_new_infections = 0
+        # print(f'{county_net} went from {county.infection} to {all_new_infections}')
+        setattr(county, 'infection', all_new_infections)
+        infection_collector.append(all_new_infections)
+    cumulative_df.insert(week_tracker + 1, f'Week {week_tracker}', infection_collector, True)
+    return schema, cumulative_df
+
+
+def population_calc(neighbor_obj, schema, cumulative_df, week_tracker):
+    infection_collector = []
+    for county_net in neighbor_obj:
+        all_new_infections = 0
+        county = get_object(county_net, schema)
+        county.infection = county.infection + (county.infection * random.normal(0.025, 0.01))
+        for net_neighbors in neighbor_obj[county_net]:
+            probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
+            # probability = (random.beta(5, 1, size=None))
+            new_infection = net_neighbors.infection * probability  # SAMPLE EQUATION
+            all_new_infections += new_infection
+        all_new_infections = round(all_new_infections / (len(neighbor_obj[county_net])), 8) + county.infection
+        if all_new_infections > 1:
+            all_new_infections = 1
+        if all_new_infections < 0:
+            all_new_infections = 0
+        # print(f'{county_net} went from {county.infection} to {all_new_infections}')
+        setattr(county, 'infection', all_new_infections)
+        infection_collector.append(all_new_infections)
+    cumulative_df.insert(week_tracker + 1, f'Week {week_tracker}', infection_collector, True)
+    return schema, cumulative_df
+
+
+def quarantine_calc(neighbor_obj, schema, cumulative_df, week_tracker):
     infection_collector = []
     for county_net in neighbor_obj:
         all_new_infections = 0
@@ -235,4 +332,4 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker):
 
 
 if __name__ == '__main__':
-    invasion_main(10)
+    invasion_main('Baseline', 10)
