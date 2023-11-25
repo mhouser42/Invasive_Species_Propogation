@@ -222,7 +222,7 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker, run_mod
     # print('------------------------- Begin New Week -------------------------')
     if run_mode == 'Baseline':
         schema, cumulative_df = baseline_calc(neighbor_obj, schema, cumulative_df, week_tracker)
-    elif run_mode == 'Eliminate ToH':
+    elif run_mode == 'Poison ToH':
         schema, cumulative_df = ToH_calc(neighbor_obj, schema, cumulative_df, week_tracker)
     elif run_mode == 'Population-Based Countermeasures':
         schema, cumulative_df = population_calc(neighbor_obj, schema, cumulative_df, week_tracker)
@@ -239,11 +239,11 @@ def baseline_calc(neighbor_obj, schema, cumulative_df, week_tracker):
         county.infection = county.infection + (county.infection * random.normal(0.025, 0.01))
         for net_neighbors in neighbor_obj[county_net]:
             probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
-            # probability = random.rand()
-            ToH_modifier =  (net_neighbors.infection
+            ToH_modifier =  (net_neighbors.infection ** 2
                             * net_neighbors.toh_density_percentile
-                            * random.exponential(0.01))
-            new_infection = net_neighbors.infection * probability + ToH_modifier * net_neighbors.infection
+                            * random.exponential(0.02))
+            new_infection = ((net_neighbors.infection * probability) +
+                             (ToH_modifier * net_neighbors.infection))
             all_new_infections += new_infection
         all_new_infections = round(all_new_infections / (len(neighbor_obj[county_net])), 8) + county.infection
         if all_new_infections > 1:
@@ -274,9 +274,10 @@ def ToH_calc(neighbor_obj, schema, cumulative_df, week_tracker):
         county.infection = county.infection + (county.infection * random.normal(0.025, 0.01))
         for net_neighbors in neighbor_obj[county_net]:
             probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
-            # probability = random.rand()
-            ToH_modifier = 0
-            # print(ToH_modifier, net_neighbors.infection)
+            ToH_modifier = (net_neighbors.infection ** 2
+                            * net_neighbors.toh_density_percentile
+                            * random.exponential(0.02)
+                            * -1)
             new_infection = net_neighbors.infection * probability + ToH_modifier * net_neighbors.infection
             all_new_infections += new_infection
         all_new_infections = round(all_new_infections / (len(neighbor_obj[county_net])), 8) + county.infection
@@ -309,9 +310,9 @@ def population_calc(neighbor_obj, schema, cumulative_df, week_tracker):
         for net_neighbors in neighbor_obj[county_net]:
             probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
             bug_smash = random.normal(0.3, 0.1) * 0.01
-            ToH_modifier =  (net_neighbors.infection
+            ToH_modifier =  (net_neighbors.infection ** 2
                             * net_neighbors.toh_density_percentile
-                            * random.exponential(0.01))
+                            * random.exponential(0.02))
             # print((1/net_neighbors.popdense_sqmi) * county.infection)
             new_infection = (net_neighbors.infection * probability +
                              ToH_modifier * net_neighbors.infection -
@@ -337,14 +338,14 @@ def quarantine_calc(neighbor_obj, schema, cumulative_df, week_tracker):
         county = get_object(county_net, schema)
         county.infection = county.infection + (county.infection * random.normal(0.025, 0.01))
         for net_neighbors in neighbor_obj[county_net]:
-            if net_neighbors in quarantine_list or (net_neighbors.infection > 0.75 and random.choice([True, False])):
+            if (net_neighbors in quarantine_list) or (net_neighbors.infection > 0.5 and random.choice([True, False])):
                 new_infection = 0
                 quarantine_list.add(net_neighbors)
             else:
-                probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
-                ToH_modifier =  (net_neighbors.infection
+                probability = random.normal(0.5, 0.8)
+                ToH_modifier =  (net_neighbors.infection ** 2
                                 * net_neighbors.toh_density_percentile
-                                * random.exponential(0.01))
+                                * random.exponential(0.02))
                 new_infection = net_neighbors.infection * probability + ToH_modifier * net_neighbors.infection
 
             all_new_infections += new_infection
