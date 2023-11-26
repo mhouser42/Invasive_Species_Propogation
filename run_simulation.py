@@ -1,28 +1,23 @@
-
 """
-TODO: Write Docstrings and unit tests [MATT]
-TODO: Change 'invasion' to 'infestation' [MATT]
-TODO: Change 'week' to 'month' [MATT]
 TODO: Change coef_dict to reflect actual fly infestation levels [MATT]
 """
-
 
 import pickle
 from numpy import random
 import pandas as pd
 import math
 
-def invasion_main(run_mode, iterations):
+
+def infestation_main(run_mode, iterations):
     """
     Main Function that sequences the order of events when running this file
-    :return:
-
-    TODO: Gotta update docstrings and write some tests. I'm pretty sure we'd be graded on that!
+    :param run_mode: version of Monte Carlo to run
+    :param iterations: number of times to run Monte Carlo
+    :return : pandas dataframe of cumulative months
     """
     CG, schema = set_up()
     schema = set_coefficients(schema)
-    cumulative_df = week(CG, schema, iterations, run_mode)
-    # print(cumulative_df)
+    cumulative_df = month(CG, schema, iterations, run_mode)
     return cumulative_df
 
 
@@ -38,155 +33,156 @@ def set_up():
 
 
 def set_coefficients(schema):
-
     """
     Sets coefficients for the class attribues
     Changes the attributes within the schema
-    :param schema:
+    :param schema: handler for dictionary
     :return:
 
     TODO: Make the Dict here reflect actual levels of things [MATT]
     """
 
-    coef_dict = { # This is where we can adjust parameters. Should we save this in an exported JSON?
-                 'Cook': {'infection': 0.1},  # The idea was to set up a dict we could use for all attributes we want
-                 'DuPage': {'infection': 0},
-                 'Kane': {'infection': 0.3},
-                 'Will': {'infection': 0},
-                 'Winnebago': {'infection': 0},
-                 'Lake': {'infection': 0},
-                 'McHenry': {'infection': 0},
-                 'St. Clair': {'infection': 0},
-                 'Kendall': {'infection': 0},
-                 'Madison': {'infection': 0.5},
-                 'Rock Island': {'infection': 0},
-                 'Peoria': {'infection': 0},
-                 'Sangamon': {'infection': 0},
-                 'Tazewell': {'infection': 0},
-                 'Champaign': {'infection': 0.8},
-                 'Boone': {'infection': 0},
-                 'Macon': {'infection': 0},
-                 'Kankakee': {'infection': 0},
-                 'DeKalb': {'infection': 0},
-                 'Williamson': {'infection': 0},
-                 'McLean': {'infection': 0},
-                 'Grundy': {'infection': 0.1},
-                 'Coles': {'infection': 0},
-                 'Jackson': {'infection': 0},
-                 'LaSalle': {'infection': 0},
-                 'Franklin': {'infection': 0},
-                 'Vermilion': {'infection': 0},
-                 'Monroe': {'infection': 0},
-                 'Stephenson': {'infection': 0.6},
-                 'Whiteside': {'infection': 0},
-                 'Adams': {'infection': 0},
-                 'Clinton': {'infection': 0},
-                 'Knox': {'infection': 0},
-                 'Woodford': {'infection': 0},
-                 'Effingham': {'infection': 0},
-                 'Ogle': {'infection': 0.3},
-                 'Marion': {'infection': 0},
-                 'Jefferson': {'infection': 0},
-                 'Saline': {'infection': 0},
-                 'Massac': {'infection': 0},
-                 'Morgan': {'infection': 0},
-                 'Henry': {'infection': 0},
-                 'Jersey': {'infection': 0},
-                 'Randolph': {'infection': 0},
-                 'McDonough': {'infection': 0},
-                 'Macoupin': {'infection': 0},
-                 'Wabash': {'infection': 0},
-                 'Perry': {'infection': 0},
-                 'Logan': {'infection': 0},
-                 'Lee': {'infection': 0},
-                 'Christian': {'infection': 0},
-                 'Douglas': {'infection': 0},
-                 'Bond': {'infection': 0},
-                 'Lawrence': {'infection': 0},
-                 'Richland': {'infection': 0},
-                 'Crawford': {'infection': 0},
-                 'Moultrie': {'infection': 0},
-                 'Montgomery': {'infection': 0},
-                 'Union': {'infection': 0},
-                 'Fulton': {'infection': 0},
-                 'DeWitt': {'infection': 0},
-                 'Menard': {'infection': 0},
-                 'Bureau': {'infection': 0},
-                 'Piatt': {'infection': 0},
-                 'Livingston': {'infection': 0},
-                 'Johnson': {'infection': 0},
-                 'Jo Daviess': {'infection': 0},
-                 'Cass': {'infection': 0},
-                 'Putnam': {'infection': 0},
-                 'Warren': {'infection': 0},
-                 'Carroll': {'infection': 0},
-                 'Clark': {'infection': 0},
-                 'Cumberland': {'infection': 0},
-                 'Alexander': {'infection': 0},
-                 'Marshall': {'infection': 0},
-                 'Fayette': {'infection': 0},
-                 'Edwards': {'infection': 0},
-                 'Pulaski': {'infection': 0},
-                 'Clay': {'infection': 0},
-                 'Edgar': {'infection': 0},
-                 'White': {'infection': 0},
-                 'Shelby': {'infection': 0},
-                 'Ford': {'infection': 0},
-                 'Mercer': {'infection': 0},
-                 'Iroquois': {'infection': 0},
-                 'Washington': {'infection': 0},
-                 'Mason': {'infection': 0},
-                 'Greene': {'infection': 0},
-                 'Hardin': {'infection': 0},
-                 'Wayne': {'infection': 0},
-                 'Hancock': {'infection': 0},
-                 'Brown': {'infection': 0},
-                 'Scott': {'infection': 0},
-                 'Stark': {'infection': 0},
-                 'Jasper': {'infection': 0},
-                 'Hamilton': {'infection': 0},
-                 'Pike': {'infection': 0},
-                 'Henderson': {'infection': 0},
-                 'Calhoun': {'infection': 0},
-                 'Schuyler': {'infection': 0},
-                 'Gallatin': {'infection': 0},
-                 'Pope': {'infection': 0}
-                    }
+    coef_dict = {  # This is where we can adjust parameters. Should we save this in an exported JSON?
+        'Cook': {'infestation': 0.1},  # The idea was to set up a dict we could use for all attributes we want
+        'DuPage': {'infestation': 0},
+        'Kane': {'infestation': 0.3},
+        'Will': {'infestation': 0},
+        'Winnebago': {'infestation': 0},
+        'Lake': {'infestation': 0},
+        'McHenry': {'infestation': 0},
+        'St. Clair': {'infestation': 0},
+        'Kendall': {'infestation': 0},
+        'Madison': {'infestation': 0.5},
+        'Rock Island': {'infestation': 0},
+        'Peoria': {'infestation': 0},
+        'Sangamon': {'infestation': 0},
+        'Tazewell': {'infestation': 0},
+        'Champaign': {'infestation': 0.8},
+        'Boone': {'infestation': 0},
+        'Macon': {'infestation': 0},
+        'Kankakee': {'infestation': 0},
+        'DeKalb': {'infestation': 0},
+        'Williamson': {'infestation': 0},
+        'McLean': {'infestation': 0},
+        'Grundy': {'infestation': 0.1},
+        'Coles': {'infestation': 0},
+        'Jackson': {'infestation': 0},
+        'LaSalle': {'infestation': 0},
+        'Franklin': {'infestation': 0},
+        'Vermilion': {'infestation': 0},
+        'Monroe': {'infestation': 0},
+        'Stephenson': {'infestation': 0.6},
+        'Whiteside': {'infestation': 0},
+        'Adams': {'infestation': 0},
+        'Clinton': {'infestation': 0},
+        'Knox': {'infestation': 0},
+        'Woodford': {'infestation': 0},
+        'Effingham': {'infestation': 0},
+        'Ogle': {'infestation': 0.3},
+        'Marion': {'infestation': 0},
+        'Jefferson': {'infestation': 0},
+        'Saline': {'infestation': 0},
+        'Massac': {'infestation': 0},
+        'Morgan': {'infestation': 0},
+        'Henry': {'infestation': 0},
+        'Jersey': {'infestation': 0},
+        'Randolph': {'infestation': 0},
+        'McDonough': {'infestation': 0},
+        'Macoupin': {'infestation': 0},
+        'Wabash': {'infestation': 0},
+        'Perry': {'infestation': 0},
+        'Logan': {'infestation': 0},
+        'Lee': {'infestation': 0},
+        'Christian': {'infestation': 0},
+        'Douglas': {'infestation': 0},
+        'Bond': {'infestation': 0},
+        'Lawrence': {'infestation': 0},
+        'Richland': {'infestation': 0},
+        'Crawford': {'infestation': 0},
+        'Moultrie': {'infestation': 0},
+        'Montgomery': {'infestation': 0},
+        'Union': {'infestation': 0},
+        'Fulton': {'infestation': 0},
+        'DeWitt': {'infestation': 0},
+        'Menard': {'infestation': 0},
+        'Bureau': {'infestation': 0},
+        'Piatt': {'infestation': 0},
+        'Livingston': {'infestation': 0},
+        'Johnson': {'infestation': 0},
+        'Jo Daviess': {'infestation': 0},
+        'Cass': {'infestation': 0},
+        'Putnam': {'infestation': 0},
+        'Warren': {'infestation': 0},
+        'Carroll': {'infestation': 0},
+        'Clark': {'infestation': 0},
+        'Cumberland': {'infestation': 0},
+        'Alexander': {'infestation': 0},
+        'Marshall': {'infestation': 0},
+        'Fayette': {'infestation': 0},
+        'Edwards': {'infestation': 0},
+        'Pulaski': {'infestation': 0},
+        'Clay': {'infestation': 0},
+        'Edgar': {'infestation': 0},
+        'White': {'infestation': 0},
+        'Shelby': {'infestation': 0},
+        'Ford': {'infestation': 0},
+        'Mercer': {'infestation': 0},
+        'Iroquois': {'infestation': 0},
+        'Washington': {'infestation': 0},
+        'Mason': {'infestation': 0},
+        'Greene': {'infestation': 0},
+        'Hardin': {'infestation': 0},
+        'Wayne': {'infestation': 0},
+        'Hancock': {'infestation': 0},
+        'Brown': {'infestation': 0},
+        'Scott': {'infestation': 0},
+        'Stark': {'infestation': 0},
+        'Jasper': {'infestation': 0},
+        'Hamilton': {'infestation': 0},
+        'Pike': {'infestation': 0},
+        'Henderson': {'infestation': 0},
+        'Calhoun': {'infestation': 0},
+        'Schuyler': {'infestation': 0},
+        'Gallatin': {'infestation': 0},
+        'Pope': {'infestation': 0}
+    }
     for coef_county in coef_dict:
         for attribute in coef_dict[coef_county]:
             setattr(schema[coef_county], attribute, coef_dict[coef_county][attribute])
     return schema
 
 
-def week(CG, schema, iterations, run_mode):
+def month(CG, schema, iterations, run_mode):
     """
-    Takes the initial schema and iterates it through a number of weeks
-    :param CG:
-    :param schema:
+    Takes the initial schema and iterates it through a number of months
+    :param CG: graph of Illinois network
+    :param schema: handler dictionary for graph
+    :param iterations: number
+    :param run_mode:
     :return:
     """
-    # weeks = input('How many weeks are you running? \n')
+    # months = input('How many months are you running? \n')
     cumulative_df = make_starting_df(schema)
-    week_tracker = 1
+    month_tracker = 1
     for i in range(0, int(iterations)):
         neighbor_obj = find_neighbor_status(CG, schema)
-        schema, cumulative_df = calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker, run_mode)
-        week_tracker += 1
+        schema, cumulative_df = calculate_changes(neighbor_obj, schema, cumulative_df, month_tracker, run_mode)
+        month_tracker += 1
 
     return cumulative_df
 
 
 def make_starting_df(schema):
     county_list = list(schema[county].name for county in schema)
-    starting_infection = list(schema[county].infection for county in schema)
+    starting_infestation = list(schema[county].infestation for county in schema)
     cumulative_df = pd.DataFrame({'County': county_list})
-    cumulative_df.insert(1, f'Week 0', starting_infection, True)
+    cumulative_df.insert(1, f'month 0', starting_infestation, True)
     return cumulative_df
 
 
 def find_neighbor_status(CG, schema):
     """
-    Ascertains the infection status of all neighbors for each county instance,
+    Ascertains the infestation status of all neighbors for each county instance,
     returns them as a neighbor object
     :param CG:
     :param schema:
@@ -202,7 +198,8 @@ def find_neighbor_status(CG, schema):
     return neighbor_obj
 
 
-def get_object(name, schema):
+def get_object(name, schema):  # I'm not certain this loop is necessary, you should just be able to do schema[name]
+    # and get same result without iterating through loop -Matt
     """
     Utility function.
     Retrieves the county instance object from the schema when given its name
@@ -215,10 +212,10 @@ def get_object(name, schema):
             return schema[county]
 
 
-def calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker, run_mode):
+def calculate_changes(neighbor_obj, schema, cumulative_df, month_tracker, run_mode):
     """
     SUPER TENTATIVE
-    This iterates outcomes of week interactions randomly
+    This iterates outcomes of month interactions randomly
     :param neighbor_obj:
     :param schema:
     :return:
@@ -227,147 +224,155 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, week_tracker, run_mod
     TODO: Establish run modes
     """
 
-    # print('------------------------- Begin New Week -------------------------')
+    # print('------------------------- Begin New month -------------------------')
     if run_mode == 'Baseline':
-        schema, cumulative_df = baseline_calc(neighbor_obj, schema, cumulative_df, week_tracker)
+        schema, cumulative_df = baseline_calc(neighbor_obj, schema, cumulative_df, month_tracker)
     elif run_mode == 'Poison ToH':
-        schema, cumulative_df = ToH_calc(neighbor_obj, schema, cumulative_df, week_tracker)
+        schema, cumulative_df = ToH_calc(neighbor_obj, schema, cumulative_df, month_tracker)
     elif run_mode == 'Population-Based Countermeasures':
-        schema, cumulative_df = population_calc(neighbor_obj, schema, cumulative_df, week_tracker)
+        schema, cumulative_df = population_calc(neighbor_obj, schema, cumulative_df, month_tracker)
     elif run_mode == 'Quarantine':
-        schema, cumulative_df = quarantine_calc(neighbor_obj, schema, cumulative_df, week_tracker)
+        schema, cumulative_df = quarantine_calc(neighbor_obj, schema, cumulative_df, month_tracker)
     return schema, cumulative_df
 
 
-def baseline_calc(neighbor_obj, schema, cumulative_df, week_tracker):
-    infection_collector = []
+def baseline_calc(neighbor_obj, schema, cumulative_df, month_tracker):
+    """
+
+    :param neighbor_obj:
+    :param schema:
+    :param cumulative_df:
+    :param month_tracker:
+    :return:
+    """
+    infestation_collector = []
     for county_net in neighbor_obj:
-        all_new_infections = 0
+        all_new_infestations = 0
         county = get_object(county_net, schema)
-        county.infection = county.infection + (county.infection * random.normal(0.025, 0.01))
+        county.infestation = county.infestation + (county.infestation * random.normal(0.025, 0.01))
         for net_neighbors in neighbor_obj[county_net]:
             probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
-            ToH_modifier =  (net_neighbors.infection ** 2
+            ToH_modifier = (net_neighbors.infestation ** 2
                             * net_neighbors.toh_density_percentile
                             * random.exponential(0.02))
-            new_infection = ((net_neighbors.infection * probability) +
-                             (ToH_modifier * net_neighbors.infection))
-            all_new_infections += new_infection
-        all_new_infections = round(all_new_infections / (len(neighbor_obj[county_net])), 8) + county.infection
-        if all_new_infections > 1:
-            all_new_infections = 1
-        if all_new_infections < 0:
-            all_new_infections = 0
-        # print(f'{county_net} went from {county.infection} to {all_new_infections}')
-        setattr(county, 'infection', all_new_infections)
-        infection_collector.append(all_new_infections)
-    cumulative_df.insert(week_tracker + 1, f'Week {week_tracker}', infection_collector, True)
+            new_infestation = ((net_neighbors.infestation * probability) +
+                               (ToH_modifier * net_neighbors.infestation))
+            all_new_infestations += new_infestation
+        all_new_infestations = round(all_new_infestations / (len(neighbor_obj[county_net])), 8) + county.infestation
+        if all_new_infestations > 1:
+            all_new_infestations = 1
+        if all_new_infestations < 0:
+            all_new_infestations = 0
+        # print(f'{county_net} went from {county.infestation} to {all_new_infestations}')
+        setattr(county, 'infestation', all_new_infestations)
+        infestation_collector.append(all_new_infestations)
+    cumulative_df.insert(month_tracker + 1, f'month {month_tracker}', infestation_collector, True)
     return schema, cumulative_df
 
 
-def ToH_calc(neighbor_obj, schema, cumulative_df, week_tracker):
+def ToH_calc(neighbor_obj, schema, cumulative_df, month_tracker):
     """
     Since ToH are a food source for SLF,
     this block of code models the efficacy of targeting ToH instead of SLF directly
     :param neighbor_obj:
     :param schema:
     :param cumulative_df:
-    :param week_tracker:
+    :param month_tracker:
     :return:
     """
-    infection_collector = []
+    infestation_collector = []
     for county_net in neighbor_obj:
-        all_new_infections = 0
+        all_new_infestations = 0
         county = get_object(county_net, schema)
-        county.infection = county.infection + (county.infection * random.normal(0.025, 0.01))
+        county.infestation = county.infestation + (county.infestation * random.normal(0.025, 0.01))
         for net_neighbors in neighbor_obj[county_net]:
             probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
-            ToH_modifier = (net_neighbors.infection ** 2
+            ToH_modifier = (net_neighbors.infestation ** 2
                             * net_neighbors.toh_density_percentile
                             * random.exponential(0.02)
                             * -1)
-            new_infection = net_neighbors.infection * probability + ToH_modifier * net_neighbors.infection
-            all_new_infections += new_infection
-        all_new_infections = round(all_new_infections / (len(neighbor_obj[county_net])), 8) + county.infection
-        if all_new_infections > 1:
-            all_new_infections = 1
-        if all_new_infections < 0:
-            all_new_infections = 0
-        # print(f'{county_net} went from {county.infection} to {all_new_infections}')
-        setattr(county, 'infection', all_new_infections)
-        infection_collector.append(all_new_infections)
-    cumulative_df.insert(week_tracker + 1, f'Week {week_tracker}', infection_collector, True)
+            new_infestation = net_neighbors.infestation * probability + ToH_modifier * net_neighbors.infestation
+            all_new_infestations += new_infestation
+        all_new_infestations = round(all_new_infestations / (len(neighbor_obj[county_net])), 8) + county.infestation
+        if all_new_infestations > 1:
+            all_new_infestations = 1
+        if all_new_infestations < 0:
+            all_new_infestations = 0
+        # print(f'{county_net} went from {county.infestation} to {all_new_infestations}')
+        setattr(county, 'infestation', all_new_infestations)
+        infestation_collector.append(all_new_infestations)
+    cumulative_df.insert(month_tracker + 1, f'month {month_tracker}', infestation_collector, True)
     return schema, cumulative_df
 
 
-def population_calc(neighbor_obj, schema, cumulative_df, week_tracker):
+def population_calc(neighbor_obj, schema, cumulative_df, month_tracker):
     """
     Mimics what happens when a popoulation in a county is instructed to destroy SLF and eggs
     Uses population density to approximate the intervention
     :param neighbor_obj:
     :param schema:
     :param cumulative_df:
-    :param week_tracker:
+    :param month_tracker:
     :return:
     """
-    infection_collector = []
+    infestation_collector = []
     for county_net in neighbor_obj:
-        all_new_infections = 0
+        all_new_infestations = 0
         county = get_object(county_net, schema)
-        county.infection = county.infection + (county.infection * random.normal(0.025, 0.01))
+        county.infestation = county.infestation + (county.infestation * random.normal(0.025, 0.01))
         for net_neighbors in neighbor_obj[county_net]:
             probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
             bug_smash = random.normal(0.3, 0.1) * 0.01
-            ToH_modifier =  (net_neighbors.infection ** 2
+            ToH_modifier = (net_neighbors.infestation ** 2
                             * net_neighbors.toh_density_percentile
                             * random.exponential(0.02))
-            # print((1/net_neighbors.popdense_sqmi) * county.infection)
-            new_infection = (net_neighbors.infection * probability +
-                             ToH_modifier * net_neighbors.infection -
-                             (county.infection * net_neighbors.popdense_sqmi * bug_smash))
-            all_new_infections += new_infection
-        all_new_infections = round(all_new_infections / (len(neighbor_obj[county_net])), 8) + county.infection
-        if all_new_infections > 1:
-            all_new_infections = 1
-        if all_new_infections < 0:
-            all_new_infections = 0
-        # print(f'{county_net} went from {county.infection} to {all_new_infections}')
-        setattr(county, 'infection', all_new_infections)
-        infection_collector.append(all_new_infections)
-    cumulative_df.insert(week_tracker + 1, f'Week {week_tracker}', infection_collector, True)
+            # print((1/net_neighbors.popdense_sqmi) * county.infestation)
+            new_infestation = (net_neighbors.infestation * probability +
+                               ToH_modifier * net_neighbors.infestation -
+                               (county.infestation * net_neighbors.popdense_sqmi * bug_smash))
+            all_new_infestations += new_infestation
+        all_new_infestations = round(all_new_infestations / (len(neighbor_obj[county_net])), 8) + county.infestation
+        if all_new_infestations > 1:
+            all_new_infestations = 1
+        if all_new_infestations < 0:
+            all_new_infestations = 0
+        # print(f'{county_net} went from {county.infestation} to {all_new_infestations}')
+        setattr(county, 'infestation', all_new_infestations)
+        infestation_collector.append(all_new_infestations)
+    cumulative_df.insert(month_tracker + 1, f'month {month_tracker}', infestation_collector, True)
     return schema, cumulative_df
 
 
-def quarantine_calc(neighbor_obj, schema, cumulative_df, week_tracker):
-    infection_collector = []
+def quarantine_calc(neighbor_obj, schema, cumulative_df, month_tracker):
+    infestation_collector = []
     quarantine_list = set()  # actually this is fine where it is
     for county_net in neighbor_obj:
-        all_new_infections = 0
+        all_new_infestations = 0
         county = get_object(county_net, schema)
-        county.infection = county.infection + (county.infection * random.normal(0.025, 0.01))
+        county.infestation = county.infestation + (county.infestation * random.normal(0.025, 0.01))
         for net_neighbors in neighbor_obj[county_net]:
-            if (net_neighbors in quarantine_list) or (net_neighbors.infection > 0.5 and random.choice([True, False])):
-                new_infection = 0
+            if (net_neighbors in quarantine_list) or (net_neighbors.infestation > 0.5 and random.choice([True, False])):
+                new_infestation = 0
                 quarantine_list.add(net_neighbors)
             else:
                 probability = random.normal(0.5, 0.8)
-                ToH_modifier = (net_neighbors.infection ** 2
+                ToH_modifier = (net_neighbors.infestation ** 2
                                 * net_neighbors.toh_density_percentile
                                 * random.exponential(0.02))
-                new_infection = net_neighbors.infection * probability + ToH_modifier * net_neighbors.infection
+                new_infestation = net_neighbors.infestation * probability + ToH_modifier * net_neighbors.infestation
 
-            all_new_infections += new_infection
-        all_new_infections = round(all_new_infections / (len(neighbor_obj[county_net])), 8) + county.infection
-        if all_new_infections > 1:
-            all_new_infections = 1
-        if all_new_infections < 0:
-            all_new_infections = 0
-        # print(f'{county_net} went from {county.infection} to {all_new_infections}')
-        setattr(county, 'infection', all_new_infections)
-        infection_collector.append(all_new_infections)
-    cumulative_df.insert(week_tracker + 1, f'Week {week_tracker}', infection_collector, True)
+            all_new_infestations += new_infestation
+        all_new_infestations = round(all_new_infestations / (len(neighbor_obj[county_net])), 8) + county.infestation
+        if all_new_infestations > 1:
+            all_new_infestations = 1
+        if all_new_infestations < 0:
+            all_new_infestations = 0
+        # print(f'{county_net} went from {county.infestation} to {all_new_infestations}')
+        setattr(county, 'infestation', all_new_infestations)
+        infestation_collector.append(all_new_infestations)
+    cumulative_df.insert(month_tracker + 1, f'month {month_tracker}', infestation_collector, True)
     return schema, cumulative_df
 
 
 if __name__ == '__main__':
-    invasion_main('Population-Based Countermeasures', 10)
+    infestation_main('Population-Based Countermeasures', 10)

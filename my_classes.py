@@ -11,10 +11,10 @@ import pandas as pd
 import pickle
 
 
-
-
 class Location:
+    """
 
+    """
     def __init__(self, name, infection=None, lat=None, lon=None, geometry=None, bbox_n=None, bbox_s=None,
                  bbox_e=None, bbox_w=None, pop=None, popdense_sqmi=None, slf_count=None, egg_count=None,
                  ToH_density=None, quarantine=False, centroid=False):
@@ -41,21 +41,44 @@ class Location:
                 node_list.append(node)
         return node
 
+    def die_off(self, mortality_rate=1.0):
+        """
+
+        :param mortality_rate:
+        :return:
+        """
+        die_off_number = int(self.slf_count * mortality_rate)
+        self.slf_count -= die_off_number
+        return die_off_number
+
+    def lay_eggs(self, mating_chance):
+        """
+
+        :param mating_chance:
+        """
+        expect_matings = int(self.slf_count * mating_chance)
+        successful_matings = np.random.poisson(expect_matings)
+        self.egg_count += successful_matings
+
+    def hatch_eggs(self, hatch_chance):
+        hatch_num = random.randint(0, self.egg_count)
+        while hatch_num > 0:
+            self.slf_count += random.randint(30, 50)
+            self.egg_count -= 1
+            hatch_num -= 1
+
     def __hash__(self):
         return hash((self.name, type(self)))
 
     def __eq__(self, other):
         return self.name == other.name and type(self) == type(other)
 
-    # def update_week(self):
-    #     CG = pickle.load(open(f'data/location/IL_graph.dat', 'rb'))
-    #     return neighbors
-
 
 class County(Location):
     """
 
     """
+
     def __init__(self, name, toh_density_percentile=None, *args, **kwargs):
         super().__init__(name, *args, **kwargs)
         self.toh_density_percentile = toh_density_percentile
@@ -71,7 +94,7 @@ class County(Location):
     #     return self.OT_density
 
     def deforestation(self):
-        return self.ToH_density/2
+        return self.ToH_density / 2
 
 
 class City(Location):
@@ -89,10 +112,10 @@ class Vehicle:
         self.avg_dist_per_day = float(random.normal(loc=self.avg_range, scale=1))  # in miles
         return self.avg_dist_per_day
 
-    def make_trip(self):
+    def make_trip(self, start, end):
         self.infect_rand = float(random.normal(loc=0, scale=1))
         if self.infect_rand > 0:
-            self.infection_prob =self.infect_rand * 0.01
+            self.infection_prob = self.infect_rand * 0.01
         else:
             self.infection_prob = 0
         return self.infection_prob
@@ -130,6 +153,7 @@ class SLF(Insect):
         super().__init__(age, hunger, oldest)
         self.oldest = 8
         self._kid_counter = 0
+
     def seek_food(self):
         if self.hunger >= 10:
             # Prioritize heading towards areas with trees over laying eggs
@@ -147,14 +171,14 @@ class SLF(Insect):
               f' My hunger level is {self.hunger},\n'
               f' and I have made {self._kid_counter} kids.')
 
+
 class Wasp(Insect):
     def __init__(self, age, hunger):
         Insect.__init__(age, hunger, 5)
-
 
     def hunt(self):
         if self.hunger >= 10:
             # Prioritize hunting SLF
             pass
-        # for  # SLF killed
+            # for  # SLF killed
             Wasp(0, 0)

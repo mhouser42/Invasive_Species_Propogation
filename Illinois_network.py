@@ -16,10 +16,9 @@ from collections import Counter
 from my_classes import City, County
 
 
-
 def get_lower_and_upper_bounds(df: pd.DataFrame, col_name):
     """
-
+    return the lower and upper bounds of a column's values
     :param df: dataframe to be accessed
     :param col_name: string name of column to retrieve boundaries
     :return:
@@ -101,10 +100,12 @@ def construct_edges(CG: nx.Graph, edge_df: pd.DataFrame, handler: dict):
 def get_toh_totals_by_county(df, handler):
     """
 
-    :param df:
-    :param handler:
-    :return:
+    :param df: dataframe to be assessed
+    :param handler: node counter
+    :return county_tots, county_counts: the total infestation of tree of heaven by county (acreage X density)
+    :return county_counts: the number of tree of heaven sightings in a county.
     """
+
     county_tots = {key: 0 for key in handler.keys()}
     county_counts = Counter({key: 0 for key in handler.keys()})
     for index, row in df.iterrows():
@@ -137,7 +138,6 @@ def calc_toh_density_percentiles(df, handler, county_tots, county_counts):
         avg_infest = max(min(avg_infest, max_infest), min_infest)
 
         node.toh_density_percentile = round((avg_infest / max_infest) * 100, 2) if max_infest > 0 else 0
-
 
 
 if __name__ == '__main__':

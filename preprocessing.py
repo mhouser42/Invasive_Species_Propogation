@@ -241,6 +241,8 @@ def update_with_revisits(toh_df, rev_df):
     return toh_df
 
 
+def handle
+
 if __name__ == '__main__':
     # handle_counties()
     # handle_cities()
