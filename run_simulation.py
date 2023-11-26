@@ -3,6 +3,7 @@
 TODO: Write Docstrings and unit tests [MATT]
 TODO: Change 'invasion' to 'infestation' [MATT]
 TODO: Change 'week' to 'month' [MATT]
+TODO: Change coef_dict to reflect actual fly infestation levels [MATT]
 """
 
 
