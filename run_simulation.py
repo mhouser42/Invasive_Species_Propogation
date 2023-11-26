@@ -1,8 +1,15 @@
+
+"""
+TODO: Write Docstrings and unit tests [MATT]
+TODO: Change 'invasion' to 'infestation' [MATT]
+TODO: Change 'week' to 'month' [MATT]
+"""
+
+
 import pickle
 from numpy import random
 import pandas as pd
 import math
-
 
 def invasion_main(run_mode, iterations):
     """
@@ -37,7 +44,7 @@ def set_coefficients(schema):
     :param schema:
     :return:
 
-    TODO: Make the Dict here reflect actual levels of things
+    TODO: Make the Dict here reflect actual levels of things [MATT]
     """
 
     coef_dict = { # This is where we can adjust parameters. Should we save this in an exported JSON?
@@ -332,7 +339,7 @@ def population_calc(neighbor_obj, schema, cumulative_df, week_tracker):
 
 def quarantine_calc(neighbor_obj, schema, cumulative_df, week_tracker):
     infection_collector = []
-    quarantine_list = set()
+    quarantine_list = set()  # actually this is fine where it is
     for county_net in neighbor_obj:
         all_new_infections = 0
         county = get_object(county_net, schema)
@@ -343,7 +350,7 @@ def quarantine_calc(neighbor_obj, schema, cumulative_df, week_tracker):
                 quarantine_list.add(net_neighbors)
             else:
                 probability = random.normal(0.5, 0.8)
-                ToH_modifier =  (net_neighbors.infection ** 2
+                ToH_modifier = (net_neighbors.infection ** 2
                                 * net_neighbors.toh_density_percentile
                                 * random.exponential(0.02))
                 new_infection = net_neighbors.infection * probability + ToH_modifier * net_neighbors.infection
@@ -359,8 +366,6 @@ def quarantine_calc(neighbor_obj, schema, cumulative_df, week_tracker):
         infection_collector.append(all_new_infections)
     cumulative_df.insert(week_tracker + 1, f'Week {week_tracker}', infection_collector, True)
     return schema, cumulative_df
-
-
 
 
 if __name__ == '__main__':
