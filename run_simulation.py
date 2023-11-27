@@ -5,7 +5,6 @@ TODO: Change coef_dict to reflect actual fly infestation levels [MATT]
 import pickle
 from numpy import random
 import pandas as pd
-import math
 
 
 def infestation_main(run_mode, iterations):
