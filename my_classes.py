@@ -6,6 +6,7 @@ This file will contain the classes to be used in the MC simulation
 TODO: Write documentation for the code in this file
 """
 
+import numpy as np
 from numpy import random
 import pandas as pd
 import pickle
@@ -13,20 +14,31 @@ import pickle
 
 class Location:
     """
+    Hashable object with various attributes related to lanternfly infestation and geographical data.
 
+    :param name: Name of the location.
+    :param lat: Latitude coordinate.
+    :param lon: Longitude coordinate.
+    :param geometry: Geometrical data of the location.
+    :param centroid: Centroid of the location (if available).
+    :param pop: Population of the location.
+    :param popdense_sqmi: Population density per square mile.
+    :param infestation: Initial infestation level.
+    :param mated: Proportion of the infestation that has mated.
+    :param laid_eggs: Proportion of the infestation that has laid eggs.
+    :param egg_count: Number of egg masses present.
+    :param quarantine: Boolean indicating if the location is under quarantine.
     """
-    def __init__(self, name, infection=None, lat=None, lon=None, geometry=None, bbox_n=None, bbox_s=None,
-                 bbox_e=None, bbox_w=None, pop=None, popdense_sqmi=None, slf_count=None, egg_count=None,
-                 ToH_density=None, quarantine=False, centroid=False):
+    def __init__(self, name, lat=None, lon=None, geometry=None, centroid=False, pop=None, popdense_sqmi=None,
+                 infestation=0.0, mated=0.0, laid_eggs=0.0, egg_count=0, quarantine=False):
         self.name = name
-        self.lat, self.lon, self.geometry = lat, lon, geometry
-        self.bbox_n, self.bbox_s, self.bbox_e, self.bbox_w = bbox_n, bbox_s, bbox_e, bbox_w
+        self.lat, self.lon, self.geometry, self.centroid = lat, lon, geometry, centroid
         self.pop, self.popdense_sqmi = pop, popdense_sqmi
+        self.infestation = infestation
+        self.mated = mated
+        self.laid_eggs = laid_eggs
         self.egg_count = egg_count
-        self.slf_count = slf_count
         self.quarantine = quarantine
-        self.centroid = centroid
-        self.infection = infection
 
     def get_neighbor_objects(self, CG):  # These are used in run_simulation.py
         for node in CG.nodes():
@@ -41,31 +53,76 @@ class Location:
                 node_list.append(node)
         return node
 
-    def die_off(self, mortality_rate=1.0):
+    def mate(self):
         """
+        Simulate the mating process, updating the proportion of mated flies in the infestation
 
-        :param mortality_rate:
-        :return:
+        >>> county = Location('Butts County', infestation=0.7)
+        >>> county.mate()
+        >>> old_mate = county.mated
+        >>> county.mate()
+        >>> new_mate = county.mated
+        >>> new_mate > old_mate
+        True
         """
-        die_off_number = int(self.slf_count * mortality_rate)
-        self.slf_count -= die_off_number
-        return die_off_number
+        mating_chance = random.uniform(0.75, 1.0)
+        newly_mated = self.infestation * mating_chance * (1.0 - self.mated)
+        self.mated += newly_mated
+        self.mated = min(self.mated, 1.0) # caps the value at 100%
 
-    def lay_eggs(self, mating_chance):
+    def lay_eggs(self, scaling_factor=100, extra_eggmass_chance=0.05):
         """
+        Simulates the laying of eggs based on the porportion of mated SLFs.
 
-        :param mating_chance:
+        :param scaling_factor: Factor to convert mated proportion to number of egg masses.
+        :param extra_eggmass_chance: Chance of laying an additional egg mass.
+        :return self.eggcount: Total number of egg masses after laying.
+
+        >>> loc = Location("Matt's County", infestation=0.37, mated=0.75)
+        >>> loc.lay_eggs()
+        >>> print(loc.egg_count)
+        idk
         """
-        expect_matings = int(self.slf_count * mating_chance)
-        successful_matings = np.random.poisson(expect_matings)
-        self.egg_count += successful_matings
+        new_egg_masses = int(self.mated * scaling_factor)
+        additional_egg_masses = int(new_egg_masses * extra_eggmass_chance)
+        self.egg_count += new_egg_masses + additional_egg_masses
+        return self.egg_count
 
-    def hatch_eggs(self, hatch_chance):
-        hatch_num = random.randint(0, self.egg_count)
-        while hatch_num > 0:
-            self.slf_count += random.randint(30, 50)
+    def die_off(self):
+        """
+        Simulates the natural death of SLF during the winter.
+        :return self.infestation: current infestation level of Location
+        """
+        mortality_rate = random.uniform(.85, 1.0)
+        die_off_number = int(self.infestation * mortality_rate)
+        self.infestation -= die_off_number
+        if self.infestation == 0.0:
+            self.mated = 0.0
+            self.laid_eggs = 0.0
+        return self.infestation
+
+    def hatch_eggs(self):
+        """
+        Simulates the hatching of eggs and increases the infestation accordingly.
+
+        :return: infestation level after hatching eggs.
+
+        >>> location = Location("Cook", infestation=0.0, egg_count=78)
+        >>> pre_hatch_infestation = location.infestation
+        >>> location.hatch_eggs()
+        >>> print(location.infestation)
+        5.0
+        """
+        hatch_chance = random.uniform(.75, 1.0)
+        hatched_eggs = int(self.egg_count * hatch_chance)
+        while hatched_eggs > 0:
+            egg_coef = random.uniform(0.00035, 0.00045)
+            self.infestation += egg_coef
             self.egg_count -= 1
-            hatch_num -= 1
+            hatched_eggs -= 1
+
+        self.infestation = min(self.infestation, 1.0) #caps at 100%
+        return self.infestation
 
     def __hash__(self):
         return hash((self.name, type(self)))
@@ -88,97 +145,13 @@ class County(Location):
         self._ToH_density_list = self._ToH_density_list.append(self.toh_density_percentile)
         return self._ToH_density_list
 
-    # def ToH_killing_OT(self):
-    #     if self._ToH_density_list[-1] > self._ToH_density_list[-2]:
-    #         self.OT_density = self.OT_density - (_ToH_density_list[-1] - _ToH_density_list[-2])
-    #     return self.OT_density
-
     def deforestation(self):
         return self.ToH_density / 2
 
 
 class City(Location):
+    """
+
+    """
     def __init__(self, name, *args, **kwargs):
         super().__init__(name, *args, **kwargs)
-
-
-class Vehicle:
-    def __init__(self, infection_prob, avg_dist_per_day, avg_range):
-        self.avg_dist_per_day = avg_dist_per_day
-        self.infection_prob = infection_prob
-        self.avg_range = avg_range
-
-    def avg_dist(self):
-        self.avg_dist_per_day = float(random.normal(loc=self.avg_range, scale=1))  # in miles
-        return self.avg_dist_per_day
-
-    def make_trip(self, start, end):
-        self.infect_rand = float(random.normal(loc=0, scale=1))
-        if self.infect_rand > 0:
-            self.infection_prob = self.infect_rand * 0.01
-        else:
-            self.infection_prob = 0
-        return self.infection_prob
-
-
-class Truck(Vehicle):
-    def __init__(self, infection_prob, avg_dist_per_day):
-        Vehicle.__init__(self, infection_prob, avg_dist_per_day, 500)
-
-
-class Train(Vehicle):
-    def __init__(self, infection_prob, avg_dist_per_day):
-        Vehicle.__init__(self, infection_prob, avg_dist_per_day, 600)
-
-
-class Insect:
-    def __init__(self, age, hunger, oldest):
-        self.age = age
-        self.hunger = hunger
-        self.oldest = oldest
-
-    def ageing(self):
-        self.age += 1
-        if self.age > self.oldest:
-            del self
-
-    def print_status(self):
-        print(f'I am {self.age} weeks old,\n'
-              f'My hunger level is {self.hunger}\n'
-              f'I live to be {self.oldest}.')
-
-
-class SLF(Insect):
-    def __init__(self, age, hunger, oldest):
-        super().__init__(age, hunger, oldest)
-        self.oldest = 8
-        self._kid_counter = 0
-
-    def seek_food(self):
-        if self.hunger >= 10:
-            # Prioritize heading towards areas with trees over laying eggs
-            pass
-
-    def propagate(self):
-        if (self.age >= 3) and (self.hunger <= 6) and (random.choice([0, 1]) > 0):
-            # SLF(0, 0, 8)
-            self._kid_counter += 1
-            print('made a kid!')
-        return self._kid_counter
-
-    def print_status(self):
-        print(f'I am {self.age} weeks old,\n'
-              f' My hunger level is {self.hunger},\n'
-              f' and I have made {self._kid_counter} kids.')
-
-
-class Wasp(Insect):
-    def __init__(self, age, hunger):
-        Insect.__init__(age, hunger, 5)
-
-    def hunt(self):
-        if self.hunger >= 10:
-            # Prioritize hunting SLF
-            pass
-            # for  # SLF killed
-            Wasp(0, 0)

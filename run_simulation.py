@@ -33,7 +33,7 @@ def set_up():
 
 def set_coefficients(schema):
     """
-    Sets coefficients for the class attribues
+    Sets coefficients for the class attributes
     Changes the attributes within the schema
     :param schema: handler for dictionary
     :return:

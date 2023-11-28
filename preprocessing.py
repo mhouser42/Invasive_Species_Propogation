@@ -16,10 +16,10 @@ def replace_curly_apostrophes_and_strip(value, replacements=(('“', '"'),
                                                              ('’', "'"))):
     """
     Tree of heaven data has wrong kind of quotations around string data. This function handles that by replacing all
-    single and double quotation marks with standard used in python :param value: :param replacements: :return:
-    :param replacements:
+    single and double quotation marks with standard used in python
+
     :param value: value in column to be changed
-    :param replacements
+    :param replacements: tuples of paired quotation marks.
     """
 
     if isinstance(value, str):
@@ -97,6 +97,9 @@ def get_IL_df(df: pd.DataFrame, years=5, columns=['ObjectID', 'Status',
 
 
 def handle_counties():
+    """
+    Scrapes and processes county data from www.usa.com, and saves to a csv.
+    """
     request = requests.get(
         'http://www.usa.com/rank/illinois-state--population-density--county-rank.htm?hl=&hlst=&wist=&yr=&dis=&sb=DESC&plow=&phigh=&ps=')
     soup = BeautifulSoup(request.text, 'html.parser')
@@ -131,7 +134,7 @@ def handle_counties():
 
 def handle_cities():
     """
-    processes city data
+    Processes city data by calling Nominatim for each city
     """
     path = 'data/location'
     locator = Nominatim(user_agent='info_pls')
@@ -149,35 +152,6 @@ def handle_cities():
     cols = cols[:2] + cols[-2:] + cols[2:-2]
     cdf = cdf[cols]
     cdf.set_index('name').to_csv(f'{path}/cities.csv', encoding='latin1')
-
-
-def handle_toh():
-    """
-    processes Tree of Heaven data
-    """
-
-    path = 'data/tree'
-    toh_df = get_IL_df(pd.read_csv(f'{path}/mappings.csv', encoding='latin-1',
-                                   low_memory=False).rename(columns={'objectid': 'ObjectID'}))
-    rev_df = get_IL_df(pd.read_csv(f'{path}/revisits.csv', encoding='latin-1'),
-                       columns=['ObjectID', 'Status',
-                                'DateEnt', 'DateUp',
-                                'Location', 'Latitude', 'Longitude',
-                                'InfestAcre', 'Density', 'Verified'])
-    # handling duplicates in rev_df
-    toh_df = update_with_revisits(toh_df, rev_df)
-    # changing names and saving to csv
-    toh_df.reset_index(inplace=True)
-    toh_df.rename(columns={'ObjectID': 'id', 'ObsDate': 'obs_date', 'DateEnt': 'ent_date', 'DateUp': 'date_up',
-                           'Location': 'county', 'Latitude': 'lat', 'Longitude': 'lon',
-                           'InfestAcre': 'infest_acre', 'Density': 'density', 'Habitat': 'habitat'
-                           }, inplace=True)
-
-    toh_df = handle_string_errors(toh_df)
-    toh_df = calc_infest_index(toh_df)
-
-    toh_df.set_index('id', inplace=True)
-    toh_df.to_csv(f'{path}/IL_toh.csv')
 
 
 def handle_string_errors(df):
@@ -241,9 +215,36 @@ def update_with_revisits(toh_df, rev_df):
     return toh_df
 
 
-def handle
+def handle_toh():
+    """
+    processes Tree of Heaven data
+    """
+
+    path = 'data/tree'
+    toh_df = get_IL_df(pd.read_csv(f'{path}/mappings.csv', encoding='latin-1',
+                                   low_memory=False).rename(columns={'objectid': 'ObjectID'}))
+    rev_df = get_IL_df(pd.read_csv(f'{path}/revisits.csv', encoding='latin-1'),
+                       columns=['ObjectID', 'Status',
+                                'DateEnt', 'DateUp',
+                                'Location', 'Latitude', 'Longitude',
+                                'InfestAcre', 'Density', 'Verified'])
+    # handling duplicates in rev_df
+    toh_df = update_with_revisits(toh_df, rev_df)
+    # changing names and saving to csv
+    toh_df.reset_index(inplace=True)
+    toh_df.rename(columns={'ObjectID': 'id', 'ObsDate': 'obs_date', 'DateEnt': 'ent_date', 'DateUp': 'date_up',
+                           'Location': 'county', 'Latitude': 'lat', 'Longitude': 'lon',
+                           'InfestAcre': 'infest_acre', 'Density': 'density', 'Habitat': 'habitat'
+                           }, inplace=True)
+
+    toh_df = handle_string_errors(toh_df)
+    toh_df = calc_infest_index(toh_df)
+
+    toh_df.set_index('id', inplace=True)
+    toh_df.to_csv(f'{path}/IL_toh.csv')
+
 
 if __name__ == '__main__':
-    # handle_counties()
+    handle_counties()
     # handle_cities()
     handle_toh()
