@@ -5,6 +5,8 @@ TODO: Change coef_dict to reflect actual fly infestation levels [MATT]
 import pickle
 from numpy import random
 import pandas as pd
+import queue
+from my_classes import MonthQueue
 
 
 def infestation_main(run_mode, iterations):
@@ -16,7 +18,7 @@ def infestation_main(run_mode, iterations):
     """
     CG, schema = set_up()
     schema = set_coefficients(schema)
-    cumulative_df = month(CG, schema, iterations, run_mode)
+    cumulative_df = iterate_through_months(CG, schema, iterations, run_mode)
     return cumulative_df
 
 
@@ -41,109 +43,109 @@ def set_coefficients(schema):
     TODO: Make the Dict here reflect actual levels of things [MATT]
     """
 
-    coef_dict = {  # This is where we can adjust parameters. Should we save this in an exported JSON?
-        'Cook': {'infestation': 0.1},  # The idea was to set up a dict we could use for all attributes we want
-        'DuPage': {'infestation': 0},
-        'Kane': {'infestation': 0.3},
-        'Will': {'infestation': 0},
-        'Winnebago': {'infestation': 0},
-        'Lake': {'infestation': 0},
-        'McHenry': {'infestation': 0},
-        'St. Clair': {'infestation': 0},
-        'Kendall': {'infestation': 0},
-        'Madison': {'infestation': 0.5},
-        'Rock Island': {'infestation': 0},
-        'Peoria': {'infestation': 0},
-        'Sangamon': {'infestation': 0},
-        'Tazewell': {'infestation': 0},
-        'Champaign': {'infestation': 0.8},
-        'Boone': {'infestation': 0},
-        'Macon': {'infestation': 0},
-        'Kankakee': {'infestation': 0},
-        'DeKalb': {'infestation': 0},
-        'Williamson': {'infestation': 0},
-        'McLean': {'infestation': 0},
-        'Grundy': {'infestation': 0.1},
-        'Coles': {'infestation': 0},
-        'Jackson': {'infestation': 0},
-        'LaSalle': {'infestation': 0},
-        'Franklin': {'infestation': 0},
-        'Vermilion': {'infestation': 0},
-        'Monroe': {'infestation': 0},
-        'Stephenson': {'infestation': 0.6},
-        'Whiteside': {'infestation': 0},
-        'Adams': {'infestation': 0},
-        'Clinton': {'infestation': 0},
-        'Knox': {'infestation': 0},
-        'Woodford': {'infestation': 0},
-        'Effingham': {'infestation': 0},
-        'Ogle': {'infestation': 0.3},
-        'Marion': {'infestation': 0},
-        'Jefferson': {'infestation': 0},
-        'Saline': {'infestation': 0},
-        'Massac': {'infestation': 0},
-        'Morgan': {'infestation': 0},
-        'Henry': {'infestation': 0},
-        'Jersey': {'infestation': 0},
-        'Randolph': {'infestation': 0},
-        'McDonough': {'infestation': 0},
-        'Macoupin': {'infestation': 0},
-        'Wabash': {'infestation': 0},
-        'Perry': {'infestation': 0},
-        'Logan': {'infestation': 0},
-        'Lee': {'infestation': 0},
-        'Christian': {'infestation': 0},
-        'Douglas': {'infestation': 0},
-        'Bond': {'infestation': 0},
-        'Lawrence': {'infestation': 0},
-        'Richland': {'infestation': 0},
-        'Crawford': {'infestation': 0},
-        'Moultrie': {'infestation': 0},
-        'Montgomery': {'infestation': 0},
-        'Union': {'infestation': 0},
-        'Fulton': {'infestation': 0},
-        'DeWitt': {'infestation': 0},
-        'Menard': {'infestation': 0},
-        'Bureau': {'infestation': 0},
-        'Piatt': {'infestation': 0},
-        'Livingston': {'infestation': 0},
-        'Johnson': {'infestation': 0},
-        'Jo Daviess': {'infestation': 0},
-        'Cass': {'infestation': 0},
-        'Putnam': {'infestation': 0},
-        'Warren': {'infestation': 0},
-        'Carroll': {'infestation': 0},
-        'Clark': {'infestation': 0},
-        'Cumberland': {'infestation': 0},
-        'Alexander': {'infestation': 0},
-        'Marshall': {'infestation': 0},
-        'Fayette': {'infestation': 0},
-        'Edwards': {'infestation': 0},
-        'Pulaski': {'infestation': 0},
-        'Clay': {'infestation': 0},
-        'Edgar': {'infestation': 0},
-        'White': {'infestation': 0},
-        'Shelby': {'infestation': 0},
-        'Ford': {'infestation': 0},
-        'Mercer': {'infestation': 0},
-        'Iroquois': {'infestation': 0},
-        'Washington': {'infestation': 0},
-        'Mason': {'infestation': 0},
-        'Greene': {'infestation': 0},
-        'Hardin': {'infestation': 0},
-        'Wayne': {'infestation': 0},
-        'Hancock': {'infestation': 0},
-        'Brown': {'infestation': 0},
-        'Scott': {'infestation': 0},
-        'Stark': {'infestation': 0},
-        'Jasper': {'infestation': 0},
-        'Hamilton': {'infestation': 0},
-        'Pike': {'infestation': 0},
-        'Henderson': {'infestation': 0},
-        'Calhoun': {'infestation': 0},
-        'Schuyler': {'infestation': 0},
-        'Gallatin': {'infestation': 0},
-        'Pope': {'infestation': 0}
+    coef_dict = {
+        'Cook': {'infestation': 0.0, 'egg_count': 0},
+        'DuPage': {'infestation': 0.0, 'egg_count': 0},
+        'Kane': {'infestation': 0.0, 'egg_count': 0},
+        'Will': {'infestation': 0.0, 'egg_count': 0},
+        'Winnebago': {'infestation': 0.0, 'egg_count': 0},
+        'Lake': {'infestation': 0.0, 'egg_count': 0},
+        'McHenry': {'infestation': 0.0, 'egg_count': 0},
+        'St. Clair': {'infestation': 0.0, 'egg_count': 0},
+        'Kendall': {'infestation': 0.0, 'egg_count': 0},
+        'Madison': {'infestation': 0.0, 'egg_count': 0},
+        'Rock Island': {'infestation': 0.0, 'egg_count': 0},
+        'Peoria': {'infestation': 0.0, 'egg_count': 0},
+        'Sangamon': {'infestation': 0.0, 'egg_count': 0},
+        'Tazewell': {'infestation': 0.0, 'egg_count': 0},
+        'Champaign': {'infestation': 0.0, 'egg_count': 0},
+        'Boone': {'infestation': 0.0, 'egg_count': 0},
+        'Macon': {'infestation': 0.0, 'egg_count': 0},
+        'Kankakee': {'infestation': 0.0, 'egg_count': 0},
+        'DeKalb': {'infestation': 0.0, 'egg_count': 0},
+        'Williamson': {'infestation': 0.0, 'egg_count': 0},
+        'McLean': {'infestation': 0.0, 'egg_count': 0},
+        'Grundy': {'infestation': 0.0, 'egg_count': 0},
+        'Coles': {'infestation': 0.0, 'egg_count': 0},
+        'Jackson': {'infestation': 0.0, 'egg_count': 0},
+        'LaSalle': {'infestation': 0.0, 'egg_count': 0},
+        'Franklin': {'infestation': 0.0, 'egg_count': 0},
+        'Vermilion': {'infestation': 0.0, 'egg_count': 0},
+        'Monroe': {'infestation': 0.0, 'egg_count': 0},
+        'Stephenson': {'infestation': 0.0, 'egg_count': 0},
+        'Whiteside': {'infestation': 0.0, 'egg_count': 0},
+        'Adams': {'infestation': 0.0, 'egg_count': 0},
+        'Clinton': {'infestation': 0.0, 'egg_count': 0},
+        'Knox': {'infestation': 0.0, 'egg_count': 0},
+        'Woodford': {'infestation': 0.0, 'egg_count': 0},
+        'Effingham': {'infestation': 0.0, 'egg_count': 0},
+        'Ogle': {'infestation': 0.0, 'egg_count': 0},
+        'Marion': {'infestation': 0.0, 'egg_count': 0},
+        'Jefferson': {'infestation': 0.0, 'egg_count': 0},
+        'Saline': {'infestation': 0.0, 'egg_count': 0},
+        'Massac': {'infestation': 0.0, 'egg_count': 0},
+        'Morgan': {'infestation': 0.0, 'egg_count': 0},
+        'Henry': {'infestation': 0.0, 'egg_count': 0},
+        'Jersey': {'infestation': 0.0, 'egg_count': 0},
+        'Randolph': {'infestation': 0.0, 'egg_count': 0},
+        'McDonough': {'infestation': 0.0, 'egg_count': 0},
+        'Macoupin': {'infestation': 0.0, 'egg_count': 0},
+        'Wabash': {'infestation': 0.0, 'egg_count': 0},
+        'Perry': {'infestation': 0.0, 'egg_count': 0},
+        'Logan': {'infestation': 0.0, 'egg_count': 0},
+        'Lee': {'infestation': 0.0, 'egg_count': 0},
+        'Christian': {'infestation': 0.0, 'egg_count': 0},
+        'Douglas': {'infestation': 0.0, 'egg_count': 0},
+        'Bond': {'infestation': 0.0, 'egg_count': 0},
+        'Lawrence': {'infestation': 0.0, 'egg_count': 0},
+        'Richland': {'infestation': 0.0, 'egg_count': 0},
+        'Crawford': {'infestation': 0.0, 'egg_count': 0},
+        'Moultrie': {'infestation': 0.0, 'egg_count': 0},
+        'Montgomery': {'infestation': 0.0, 'egg_count': 0},
+        'Union': {'infestation': 0.0, 'egg_count': 0},
+        'Fulton': {'infestation': 0.0, 'egg_count': 0},
+        'DeWitt': {'infestation': 0.0, 'egg_count': 0},
+        'Menard': {'infestation': 0.0, 'egg_count': 0},
+        'Bureau': {'infestation': 0.0, 'egg_count': 0},
+        'Piatt': {'infestation': 0.0, 'egg_count': 0},
+        'Livingston': {'infestation': 0.0, 'egg_count': 0},
+        'Johnson': {'infestation': 0.0, 'egg_count': 0},
+        'Jo Daviess': {'infestation': 0.0, 'egg_count': 0},
+        'Cass': {'infestation': 0.0, 'egg_count': 0},
+        'Putnam': {'infestation': 0.0, 'egg_count': 0},
+        'Warren': {'infestation': 0.0, 'egg_count': 0},
+        'Carroll': {'infestation': 0.0, 'egg_count': 0},
+        'Clark': {'infestation': 0.0, 'egg_count': 0},
+        'Cumberland': {'infestation': 0.0, 'egg_count': 0},
+        'Alexander': {'infestation': 0.0, 'egg_count': 0},
+        'Marshall': {'infestation': 0.0, 'egg_count': 0},
+        'Fayette': {'infestation': 0.0, 'egg_count': 0},
+        'Edwards': {'infestation': 0.0, 'egg_count': 0},
+        'Pulaski': {'infestation': 0.0, 'egg_count': 0},
+        'Clay': {'infestation': 0.0, 'egg_count': 0},
+        'Edgar': {'infestation': 0.0, 'egg_count': 0},
+        'White': {'infestation': 0.0, 'egg_count': 0},
+        'Shelby': {'infestation': 0.0, 'egg_count': 0},
+        'Ford': {'infestation': 0.0, 'egg_count': 0},
+        'Mercer': {'infestation': 0.0, 'egg_count': 0},
+        'Iroquois': {'infestation': 0.0, 'egg_count': 0},
+        'Washington': {'infestation': 0.0, 'egg_count': 0},
+        'Mason': {'infestation': 0.0, 'egg_count': 0},
+        'Greene': {'infestation': 0.0, 'egg_count': 0},
+        'Hardin': {'infestation': 0.0, 'egg_count': 0},
+        'Wayne': {'infestation': 0.0, 'egg_count': 0},
+        'Hancock': {'infestation': 0.0, 'egg_count': 0},
+        'Brown': {'infestation': 0.0, 'egg_count': 0},
+        'Scott': {'infestation': 0.0, 'egg_count': 0},
+        'Stark': {'infestation': 0.0, 'egg_count': 0},
+        'Jasper': {'infestation': 0.0, 'egg_count': 0},
+        'Hamilton': {'infestation': 0.0, 'egg_count': 0},
+        'Pike': {'infestation': 0.0, 'egg_count': 0},
+        'Henderson': {'infestation': 0.0, 'egg_count': 0},
+        'Calhoun': {'infestation': 0.0, 'egg_count': 0},
+        'Schuyler': {'infestation': 0.0, 'egg_count': 0},
+        'Gallatin': {'infestation': 0.0, 'egg_count': 0},
+        'Pope': {'infestation': 0.0, 'egg_count': 0}
     }
     for coef_county in coef_dict:
         for attribute in coef_dict[coef_county]:
@@ -151,7 +153,7 @@ def set_coefficients(schema):
     return schema
 
 
-def month(CG, schema, iterations, run_mode):
+def iterate_through_months(CG, schema, iterations, run_mode):
     """
     Takes the initial schema and iterates it through a number of months
     :param CG: graph of Illinois network
@@ -163,7 +165,11 @@ def month(CG, schema, iterations, run_mode):
     # months = input('How many months are you running? \n')
     cumulative_df = make_starting_df(schema)
     month_tracker = 1
-    for i in range(0, int(iterations)):
+    months_queue = MonthQueue()
+
+    for _ in range(iterations):
+        current_month = months_queue.rotate()
+
         neighbor_obj = find_neighbor_status(CG, schema)
         schema, cumulative_df = calculate_changes(neighbor_obj, schema, cumulative_df, month_tracker, run_mode)
         month_tracker += 1
@@ -252,7 +258,7 @@ def baseline_calc(neighbor_obj, schema, cumulative_df, month_tracker):
         for net_neighbors in neighbor_obj[county_net]:
             probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
             ToH_modifier = (net_neighbors.infestation ** 2
-                            * net_neighbors.toh_density_percentile
+                            * net_neighbors.toh_density
                             * random.exponential(0.02))
             new_infestation = ((net_neighbors.infestation * probability) +
                                (ToH_modifier * net_neighbors.infestation))
@@ -287,7 +293,7 @@ def ToH_calc(neighbor_obj, schema, cumulative_df, month_tracker):
         for net_neighbors in neighbor_obj[county_net]:
             probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
             ToH_modifier = (net_neighbors.infestation ** 2
-                            * net_neighbors.toh_density_percentile
+                            * net_neighbors.toh_density
                             * random.exponential(0.02)
                             * -1)
             new_infestation = net_neighbors.infestation * probability + ToH_modifier * net_neighbors.infestation
@@ -323,7 +329,7 @@ def population_calc(neighbor_obj, schema, cumulative_df, month_tracker):
             probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
             bug_smash = random.normal(0.3, 0.1) * 0.01
             ToH_modifier = (net_neighbors.infestation ** 2
-                            * net_neighbors.toh_density_percentile
+                            * net_neighbors.toh_density
                             * random.exponential(0.02))
             # print((1/net_neighbors.popdense_sqmi) * county.infestation)
             new_infestation = (net_neighbors.infestation * probability +
@@ -356,7 +362,7 @@ def quarantine_calc(neighbor_obj, schema, cumulative_df, month_tracker):
             else:
                 probability = random.normal(0.5, 0.8)
                 ToH_modifier = (net_neighbors.infestation ** 2
-                                * net_neighbors.toh_density_percentile
+                                * net_neighbors.toh_density
                                 * random.exponential(0.02))
                 new_infestation = net_neighbors.infestation * probability + ToH_modifier * net_neighbors.infestation
 

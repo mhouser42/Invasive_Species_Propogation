@@ -16,6 +16,7 @@ from collections import Counter
 from my_classes import City, County
 
 
+
 def get_lower_and_upper_bounds(df: pd.DataFrame, col_name):
     """
     return the lower and upper bounds of a column's values
@@ -116,7 +117,7 @@ def get_toh_totals_by_county(df, handler):
     return county_tots, county_counts
 
 
-def calc_toh_density_percentiles(df, handler, county_tots, county_counts):
+def calc_toh_density_coef(df, handler, county_tots, county_counts):
     """
 
     :param df:
@@ -137,10 +138,7 @@ def calc_toh_density_percentiles(df, handler, county_tots, county_counts):
         avg_infest = total / count if count != 0 else 0
         avg_infest = max(min(avg_infest, max_infest), min_infest)
 
-        node.toh_density_percentile = round((avg_infest / max_infest) * 100, 2) if max_infest > 0 else 0
-
-
-
+        node.toh_density = round((avg_infest / max_infest), 2) if max_infest > 0 else 0
 
 
 if __name__ == '__main__':
@@ -161,7 +159,7 @@ if __name__ == '__main__':
     # adding Tree of Heaven density percentiles
 
     county_tots, county_counts = get_toh_totals_by_county(toh_df, county_dict)
-    calc_toh_density_percentiles(toh_df, county_dict, county_tots, county_counts)
+    calc_toh_density_coef(toh_df, county_dict, county_tots, county_counts)
 
     # pickling
     pickle.dump(CG, open(f'{path}/IL_graph.dat', 'wb'))
