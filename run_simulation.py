@@ -44,9 +44,9 @@ def set_coefficients(schema):
     """
 
     coef_dict = {
-        'Cook': {'infestation': 0.0, 'egg_count': 0},
+        'Cook': {'infestation': 0.3, 'egg_count': 105},
         'DuPage': {'infestation': 0.0, 'egg_count': 0},
-        'Kane': {'infestation': 0.0, 'egg_count': 0},
+        'Kane': {'infestation': 0.1, 'egg_count': 20},
         'Will': {'infestation': 0.0, 'egg_count': 0},
         'Winnebago': {'infestation': 0.0, 'egg_count': 0},
         'Lake': {'infestation': 0.0, 'egg_count': 0},
@@ -58,7 +58,7 @@ def set_coefficients(schema):
         'Peoria': {'infestation': 0.0, 'egg_count': 0},
         'Sangamon': {'infestation': 0.0, 'egg_count': 0},
         'Tazewell': {'infestation': 0.0, 'egg_count': 0},
-        'Champaign': {'infestation': 0.0, 'egg_count': 0},
+        'Champaign': {'infestation': 0.2, 'egg_count': 100},
         'Boone': {'infestation': 0.0, 'egg_count': 0},
         'Macon': {'infestation': 0.0, 'egg_count': 0},
         'Kankakee': {'infestation': 0.0, 'egg_count': 0},
@@ -169,7 +169,13 @@ def iterate_through_months(CG, schema, iterations, run_mode):
 
     for _ in range(iterations):
         current_month = months_queue.rotate()
-
+        for name, county in schema.items():
+            if current_month in ['May', 'June']:
+                county.hatch_eggs()
+            elif current_month in ["August", "September", "October", "November", "December"]:
+                county.mate()
+                if current_month in ["September", "October", "November"]:
+                    county.lay_eggs()
         neighbor_obj = find_neighbor_status(CG, schema)
         schema, cumulative_df = calculate_changes(neighbor_obj, schema, cumulative_df, month_tracker, run_mode)
         month_tracker += 1
