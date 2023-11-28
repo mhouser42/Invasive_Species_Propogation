@@ -53,22 +53,22 @@ class Location:
                 node_list.append(node)
         return node
 
-    def mate(self):
+    def mate(self, mating_chance=None):
         """
         Simulate the mating process, updating the proportion of mated flies in the infestation
 
         >>> county = Location('Butts County', infestation=0.7)
-        >>> county.mate()
-        >>> old_mate = county.mated
-        >>> county.mate()
-        >>> new_mate = county.mated
+        >>> old_mate = county.mate()
+        >>> new_mate = county.mate()
         >>> new_mate > old_mate
         True
         """
-        mating_chance = random.uniform(0.75, 1.0)
+        if mating_chance is None:
+            mating_chance = random.uniform(0.75, 1.0)
         newly_mated = self.infestation * mating_chance * (1.0 - self.mated)
         self.mated += newly_mated
         self.mated = min(self.mated, 1.0) # caps the value at 100%
+        return self.mated
 
     def lay_eggs(self, scaling_factor=100, extra_eggmass_chance=0.05):
         """
@@ -78,22 +78,22 @@ class Location:
         :param extra_eggmass_chance: Chance of laying an additional egg mass.
         :return self.eggcount: Total number of egg masses after laying.
 
-        >>> loc = Location("Matt's County", infestation=0.37, mated=0.75)
-        >>> loc.lay_eggs()
-        >>> print(loc.egg_count)
-        idk
+        >>> loc = Location("Matt's County", infestation=0.37, mated=1.0)
+        >>> current_eggs = loc.lay_eggs()
+        105
         """
         new_egg_masses = int(self.mated * scaling_factor)
         additional_egg_masses = int(new_egg_masses * extra_eggmass_chance)
         self.egg_count += new_egg_masses + additional_egg_masses
         return self.egg_count
 
-    def die_off(self):
+    def die_off(self, mortality_rate=None):
         """
         Simulates the natural death of SLF during the winter.
         :return self.infestation: current infestation level of Location
         """
-        mortality_rate = random.uniform(.85, 1.0)
+        if mortality_rate is None:
+            mortality_rate = random.uniform(.85, 1.0)
         die_off_number = int(self.infestation * mortality_rate)
         self.infestation -= die_off_number
         if self.infestation == 0.0:
@@ -101,22 +101,24 @@ class Location:
             self.laid_eggs = 0.0
         return self.infestation
 
-    def hatch_eggs(self):
+    def hatch_eggs(self, hatch_chance=None):
         """
         Simulates the hatching of eggs and increases the infestation accordingly.
 
         :return: infestation level after hatching eggs.
 
-        >>> location = Location("Cook", infestation=0.0, egg_count=78)
-        >>> pre_hatch_infestation = location.infestation
-        >>> location.hatch_eggs()
-        >>> print(location.infestation)
-        5.0
+        >>> loc = Location("Cook", infestation=0.0, egg_count=105)
+        >>> pre_hatch_infestation = loc.infestation
+        >>> current_infest = loc.hatch_eggs(hatch_chance=1.0)
+        >>> current_infest > 0.37
+        True
+
         """
-        hatch_chance = random.uniform(.75, 1.0)
+        if hatch_chance is None:
+            hatch_chance = random.uniform(.75, 1.0)
         hatched_eggs = int(self.egg_count * hatch_chance)
         while hatched_eggs > 0:
-            egg_coef = random.uniform(0.00035, 0.00045)
+            egg_coef = random.uniform(0.0035, 0.0045)
             self.infestation += egg_coef
             self.egg_count -= 1
             hatched_eggs -= 1
