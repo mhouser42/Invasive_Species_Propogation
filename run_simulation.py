@@ -3,12 +3,14 @@ TODO: write doctests
 """
 
 import pickle
+
+import networkx as nx
 from numpy import random
 import pandas as pd
 from my_classes import MonthQueue
 
 
-def infestation_main(run_mode, iterations):
+def infestation_main(run_mode: str, iterations: int) -> pd.DataFrame:
     """
     Main Function that sequences the order of events when running this file
     :param run_mode: version of Monte Carlo to run
@@ -21,19 +23,22 @@ def infestation_main(run_mode, iterations):
     return cumulative_df
 
 
-def set_up():
+def set_up() -> (nx.Graph, dict, dict):
     """
-    Sets up input files
-    :return: pickled objects
+    return input files created by the illinois_network.py
+    :return CG: Picked graph from illinois_network.py
+    :return schema: a dict containing each county and its own class instance
+    :return neighbor_schema: a dict containing each county and references the instances of adjacent counties
     """
     path = 'data/location'
     CG = pickle.load(open(f'{path}/IL_graph.dat', 'rb'))
     schema = pickle.load(open(f'{path}/graph_handler_counties.dat', 'rb'))
     neighbor_schema = pickle.load(open(f'{path}/graph_handler_neighbors.dat', 'rb'))
+    print(schema)
     return CG, schema, neighbor_schema
 
 
-def set_coefficients(schema):
+def set_coefficients(schema: dict) -> dict:
     """
     Sets coefficients for the class attributes
     Changes the attributes within the schema
@@ -151,7 +156,8 @@ def set_coefficients(schema):
     return schema
 
 
-def iterate_through_months(CG, schema, neighbor_schema, iterations, run_mode='Baseline'):
+def iterate_through_months(CG: nx.Graph, schema: dict, neighbor_schema: dict, iterations: int,
+                           run_mode='Baseline') -> pd.DataFrame:
     """
     Takes the initial schema and iterates it through a number of months
     :param CG: graph of Illinois network
@@ -159,8 +165,7 @@ def iterate_through_months(CG, schema, neighbor_schema, iterations, run_mode='Ba
     :param neighbor_schema: handler dictionary with name of nodes for keys and a list of neighboring County objects
     :param iterations: number of months
     :param run_mode: whether it is baseline mode or another format
-    :return cumulative_df: the final cumulative_df
-    TODO: a better description of cumulative_df [JUSTIN]
+    :return cumulative_df: a df that contains the full data for all counties in a run simulation
     """
     # months = input('How many months are you running? \n')
     cumulative_df = make_starting_df(schema)
@@ -186,9 +191,9 @@ def iterate_through_months(CG, schema, neighbor_schema, iterations, run_mode='Ba
     return cumulative_df
 
 
-def make_starting_df(schema):
+def make_starting_df(schema: dict) -> pd.DataFrame:
     """
-    TODO: getting weird error about expected type. not sure if important. -Matt
+    Creates an initial dataframe with the list of counties and the starting infection rate for each county
     :param schema:
     :return: instantiated dataframe based on graph handler
     """
@@ -199,7 +204,7 @@ def make_starting_df(schema):
     return cumulative_df
 
 
-def get_object(name, schema):
+def get_object(name: str, schema: dict) -> None:
     """
     Utility function.
     Retrieves the county instance object from the schema when given its name
@@ -212,7 +217,7 @@ def get_object(name, schema):
             return schema[county]
 
 
-def find_neighbor_status(schema, neighbor_schema):
+def find_neighbor_status(schema: dict, neighbor_schema: dict) -> dict:
     """
     Ascertains the infestation status of all neighbors for each county instance,
     returns them as a neighbor object
