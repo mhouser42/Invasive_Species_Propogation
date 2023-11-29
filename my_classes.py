@@ -33,12 +33,13 @@ class County:
     """
 
     def __init__(self, name, lat=None, lon=None, geometry=None, centroid=False, pop=None, popdense_sqmi=None,
-                 infestation=0.0, mated=0.0, laid_eggs=0.0, egg_count=0,
+                 saturation=0.0, infestation=0.0, mated=0.0, laid_eggs=0.0, egg_count=0,
                  tree_density=0.0, toh_density=0.0, traffic_level=1.0, quarantine=False, public_awareness=False):
         self.name = name
         self.lat, self.lon, self.geometry, self.centroid = lat, lon, geometry, centroid
         self.pop, self.popdense_sqmi = pop, popdense_sqmi
         self.infestation = infestation
+        self.saturation = saturation
         self.mated = mated
         self.laid_eggs = laid_eggs
         self.egg_count = egg_count

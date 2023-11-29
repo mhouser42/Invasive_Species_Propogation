@@ -329,7 +329,7 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
         if county.quarantine is True:
             neighbor.public_awareness = True
             county.die_off(mortality_rate=county.popdense_sqmi/100000)
-            CG[county][neighbor]['weight'] = 10.0
+            CG[county][neighbor]['weight'] = 25.0
 
 
 
