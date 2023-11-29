@@ -297,27 +297,29 @@ def spread_infestation(county, neighbor, spread_prob):
     neighbor.infestation = min(neighbor.infestation, 1.0)
 
 
-
 def implement_counter_measures(CG, county, neighbor, run_mode):
     """
-
-    :param CG:
-    :param county:
-    :param neighbor:
-    :param run_mode:
+    manipulates infestation and egg levels based on run mode
+    :param CG: graph of county network
+    :param county: county node being assessed
+    :param neighbor: node adjacent to county node
+    :param run_mode: Type of simulation to run
     """
     if run_mode == 'Poison ToH':
         county.die_off(mortality_rate=county.toh_density)
         county.toh_density = county.toh_density - .02 if county.toh_density > 0.0 else county.toh_density
     elif run_mode == 'Population-Based' and county.public_awareness is True:
-        neighbor.public_awareness = True if neighbor.infestation >= county.infestation/2 else neighbor.public_awareness
-        county.egg_count = county.egg_count - int(county.popdense_sqmi/100)
+        neighbor.public_awareness = True if neighbor.infestation >= county.infestation / 2 else neighbor.public_awareness
+        county.egg_count = county.egg_count - int(county.popdense_sqmi / 100)
     elif run_mode == 'Quarantine':
         county.quarantine = True if county.infestation >= .6 else county.quarantine
         if county.quarantine is True:
             neighbor.public_awareness = True
-            county.egg_count = county.egg_count - int(county.popdense_sqmi/10)
+            county.egg_count = county.egg_count - int(county.popdense_sqmi / 10)
             CG[county][neighbor]['weight'] = 2.0
+    elif run_mode == 'All':
+        implement_counter_measures(CG, county, neighbor, 'Poison ToH')
+        implement_counter_measures(CG, county, neighbor, 'Quarantine')
 
 
 def calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode='Baseline'):
@@ -501,4 +503,4 @@ def quarantine_calc(neighbor_obj, schema, cumulative_df, month_tracker):
 
 
 if __name__ == '__main__':
-    infestation_main('Baseline', 10)
+    infestation_main('All', 10)
