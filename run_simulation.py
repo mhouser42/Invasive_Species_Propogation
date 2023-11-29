@@ -240,7 +240,8 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, year_tracker, run_mod
                 new_infestation = population_calc(county, net_neighbors)
             elif run_mode == 'Quarantine':
                 quarantine_list, new_infestation = quarantine_calc(quarantine_list, net_neighbors)
-
+            elif run_mode == 'All':
+                quarantine_list, new_infestation = all_modes(quarantine_list, county, net_neighbors)
 
             all_new_infestations += new_infestation
         all_new_infestations = round(all_new_infestations / (len(neighbor_obj[county_net])), 8) + county.infestation
@@ -284,7 +285,6 @@ def population_calc(county, net_neighbors):
     new_infestation = (net_neighbors.infestation * probability +
                        ToH_modifier * net_neighbors.infestation -
                        (county.infestation * net_neighbors.popdense_sqmi * bug_smash))
-
     return new_infestation
 
 
@@ -301,5 +301,22 @@ def quarantine_calc(quarantine_list, net_neighbors):
     return quarantine_list, new_infestation
 
 
+def all_modes(quarantine_list, county, net_neighbors):
+    if (net_neighbors in quarantine_list) or (net_neighbors.infestation > 0.5 and random.choice([True, False])):
+        new_infestation = 0
+        quarantine_list.add(net_neighbors)
+    else:
+        probability = random.normal(0.5, 0.8)
+        bug_smash = random.normal(0.3, 0.1) * 0.01
+        ToH_modifier = -(net_neighbors.infestation ** 2
+                        * net_neighbors.toh_density_percentile
+                        * random.exponential(0.02))
+        new_infestation = (net_neighbors.infestation * probability +
+                           ToH_modifier * net_neighbors.infestation -
+                           (county.infestation * net_neighbors.popdense_sqmi * bug_smash))
+    return quarantine_list, new_infestation
+
+
 if __name__ == '__main__':
-    infestation_main('Quarantine', 10)
+    df = infestation_main('All', 10)
+    print(df)
