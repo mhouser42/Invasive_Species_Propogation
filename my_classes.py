@@ -25,7 +25,11 @@ class County:
     :param mated: Proportion of the infestation that has mated.
     :param laid_eggs: Proportion of the infestation that has laid eggs.
     :param egg_count: Number of egg masses present.
+    :param tree_density: rough approximation of tree density for counties
+    :param toh_density: the relative density of tree of heaven for county.
+    :param traffic_level: overall traffic amount for state. Changes on month updates.
     :param quarantine: Boolean indicating if the location is under quarantine.
+    :param public_awareness: Boolean indicating if people in the county has become aware of the infestation.
     """
 
     def __init__(self, name, lat=None, lon=None, geometry=None, centroid=False, pop=None, popdense_sqmi=None,
@@ -44,18 +48,16 @@ class County:
         self.quarantine = quarantine
         self.public_awareness = public_awareness
 
-    def get_neighbor_objects(self, CG):  # These are used in run_simulation.py
-        for node in CG.nodes():
-            if hasattr(node, 'name') and node.name == self.name:
-                neighbors = [neighbor for neighbor in CG.neighbors(node)]
-        return neighbors
-
-    def get_my_object(self, graph):
-        node_list = []
+    def get_neighbor_objects(self, graph):  # These are used in run_simulation.py
+        """
+        returns a list of neighbor nodes for the node.
+        :param graph: the graph the node exists in.
+        :return: a list of nodes connected to this node by an edge
+        """
         for node in graph.nodes():
             if hasattr(node, 'name') and node.name == self.name:
-                node_list.append(node)
-        return node
+                neighbors = [neighbor for neighbor in graph.neighbors(node)]
+        return neighbors
 
     def mate(self, mating_chance=None):
         """
@@ -82,9 +84,11 @@ class County:
         :param extra_eggmass_chance: Chance of laying an additional egg mass.
         :return self.eggcount: Total number of egg masses after laying.
 
-        >>> loc = County("Matt's County", infestation=0.37, mated=1.0)
+        >>> loc = County("Matt's County", infestation=0.37, toh_density=.5, tree_density=.5, mated=1.0)
+        >>> old_eggs = loc.egg_count
         >>> current_eggs = loc.lay_eggs()
-        105
+        >>> current_eggs > old_eggs
+        True
         """
         new_egg_masses = int(self.mated * scaling_factor * (self.toh_density + self.tree_density))
         additional_egg_masses = int(new_egg_masses * extra_eggmass_chance)
@@ -94,7 +98,12 @@ class County:
     def die_off(self, mortality_rate=None):
         """
         Simulates the natural death of SLF during the winter.
+        :param mortality_rate: percent of flies killed off. If not provided, somewhere between .75 and 1.0
         :return self.infestation: current infestation level of Location
+        >>> county = County("Justin's County", infestation=0.37)
+        >>> current_infest = county.die_off(mortality_rate=1.0)
+        >>> current_infest
+        0.0
         """
         if mortality_rate is None:
             mortality_rate = random.uniform(0.75, 1.0)
@@ -137,6 +146,10 @@ class County:
 
 
 class MonthQueue(Queue):
+    """
+    A Queue which keeps track of which month it is. Stored as a series of tuples, with month first and then traffic level.
+    :param months_traffic_levels: A dictionary of corresponding traffic levels for each month.
+    """
     def __init__(self):
         super().__init__()
         self.months_traffic_levels = {
@@ -148,11 +161,29 @@ class MonthQueue(Queue):
             self.put((month, traffic_level))
 
     def rotate(self):
+        """
+        method which pops the first element of queue off and puts it at the back.
+        :return old_month: the month that was popped off
+        >>> my_queue = MonthQueue()
+        >>> my_queue.rotate()
+        ('January', 0.9)
+        >>> my_queue.rotate()
+        ('February', 0.9)
+        """
         old_month = self.get()
         self.put(old_month)
         return old_month
 
     def get_traffic_level(self, month):
+        """
+        find the traffic level of a month
+        :param month: month to be accessed
+        :return: the traffic level for this month
+
+        >>> my_queue = MonthQueue()
+        >>> my_queue.get_traffic_level('July')
+        1.0
+        """
         return self.months_traffic_levels[month]
 
 

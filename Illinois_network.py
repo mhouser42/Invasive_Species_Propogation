@@ -16,13 +16,13 @@ from collections import Counter
 from my_classes import County
 
 
-
 def get_lower_and_upper_bounds(df: pd.DataFrame, col_name):
     """
     return the lower and upper bounds of a column's values
     :param df: dataframe to be accessed
     :param col_name: string name of column to retrieve boundaries
-    :return:
+    :return: the lower and upper bounds
+    >>> pd.DataFrame()
     """
     Q1 = np.percentile(df[col_name], 25)
     Q3 = np.percentile(df[col_name], 75)
@@ -94,12 +94,31 @@ def construct_edges(CG: nx.Graph, edge_df: pd.DataFrame, handler: dict):
     CG.add_edges_from(edges)
 
 
+def get_neighbor_handler(CG, handler):
+    """
+    Ascertains the infestation status of all neighbors for each county instance,
+    returns them as a neighbor object
+    :param CG: the graph of county network
+    :param handler: the graph handler, with county names for keys and the counties themselves for values
+    :return neighbor_handler: another handler, with county names for keys and a
+    list of neighboring county nodes for values
+    """
+    neighbor_handler = {}
+    for county in handler:
+        all_neighbors = []
+        for neighbor in handler[county].get_neighbor_objects(CG):
+            neighbor = handler[neighbor.name]
+            all_neighbors.append(neighbor)
+        neighbor_handler[county] = all_neighbors
+    return neighbor_handler
+
+
 def get_toh_totals_by_county(df, handler):
     """
-
+    calculates the total infestation_index (acreage X density) and number of sightings of tree of heaven for all nodes
     :param df: dataframe to be assessed
-    :param handler: node counter
-    :return county_tots, county_counts: the total infestation of tree of heaven by county (acreage X density)
+    :param handler: graph handler with county names for keys and the counties themselves as values
+    :return county_tots, county_counts: the total infestation of tree of heaven by county
     :return county_counts: the number of tree of heaven sightings in a county.
     """
 
@@ -115,11 +134,13 @@ def get_toh_totals_by_county(df, handler):
 
 def calc_toh_density_coef(df, handler, county_tots, county_counts):
     """
+    takes  total infestation and sightings and returns relative tree of heaven density for each county in the network,
+    capping at 1.0 and bottoming out at 0.0. This is a relative level based on sightings, with outlier being
 
-    :param df:
-    :param handler:
-    :param county_tots:
-    :param county_counts:
+    :param df: dataframe of tree of heaven data
+    :param handler: graph handler with county names as keys and the counties themselves as values
+    :param county_tots: total infestation index by county
+    :param county_counts: total sightings by county
     """
     lower, upper = get_lower_and_upper_bounds(toh_df, 'infest_index')
     toh_df['infest_index'] = np.clip(toh_df['infest_index'], lower, upper)
@@ -138,6 +159,11 @@ def calc_toh_density_coef(df, handler, county_tots, county_counts):
 
 
 def add_tree_density(handler):
+    """
+    adds regular tree densities to nodes, based on the counties latitude and longitude.
+    REFERENCE: https://www.fs.usda.gov/nrs/pubs/rb/rb_nrs113.pdf, pages 5-6
+    :param handler: graph handler with county names for keys and the counties themselves as values
+    """
     peoria = handler['Peoria']
     hardin = handler['Hardin']
     clark = handler['Clark']
@@ -150,6 +176,7 @@ def add_tree_density(handler):
         else:
             county.tree_density = 0.2
 
+
 if __name__ == '__main__':
     path = 'data/location'
     county_df = pd.read_csv(f'{path}/counties.csv')  # for nodes
@@ -160,20 +187,24 @@ if __name__ == '__main__':
     CG = nx.Graph()
 
     # adding nodes
-    county_dict = construct_nodes(CG, county_df)
+    county_handler = construct_nodes(CG, county_df)
 
     # adding edges
-    construct_edges(CG, edge_df, county_dict)
+    construct_edges(CG, edge_df, county_handler)
 
-    # adding Tree of Heaven density percentiles
+    # adding Tree of Heaven and regular tree densities
 
-    county_tots, county_counts = get_toh_totals_by_county(toh_df, county_dict)
-    calc_toh_density_coef(toh_df, county_dict, county_tots, county_counts)
-    add_tree_density(county_dict)
+    county_tots, county_counts = get_toh_totals_by_county(toh_df, county_handler)
+    calc_toh_density_coef(toh_df, county_handler, county_tots, county_counts)
+    add_tree_density(county_handler)
+
+    # getting a handler of all node neighbors in graph
+    neighbor_handler = get_neighbor_handler(CG, county_handler)
 
     # pickling
     pickle.dump(CG, open(f'{path}/IL_graph.dat', 'wb'))
-    pickle.dump(county_dict, open(f'{path}/graph_handler_counties.dat', 'wb'))
+    pickle.dump(county_handler, open(f'{path}/graph_handler_counties.dat', 'wb'))
+    pickle.dump(neighbor_handler, open(f'{path}/graph_handler_neighbors.dat', 'wb'))
 
     # city_dict = construct_nodes(CG, city_df, is_county=False)
     # handler = {'C': county_dict, 'c': city_dict}

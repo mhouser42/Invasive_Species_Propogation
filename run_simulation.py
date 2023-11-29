@@ -1,11 +1,10 @@
 """
-TODO: Change coef_dict to reflect actual fly infestation levels [MATT]
+TODO: write doctests
 """
 
 import pickle
 from numpy import random
 import pandas as pd
-import queue
 from my_classes import MonthQueue
 
 
@@ -16,21 +15,22 @@ def infestation_main(run_mode, iterations):
     :param iterations: number of times to run Monte Carlo
     :return : pandas dataframe of cumulative months
     """
-    CG, schema = set_up()
+    CG, schema, neighbor_schema = set_up()
     schema = set_coefficients(schema)
-    cumulative_df = iterate_through_months(CG, schema, iterations, run_mode)
+    cumulative_df = iterate_through_months(CG, schema, neighbor_schema, iterations, run_mode)
     return cumulative_df
 
 
 def set_up():
     """
     Sets up input files
-    :return:
+    :return: pickled objects
     """
     path = 'data/location'
     CG = pickle.load(open(f'{path}/IL_graph.dat', 'rb'))
     schema = pickle.load(open(f'{path}/graph_handler_counties.dat', 'rb'))
-    return CG, schema
+    neighbor_schema = pickle.load(open(f'{path}/graph_handler_neighbors.dat', 'rb'))
+    return CG, schema, neighbor_schema
 
 
 def set_coefficients(schema):
@@ -38,9 +38,7 @@ def set_coefficients(schema):
     Sets coefficients for the class attributes
     Changes the attributes within the schema
     :param schema: handler for dictionary
-    :return:
-
-    TODO: Make the Dict here reflect actual levels of things [MATT]
+    :return: handler but updated
     """
 
     coef_dict = {
@@ -153,14 +151,16 @@ def set_coefficients(schema):
     return schema
 
 
-def iterate_through_months(CG, schema, iterations, run_mode):
+def iterate_through_months(CG, schema, neighbor_schema, iterations, run_mode='Baseline'):
     """
     Takes the initial schema and iterates it through a number of months
     :param CG: graph of Illinois network
-    :param schema: handler dictionary for graph
-    :param iterations: number
-    :param run_mode:
-    :return:
+    :param schema: handler dictionary for graph with name of nodes for keys and County object for values
+    :param neighbor_schema: handler dictionary with name of nodes for keys and a list of neighboring County objects
+    :param iterations: number of months
+    :param run_mode: whether it is baseline mode or another format
+    :return cumulative_df: the final cumulative_df
+    TODO: a better description of cumulative_df [JUSTIN]
     """
     # months = input('How many months are you running? \n')
     cumulative_df = make_starting_df(schema)
@@ -179,7 +179,7 @@ def iterate_through_months(CG, schema, iterations, run_mode):
                     county.lay_eggs()
             elif current_month in ['January', 'February']:
                 county.die_off()
-        neighbor_obj = find_neighbor_status(CG, schema)
+        neighbor_obj = find_neighbor_status(schema, neighbor_schema)
         schema, cumulative_df = calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode)
         month_tracker += 1
 
@@ -187,6 +187,11 @@ def iterate_through_months(CG, schema, iterations, run_mode):
 
 
 def make_starting_df(schema):
+    """
+    TODO: getting weird error about expected type. not sure if important. -Matt
+    :param schema:
+    :return: instantiated dataframe based on graph handler
+    """
     county_list = list(schema[county].name for county in schema)
     starting_infestation = list(schema[county].infestation for county in schema)
     cumulative_df = pd.DataFrame({'County': county_list})
@@ -194,30 +199,12 @@ def make_starting_df(schema):
     return cumulative_df
 
 
-def find_neighbor_status(CG, schema):
-    """
-    Ascertains the infestation status of all neighbors for each county instance,
-    returns them as a neighbor object
-    :param CG:
-    :param schema:
-    :return:
-    """
-    neighbor_obj = {}
-    for county in schema:
-        all_neighbors = []
-        for neighbor in schema[county].get_neighbor_objects(CG):
-            neighbor = get_object(neighbor.name, schema)
-            all_neighbors.append(neighbor)
-        neighbor_obj[county] = all_neighbors
-    return neighbor_obj
-
-
 def get_object(name, schema):
     """
     Utility function.
     Retrieves the county instance object from the schema when given its name
-    :param name:
-    :param schema:
+    :param name: name of object
+    :param schema: handler to be searched
     :return:
     """
     for county in schema:
@@ -225,19 +212,40 @@ def get_object(name, schema):
             return schema[county]
 
 
+def find_neighbor_status(schema, neighbor_schema):
+    """
+    Ascertains the infestation status of all neighbors for each county instance,
+    returns them as a neighbor object
+    :param schema: dictionary handler of graph, with keys as the names of counties and the counties themselves as values
+    :param neighbor_schema: dictionary with county names for keys and a list of neighboring county objects.
+    :return: the
+    """
+    neighbor_obj = {}
+    for county, neighbors in neighbor_schema.items():
+        all_neighbors = []
+        for neighbor in neighbor_schema[county]:
+            neighbor = get_object(neighbor.name, schema)
+            all_neighbors.append(neighbor)
+        neighbor_obj[county] = all_neighbors
+    return neighbor_obj
+
+
 def calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode='Baseline'):
     """
-    SUPER TENTATIVE
-    This iterates outcomes of month interactions randomly
-    :param neighbor_obj:
-    :param schema:
+    TODO: had a hard time describing this one - Matt
+    This iterates outcomes of month interactions
+
+    :param CG: graph of county network
+    :param neighbor_obj: the adjacent object
+    :param schema: county handler
+    :param cumulative_df:
+    :param month_tracker: count of current month
+    :param run_mode: type of simulation
     :return:
-
     """
-
     # print('------------------------- Begin New month -------------------------')
 
-    schema, cumulative_df = calculate_infestion(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode)
+    schema, cumulative_df = calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode)
     return schema, cumulative_df
     # if run_mode == 'Baseline':
     #     schema, cumulative_df = baseline_calc(neighbor_obj, schema, cumulative_df, month_tracker)
@@ -250,17 +258,37 @@ def calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker, ru
     # return schema, cumulative_df
 
 
-def calculate_spread_prob(CG, node, neighbor):
-    edge_weight = CG[node][neighbor]['weight']
-    base_prob = random.normal(0.5, 0.2) * node.infestation / (neighbor.toh_density + neighbor.tree_density)
-    spread_prob = base_prob / edge_weight * node.traffic_level
+def calculate_spread_prob(CG, county, neighbor):
+    """
+    returns the likelyhood of an infestation spreading from one county to another.
+    the spread is based on:
+        - The current infestation level of source county
+        - The combined density of tree of heaven and regular trees
+        - The weight of edge connecting the two counties
+        - The current traffic level of the month
+
+    :param CG: graph of county network
+    :param county: the source node the infestation is spreading from
+    :param neighbor: target node infestation might spread to.
+    :return spread_prob: probability of spread, between 0.0 and 1.0
+    """
+    edge_weight = CG[county][neighbor]['weight']
+    base_prob = random.normal(0.5, 0.2) * county.infestation / (neighbor.toh_density + neighbor.tree_density)
+    spread_prob = base_prob / edge_weight * county.traffic_level
 
     spread_prob = max(0, min(spread_prob, 1))
     return spread_prob
 
 
-def spread_infestation(node, neighbor, spread_prob):
-    max_transferable = node.infestation * spread_prob
+def spread_infestation(county, neighbor, spread_prob):
+    """
+    updates the infestation level of a neighboring county to source county
+    :param county: source node that infestation spreads from
+    :param neighbor: target node the infestation will spread to
+    :param spread_prob: probability that the infestation will spread
+
+    """
+    max_transferable = county.infestation * spread_prob
     variablity = random.uniform(0.05, 0.10)
 
     transfer_amount = max_transferable * variablity
@@ -268,10 +296,16 @@ def spread_infestation(node, neighbor, spread_prob):
     neighbor.infestation += transfer_amount
     neighbor.infestation = min(neighbor.infestation, 1.0)
 
-    return transfer_amount
 
 
 def implement_counter_measures(CG, county, neighbor, run_mode):
+    """
+
+    :param CG:
+    :param county:
+    :param neighbor:
+    :param run_mode:
+    """
     if run_mode == 'Poison ToH':
         county.die_off(mortality_rate=county.toh_density)
         county.toh_density = county.toh_density - .02 if county.toh_density > 0.0 else county.toh_density
@@ -285,7 +319,18 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
             county.egg_count = county.egg_count - int(county.popdense_sqmi/10)
             CG[county][neighbor]['weight'] = 2.0
 
-def calculate_infestion(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode='Baseline'):
+
+def calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode='Baseline'):
+    """
+    updates the new infestation levels for all nodes in county graph.
+    :param CG: The graph of counties
+    :param neighbor_obj: a collection of the neighbors of all nodes.
+    :param schema:
+    :param cumulative_df:
+    :param month_tracker:
+    :param run_mode:
+    :return:
+    """
     infestation_collector = []
     infest_data = {}
 
@@ -307,6 +352,7 @@ def calculate_infestion(CG, neighbor_obj, schema, cumulative_df, month_tracker, 
     new_trackers = pd.DataFrame(infest_data)
     cumulative_df = pd.concat([cumulative_df, new_trackers], axis=1)
     return schema, cumulative_df
+
 
 def baseline_calc(neighbor_obj, schema, cumulative_df, month_tracker):
     """
@@ -416,6 +462,14 @@ def population_calc(neighbor_obj, schema, cumulative_df, month_tracker):
 
 
 def quarantine_calc(neighbor_obj, schema, cumulative_df, month_tracker):
+    """
+
+    :param neighbor_obj:
+    :param schema:
+    :param cumulative_df:
+    :param month_tracker:
+    :return:
+    """
     infestation_collector = []
     quarantine_list = set()  # actually this is fine where it is
     for county_net in neighbor_obj:
