@@ -160,6 +160,7 @@ def iterate_through_months(CG: nx.Graph, schema: dict, neighbor_schema: dict, it
                            run_mode='Baseline', use_methods=False) -> pd.DataFrame:
     """
     Takes the initial schema and iterates it through a number of months
+    :param use_methods: determines if class methods are used
     :param CG: graph of Illinois network
     :param schema: handler dictionary for graph with name of nodes for keys and County object for values
     :param neighbor_schema: handler dictionary with name of nodes for keys and a list of neighboring County objects
@@ -252,7 +253,7 @@ def calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker, ru
     """
     # print('------------------------- Begin New month -------------------------')
     if use_methods:
-        schema, cumulative_df = calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode)
+        schema, cumulative_df = calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode=run_mode)
         return schema, cumulative_df
     else:
         if run_mode == 'Baseline':
@@ -283,7 +284,6 @@ def calculate_spread_prob(CG, county, neighbor):
     edge_weight = CG[county][neighbor]['weight']
     base_prob = random.normal(0.5, 0.2) * county.infestation / (neighbor.toh_density + neighbor.tree_density)
     spread_prob = base_prob / edge_weight * county.traffic_level
-    print(CG[county][neighbor]['weight'])
 
     spread_prob = max(0, min(spread_prob, 1))
     return spread_prob
@@ -317,7 +317,7 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
     if run_mode == 'Poison ToH':
         county.die_off(mortality_rate=county.toh_density/1.25)
         # county.toh_density = county.toh_density - .1 if county.toh_density > 0.0 else county.toh_density
-    elif run_mode == 'Population-Based' or 'Quarantine':
+    elif run_mode in ('Population-Based', 'Quarantine'):
         county.public_awareness = True if county.infestation >= .5 else county.public_awareness
         if county.public_awareness:
             neighbor.public_awareness = True if neighbor.infestation >= county.infestation / 1.5\
@@ -325,15 +325,14 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
             county.die_off(mortality_rate=county.popdense_sqmi/100000)
             county.egg_count = county.egg_count - int(county.popdense_sqmi / 1000)
     elif run_mode == 'All':
-        implement_counter_measures(CG, county, neighbor, 'Poison ToH')
-        implement_counter_measures(CG, county, neighbor, 'Quarantine')
+        implement_counter_measures(CG, county, neighbor, run_mode='Poison ToH')
+        implement_counter_measures(CG, county, neighbor, run_mode='Quarantine')
 
     if run_mode == 'Quarantine':
         county.quarantine = True if county.infestation >= .75 else county.quarantine
         if county.quarantine is True:
             neighbor.public_awareness = True
-            county.die_off(mortality_rate=county.popdense_sqmi/100000)
-            CG[county][neighbor]['weight'] = 50.0
+            CG[county][neighbor]['weight'] = 2.0
 
 
 
@@ -359,7 +358,7 @@ def calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode
 
         for net_neighbor in neighbor_obj[county_net]:
             spread_prob = calculate_spread_prob(CG, county, net_neighbor)
-            implement_counter_measures(CG, county, net_neighbor, run_mode)
+            implement_counter_measures(CG, county, net_neighbor, run_mode=run_mode)
             spread_infestation(county, net_neighbor, spread_prob)
 
             new_infestations += net_neighbor.infestation
@@ -510,4 +509,4 @@ def quarantine_calc(neighbor_obj, schema, cumulative_df, month_tracker):
 
 
 if __name__ == '__main__':
-    infestation_main('All', 10)
+    infestation_main('All', 100, use_methods=True)
