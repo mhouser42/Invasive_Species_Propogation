@@ -42,9 +42,9 @@ def set_coefficients(schema):
     """
 
     coef_dict = {  # This is where we can adjust parameters. Should we save this in an exported JSON?
-        'Cook': {'infestation': 0.1},  # The idea was to set up a dict we could use for all attributes we want
+        'Cook': {'infestation': 0.3},  # The idea was to set up a dict we could use for all attributes we want
         'DuPage': {'infestation': 0},
-        'Kane': {'infestation': 0.3},
+        'Kane': {'infestation': 0.1},
         'Will': {'infestation': 0},
         'Winnebago': {'infestation': 0},
         'Lake': {'infestation': 0},
@@ -56,7 +56,7 @@ def set_coefficients(schema):
         'Peoria': {'infestation': 0},
         'Sangamon': {'infestation': 0},
         'Tazewell': {'infestation': 0},
-        'Champaign': {'infestation': 0.8},
+        'Champaign': {'infestation': 0.2},
         'Boone': {'infestation': 0},
         'Macon': {'infestation': 0},
         'Kankakee': {'infestation': 0},
@@ -70,7 +70,7 @@ def set_coefficients(schema):
         'Franklin': {'infestation': 0},
         'Vermilion': {'infestation': 0},
         'Monroe': {'infestation': 0},
-        'Stephenson': {'infestation': 0.6},
+        'Stephenson': {'infestation': 0},
         'Whiteside': {'infestation': 0},
         'Adams': {'infestation': 0},
         'Clinton': {'infestation': 0},
@@ -143,7 +143,7 @@ def set_coefficients(schema):
         'Calhoun': {'infestation': 0},
         'Schuyler': {'infestation': 0},
         'Gallatin': {'infestation': 0},
-        'Pope': {'infestation': 0}
+        'Pope': {'infestation': 0.3}
     }
     for coef_county in coef_dict:
         for attribute in coef_dict[coef_county]:
@@ -258,10 +258,7 @@ def baseline_calc(neighbor_obj, schema, cumulative_df, month_tracker):
                                (ToH_modifier * net_neighbors.infestation))
             all_new_infestations += new_infestation
         all_new_infestations = round(all_new_infestations / (len(neighbor_obj[county_net])), 8) + county.infestation
-        if all_new_infestations > 1:
-            all_new_infestations = 1
-        if all_new_infestations < 0:
-            all_new_infestations = 0
+        all_new_infestations = max(0, min(all_new_infestations, 1))
         # print(f'{county_net} went from {county.infestation} to {all_new_infestations}')
         setattr(county, 'infestation', all_new_infestations)
         infestation_collector.append(all_new_infestations)
@@ -293,10 +290,7 @@ def ToH_calc(neighbor_obj, schema, cumulative_df, month_tracker):
             new_infestation = net_neighbors.infestation * probability + ToH_modifier * net_neighbors.infestation
             all_new_infestations += new_infestation
         all_new_infestations = round(all_new_infestations / (len(neighbor_obj[county_net])), 8) + county.infestation
-        if all_new_infestations > 1:
-            all_new_infestations = 1
-        if all_new_infestations < 0:
-            all_new_infestations = 0
+        all_new_infestations = max(0, min(all_new_infestations, 1))
         # print(f'{county_net} went from {county.infestation} to {all_new_infestations}')
         setattr(county, 'infestation', all_new_infestations)
         infestation_collector.append(all_new_infestations)
@@ -331,10 +325,7 @@ def population_calc(neighbor_obj, schema, cumulative_df, month_tracker):
                                (county.infestation * net_neighbors.popdense_sqmi * bug_smash))
             all_new_infestations += new_infestation
         all_new_infestations = round(all_new_infestations / (len(neighbor_obj[county_net])), 8) + county.infestation
-        if all_new_infestations > 1:
-            all_new_infestations = 1
-        if all_new_infestations < 0:
-            all_new_infestations = 0
+        all_new_infestations = max(0, min(all_new_infestations, 1))
         # print(f'{county_net} went from {county.infestation} to {all_new_infestations}')
         setattr(county, 'infestation', all_new_infestations)
         infestation_collector.append(all_new_infestations)
@@ -362,10 +353,7 @@ def quarantine_calc(neighbor_obj, schema, cumulative_df, month_tracker):
 
             all_new_infestations += new_infestation
         all_new_infestations = round(all_new_infestations / (len(neighbor_obj[county_net])), 8) + county.infestation
-        if all_new_infestations > 1:
-            all_new_infestations = 1
-        if all_new_infestations < 0:
-            all_new_infestations = 0
+        all_new_infestations = max(0, min(all_new_infestations, 1))
         # print(f'{county_net} went from {county.infestation} to {all_new_infestations}')
         setattr(county, 'infestation', all_new_infestations)
         infestation_collector.append(all_new_infestations)
