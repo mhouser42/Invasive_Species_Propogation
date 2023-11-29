@@ -20,7 +20,7 @@ def infestation_main(run_mode: str, iterations: int, use_methods=False) -> pd.Da
     """
     CG, schema, neighbor_schema = set_up()
     schema = set_coefficients(schema)
-    cumulative_df = iterate_through_months(CG, schema, neighbor_schema, iterations, run_mode, use_methods)
+    cumulative_df = iterate_through_months(CG, schema, neighbor_schema, iterations, run_mode, use_methods=use_methods)
     return cumulative_df
 
 
@@ -186,7 +186,8 @@ def iterate_through_months(CG: nx.Graph, schema: dict, neighbor_schema: dict, it
                 elif current_month in ['January', 'February']:
                         county.die_off()
         neighbor_obj = find_neighbor_status(CG, schema)
-        schema, cumulative_df = calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode)
+        schema, cumulative_df = calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker,
+                                                  run_mode, use_methods=use_methods)
         month_tracker += 1
 
     return cumulative_df
@@ -234,6 +235,7 @@ def find_neighbor_status(CG, schema: dict) -> dict:
             all_neighbors.append(neighbor)
         neighbor_obj[county] = all_neighbors
     return neighbor_obj
+
 
 def calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode='Baseline', use_methods=False):
     """
