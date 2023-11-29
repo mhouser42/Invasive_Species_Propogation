@@ -12,11 +12,11 @@ def infestation_main(run_mode, iterations):
     Main Function that sequences the order of events when running this file
     :param run_mode: version of Monte Carlo to run
     :param iterations: number of times to run Monte Carlo
-    :return : pandas dataframe of cumulative months
+    :return : pandas dataframe of cumulative years
     """
     CG, schema = set_up()
     schema = set_coefficients(schema)
-    cumulative_df = month(CG, schema, iterations, run_mode)
+    cumulative_df = year(CG, schema, iterations, run_mode)
     return cumulative_df
 
 
@@ -151,22 +151,22 @@ def set_coefficients(schema):
     return schema
 
 
-def month(CG, schema, iterations, run_mode):
+def year(CG, schema, iterations, run_mode):
     """
-    Takes the initial schema and iterates it through a number of months
+    Takes the initial schema and iterates it through a number of years
     :param CG: graph of Illinois network
     :param schema: handler dictionary for graph
     :param iterations: number
     :param run_mode:
     :return:
     """
-    # months = input('How many months are you running? \n')
+    # years = input('How many years are you running? \n')
     cumulative_df = make_starting_df(schema)
-    month_tracker = 1
+    year_tracker = 1
     for i in range(0, int(iterations)):
         neighbor_obj = find_neighbor_status(CG, schema)
-        schema, cumulative_df = calculate_changes(neighbor_obj, schema, cumulative_df, month_tracker, run_mode)
-        month_tracker += 1
+        schema, cumulative_df = calculate_changes(neighbor_obj, schema, cumulative_df, year_tracker, run_mode)
+        year_tracker += 1
 
     return cumulative_df
 
@@ -175,7 +175,7 @@ def make_starting_df(schema):
     county_list = list(schema[county].name for county in schema)
     starting_infestation = list(schema[county].infestation for county in schema)
     cumulative_df = pd.DataFrame({'County': county_list})
-    cumulative_df.insert(1, f'month 0', starting_infestation, True)
+    cumulative_df.insert(1, f'year 0', starting_infestation, True)
     return cumulative_df
 
 
@@ -211,10 +211,10 @@ def get_object(name, schema):  # I'm not certain this loop is necessary, you sho
             return schema[county]
 
 
-def calculate_changes(neighbor_obj, schema, cumulative_df, month_tracker, run_mode):
+def calculate_changes(neighbor_obj, schema, cumulative_df, year_tracker, run_mode):
     """
     SUPER TENTATIVE
-    This iterates outcomes of month interactions randomly
+    This iterates outcomes of year interactions randomly
     :param neighbor_obj:
     :param schema:
     :return:
@@ -223,7 +223,7 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, month_tracker, run_mo
     TODO: Establish run modes
     """
 
-    # print('------------------------- Begin New month -------------------------')
+    # print('------------------------- Begin New year -------------------------')
     infestation_collector = []
     quarantine_list = set()
     for county_net in neighbor_obj:
@@ -237,9 +237,10 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, month_tracker, run_mo
             elif run_mode == 'Poison ToH':
                 new_infestation = ToH_calc(net_neighbors)
             elif run_mode == 'Population-Based Countermeasures':
-                new_infestation = population_calc(net_neighbors)
+                new_infestation = population_calc(county, net_neighbors)
             elif run_mode == 'Quarantine':
-                new_infestation = quarantine_calc(quarantine_list, net_neighbors)
+                quarantine_list, new_infestation = quarantine_calc(quarantine_list, net_neighbors)
+
 
             all_new_infestations += new_infestation
         all_new_infestations = round(all_new_infestations / (len(neighbor_obj[county_net])), 8) + county.infestation
@@ -247,7 +248,7 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, month_tracker, run_mo
         # print(f'{county_net} went from {county.infestation} to {all_new_infestations}')
         setattr(county, 'infestation', all_new_infestations)
         infestation_collector.append(all_new_infestations)
-    cumulative_df.insert(month_tracker + 1, f'month {month_tracker}', infestation_collector, True)
+    cumulative_df.insert(year_tracker + 1, f'year {year_tracker}', infestation_collector, True)
     return schema, cumulative_df
 
 
@@ -272,7 +273,7 @@ def ToH_calc(net_neighbors):
     return new_infestation
 
 
-def population_calc(net_neighbors):
+def population_calc(county, net_neighbors):
 
     probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
     bug_smash = random.normal(0.3, 0.1) * 0.01
@@ -287,7 +288,7 @@ def population_calc(net_neighbors):
     return new_infestation
 
 
-def quarantine_calc(net_neighbors):
+def quarantine_calc(quarantine_list, net_neighbors):
     if (net_neighbors in quarantine_list) or (net_neighbors.infestation > 0.5 and random.choice([True, False])):
         new_infestation = 0
         quarantine_list.add(net_neighbors)
@@ -297,8 +298,8 @@ def quarantine_calc(net_neighbors):
                         * net_neighbors.toh_density_percentile
                         * random.exponential(0.02))
         new_infestation = net_neighbors.infestation * probability + ToH_modifier * net_neighbors.infestation
-    return new_infestation
+    return quarantine_list, new_infestation
 
 
 if __name__ == '__main__':
-    infestation_main('Baseline', 10)
+    infestation_main('Quarantine', 10)
