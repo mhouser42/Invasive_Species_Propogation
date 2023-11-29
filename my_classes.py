@@ -73,7 +73,7 @@ class County:
         self.mated = min(self.mated, 1.0)  # caps the value at 100%
         return self.mated
 
-    def lay_eggs(self, scaling_factor=100, extra_eggmass_chance=0.05):
+    def lay_eggs(self, scaling_factor=100, extra_eggmass_chance=0.12):
         """
         Simulates the laying of eggs based on the porportion of mated SLFs.
 
@@ -96,8 +96,8 @@ class County:
         :return self.infestation: current infestation level of Location
         """
         if mortality_rate is None:
-            mortality_rate = random.uniform(.80, .90)
-        die_off_number = int(self.infestation * mortality_rate)
+            mortality_rate = random.uniform(0.75, 1.0)
+        die_off_number = self.infestation * mortality_rate
         self.infestation -= die_off_number
         self.mated = 0.0
         self.laid_eggs = 0.0
@@ -125,7 +125,7 @@ class County:
             self.egg_count -= 1
             hatched_eggs -= 1
 
-        self.infestation = min(self.infestation, 1.0)  # caps at 100%
+        self.infestation = round(min(self.infestation, 1.0), 2)  # caps at 100%
         return self.infestation
 
     def __hash__(self):
