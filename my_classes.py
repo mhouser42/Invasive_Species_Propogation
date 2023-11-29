@@ -99,9 +99,8 @@ class County:
             mortality_rate = random.uniform(.80, .90)
         die_off_number = int(self.infestation * mortality_rate)
         self.infestation -= die_off_number
-        if self.infestation == 0.0:
-            self.mated = 0.0
-            self.laid_eggs = 0.0
+        self.mated = 0.0
+        self.laid_eggs = 0.0
         return self.infestation
 
     def hatch_eggs(self, hatch_chance=None):

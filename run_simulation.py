@@ -177,6 +177,8 @@ def iterate_through_months(CG, schema, iterations, run_mode):
                 county.mate()
                 if current_month in ["September", "October", "November"]:
                     county.lay_eggs()
+            elif current_month in ['January', 'February']:
+                county.die_off()
         neighbor_obj = find_neighbor_status(CG, schema)
         schema, cumulative_df = calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode)
         month_tracker += 1
@@ -237,22 +239,22 @@ def calculate_changes(CG,neighbor_obj, schema, cumulative_df, month_tracker, run
 
     # print('------------------------- Begin New month -------------------------')
 
-    # schema, cumulative_df = calculate_infestion(CG, neighbor_obj, schema, cumulative_df, month_tracker)
-    # return schema, cumulative_df
-    if run_mode == 'Baseline':
-        schema, cumulative_df = baseline_calc(neighbor_obj, schema, cumulative_df, month_tracker)
-    elif run_mode == 'Poison ToH':
-        schema, cumulative_df = ToH_calc(neighbor_obj, schema, cumulative_df, month_tracker)
-    elif run_mode == 'Population-Based Countermeasures':
-        schema, cumulative_df = population_calc(neighbor_obj, schema, cumulative_df, month_tracker)
-    elif run_mode == 'Quarantine':
-        schema, cumulative_df = quarantine_calc(neighbor_obj, schema, cumulative_df, month_tracker)
+    schema, cumulative_df = calculate_infestion(CG, neighbor_obj, schema, cumulative_df, month_tracker)
     return schema, cumulative_df
+    # if run_mode == 'Baseline':
+    #     schema, cumulative_df = baseline_calc(neighbor_obj, schema, cumulative_df, month_tracker)
+    # elif run_mode == 'Poison ToH':
+    #     schema, cumulative_df = ToH_calc(neighbor_obj, schema, cumulative_df, month_tracker)
+    # elif run_mode == 'Population-Based Countermeasures':
+    #     schema, cumulative_df = population_calc(neighbor_obj, schema, cumulative_df, month_tracker)
+    # elif run_mode == 'Quarantine':
+    #     schema, cumulative_df = quarantine_calc(neighbor_obj, schema, cumulative_df, month_tracker)
+    # return schema, cumulative_df
 
 
 def calculate_spread_prob(CG, node, neighbor):
     edge_weight = CG[node][neighbor]['weight']
-    base_prob = random.normal(0.5, 0.2) * node.infestation ( neighbor.toh_density + neighbor.tree_density)
+    base_prob = random.normal(0.5, 0.2) * node.infestation / (neighbor.toh_density + neighbor.tree_density)
     spread_prob = base_prob / edge_weight * node.traffic_level
 
     spread_prob = max(0, min(spread_prob, 1))
@@ -264,7 +266,6 @@ def spread_infestation(node, neighbor, spread_prob):
     variablity = random.uniform(0.05, 0.10)
 
     transfer_amount = max_transferable * variablity
-    transfer_amount = min(transfer_amount, neighbor.infestation)
 
     neighbor.infestation += transfer_amount
     neighbor.infestation = min(neighbor.infestation, 1.0)
