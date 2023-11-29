@@ -311,20 +311,26 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
     :param run_mode: Type of simulation to run
     """
     if run_mode == 'Poison ToH':
-        county.die_off(mortality_rate=county.toh_density)
-        county.toh_density = county.toh_density - .02 if county.toh_density > 0.0 else county.toh_density
-    elif run_mode == 'Population-Based' and county.public_awareness is True:
-        neighbor.public_awareness = True if neighbor.infestation >= county.infestation / 2 else neighbor.public_awareness
-        county.egg_count = county.egg_count - int(county.popdense_sqmi / 100)
-    elif run_mode == 'Quarantine':
-        county.quarantine = True if county.infestation >= .6 else county.quarantine
-        if county.quarantine is True:
-            neighbor.public_awareness = True
-            county.egg_count = county.egg_count - int(county.popdense_sqmi / 10)
-            CG[county][neighbor]['weight'] = 2.0
+        county.die_off(mortality_rate=county.toh_density/1.25)
+        # county.toh_density = county.toh_density - .1 if county.toh_density > 0.0 else county.toh_density
+    elif run_mode == 'Population-Based' or 'Quarantine':
+        county.public_awareness = True if county.infestation >= .5 else county.public_awareness
+        if county.public_awareness:
+            neighbor.public_awareness = True if neighbor.infestation >= county.infestation / 1.5\
+                else neighbor.public_awareness
+            county.die_off(mortality_rate=county.popdense_sqmi/100000)
+            county.egg_count = county.egg_count - int(county.popdense_sqmi / 1000)
     elif run_mode == 'All':
         implement_counter_measures(CG, county, neighbor, 'Poison ToH')
         implement_counter_measures(CG, county, neighbor, 'Quarantine')
+
+    if run_mode == 'Quarantine':
+        county.quarantine = True if county.infestation >= .75 else county.quarantine
+        if county.quarantine is True:
+            neighbor.public_awareness = True
+            county.die_off(mortality_rate=county.popdense_sqmi/100000)
+            CG[county][neighbor]['weight'] = 10.0
+
 
 
 def calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode='Baseline'):
