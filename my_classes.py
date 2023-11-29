@@ -30,7 +30,7 @@ class County:
 
     def __init__(self, name, lat=None, lon=None, geometry=None, centroid=False, pop=None, popdense_sqmi=None,
                  infestation=0.0, mated=0.0, laid_eggs=0.0, egg_count=0,
-                 tree_density=0.0, toh_density=0.0, traffic_level=1.0, quarantine=False):
+                 tree_density=0.0, toh_density=0.0, traffic_level=1.0, quarantine=False, public_awareness=False):
         self.name = name
         self.lat, self.lon, self.geometry, self.centroid = lat, lon, geometry, centroid
         self.pop, self.popdense_sqmi = pop, popdense_sqmi
@@ -42,6 +42,7 @@ class County:
         self.toh_density = toh_density
         self.traffic_level = traffic_level
         self.quarantine = quarantine
+        self.public_awareness = public_awareness
 
     def get_neighbor_objects(self, CG):  # These are used in run_simulation.py
         for node in CG.nodes():
@@ -85,7 +86,7 @@ class County:
         >>> current_eggs = loc.lay_eggs()
         105
         """
-        new_egg_masses = int(self.mated * scaling_factor)
+        new_egg_masses = int(self.mated * scaling_factor * (self.toh_density + self.tree_density))
         additional_egg_masses = int(new_egg_masses * extra_eggmass_chance)
         self.egg_count += new_egg_masses + additional_egg_masses
         return self.egg_count

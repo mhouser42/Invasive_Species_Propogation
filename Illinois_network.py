@@ -143,7 +143,7 @@ def add_tree_density(handler):
     clark = handler['Clark']
     for name, county in handler.items():
         if (county.centroid.y <= hardin.centroid.y) or \
-                ((county.centroid.y <= peoria.centroid.y) and (county.centroid.x >= peoria.centroid.x)):
+                ((county.centroid.y <= peoria.centroid.y) and (county.centroid.x <= peoria.centroid.x)):
             county.tree_density = 0.6
         elif county.centroid.y <= clark.centroid.y:
             county.tree_density = 0.4

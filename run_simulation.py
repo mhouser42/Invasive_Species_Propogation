@@ -85,7 +85,7 @@ def set_coefficients(schema):
         'Saline': {'infestation': 0.0, 'egg_count': 0},
         'Massac': {'infestation': 0.0, 'egg_count': 0},
         'Morgan': {'infestation': 0.0, 'egg_count': 0},
-        'Henry': {'infestation': 0.0, 'egg_count': 0},
+        'Henry': {'infestation': 0.8, 'egg_count': 0},
         'Jersey': {'infestation': 0.0, 'egg_count': 0},
         'Randolph': {'infestation': 0.0, 'egg_count': 0},
         'McDonough': {'infestation': 0.0, 'egg_count': 0},
@@ -145,7 +145,7 @@ def set_coefficients(schema):
         'Calhoun': {'infestation': 0.0, 'egg_count': 0},
         'Schuyler': {'infestation': 0.0, 'egg_count': 0},
         'Gallatin': {'infestation': 0.0, 'egg_count': 0},
-        'Pope': {'infestation': 0.0, 'egg_count': 0}
+        'Pope': {'infestation': 0.3, 'egg_count': 300}
     }
     for coef_county in coef_dict:
         for attribute in coef_dict[coef_county]:
@@ -225,7 +225,7 @@ def get_object(name, schema):
             return schema[county]
 
 
-def calculate_changes(CG,neighbor_obj, schema, cumulative_df, month_tracker, run_mode='Baseline'):
+def calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode='Baseline'):
     """
     SUPER TENTATIVE
     This iterates outcomes of month interactions randomly
@@ -233,19 +233,17 @@ def calculate_changes(CG,neighbor_obj, schema, cumulative_df, month_tracker, run
     :param schema:
     :return:
 
-    TODO: Figure out how to model the actual math here.
-    TODO: Establish run modes
     """
 
     # print('------------------------- Begin New month -------------------------')
 
-    schema, cumulative_df = calculate_infestion(CG, neighbor_obj, schema, cumulative_df, month_tracker)
+    schema, cumulative_df = calculate_infestion(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode)
     return schema, cumulative_df
     # if run_mode == 'Baseline':
     #     schema, cumulative_df = baseline_calc(neighbor_obj, schema, cumulative_df, month_tracker)
     # elif run_mode == 'Poison ToH':
     #     schema, cumulative_df = ToH_calc(neighbor_obj, schema, cumulative_df, month_tracker)
-    # elif run_mode == 'Population-Based Countermeasures':
+    # elif run_mode == 'Population-Based':
     #     schema, cumulative_df = population_calc(neighbor_obj, schema, cumulative_df, month_tracker)
     # elif run_mode == 'Quarantine':
     #     schema, cumulative_df = quarantine_calc(neighbor_obj, schema, cumulative_df, month_tracker)
@@ -272,20 +270,42 @@ def spread_infestation(node, neighbor, spread_prob):
 
     return transfer_amount
 
-def calculate_infestion(CG, neighbor_obj, schema, cumulative_df, month_tracker):
+
+def implement_counter_measures(CG, county, neighbor, run_mode):
+    if run_mode == 'Poison ToH':
+        county.die_off(mortality_rate=county.toh_density)
+        county.toh_density = county.toh_density - .02 if county.toh_density > 0.0 else county.toh_density
+    elif run_mode == 'Population-Based' and county.public_awareness is True:
+        neighbor.public_awareness = True if neighbor.infestation >= county.infestation/2 else neighbor.public_awareness
+        county.egg_count = county.egg_count - int(county.popdense_sqmi/100)
+    elif run_mode == 'Quarantine':
+        county.quarantine = True if county.infestation >= .6 else county.quarantine
+        if county.quarantine is True:
+            neighbor.public_awareness = True
+            county.egg_count = county.egg_count - int(county.popdense_sqmi/10)
+            CG[county][neighbor]['weight'] = 2.0
+
+def calculate_infestion(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode='Baseline'):
     infestation_collector = []
+    infest_data = {}
 
     for county_net in neighbor_obj:
         county = get_object(county_net, schema)
+        county.public_awareness = True if county.infestation > .6 else county.public_awareness
+        county.toh_density = county.toh_density + .01  # shows slow growth of ToH, might delete
         new_infestations = 0
 
         for net_neighbor in neighbor_obj[county_net]:
             spread_prob = calculate_spread_prob(CG, county, net_neighbor)
+            implement_counter_measures(CG, county, net_neighbor, run_mode)
             spread_infestation(county, net_neighbor, spread_prob)
+
             new_infestations += net_neighbor.infestation
         infestation_collector.append(county.infestation)
+        infest_data[f'month {month_tracker}'] = infestation_collector
 
-    cumulative_df.insert(month_tracker + 1, f'month {month_tracker}', infestation_collector, True)
+    new_trackers = pd.DataFrame(infest_data)
+    cumulative_df = pd.concat([cumulative_df, new_trackers], axis=1)
     return schema, cumulative_df
 
 def baseline_calc(neighbor_obj, schema, cumulative_df, month_tracker):
