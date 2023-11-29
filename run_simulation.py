@@ -168,8 +168,9 @@ def iterate_through_months(CG, schema, iterations, run_mode):
     months_queue = MonthQueue()
 
     for _ in range(iterations):
-        current_month = months_queue.rotate()
+        current_month, traffic_level = months_queue.rotate()
         for name, county in schema.items():
+            county.traffic_level = traffic_level
             if current_month in ['May', 'June']:
                 county.hatch_eggs()
             elif current_month in ["August", "September", "October", "November", "December"]:
@@ -177,7 +178,7 @@ def iterate_through_months(CG, schema, iterations, run_mode):
                 if current_month in ["September", "October", "November"]:
                     county.lay_eggs()
         neighbor_obj = find_neighbor_status(CG, schema)
-        schema, cumulative_df = calculate_changes(neighbor_obj, schema, cumulative_df, month_tracker, run_mode)
+        schema, cumulative_df = calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode)
         month_tracker += 1
 
     return cumulative_df
@@ -209,8 +210,7 @@ def find_neighbor_status(CG, schema):
     return neighbor_obj
 
 
-def get_object(name, schema):  # I'm not certain this loop is necessary, you should just be able to do schema[name]
-    # and get same result without iterating through loop -Matt
+def get_object(name, schema):
     """
     Utility function.
     Retrieves the county instance object from the schema when given its name
@@ -223,7 +223,7 @@ def get_object(name, schema):  # I'm not certain this loop is necessary, you sho
             return schema[county]
 
 
-def calculate_changes(neighbor_obj, schema, cumulative_df, month_tracker, run_mode):
+def calculate_changes(CG,neighbor_obj, schema, cumulative_df, month_tracker, run_mode='Baseline'):
     """
     SUPER TENTATIVE
     This iterates outcomes of month interactions randomly
@@ -236,6 +236,9 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, month_tracker, run_mo
     """
 
     # print('------------------------- Begin New month -------------------------')
+
+    # schema, cumulative_df = calculate_infestion(CG, neighbor_obj, schema, cumulative_df, month_tracker)
+    # return schema, cumulative_df
     if run_mode == 'Baseline':
         schema, cumulative_df = baseline_calc(neighbor_obj, schema, cumulative_df, month_tracker)
     elif run_mode == 'Poison ToH':
@@ -246,6 +249,43 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, month_tracker, run_mo
         schema, cumulative_df = quarantine_calc(neighbor_obj, schema, cumulative_df, month_tracker)
     return schema, cumulative_df
 
+
+def calculate_spread_prob(CG, node, neighbor):
+    edge_weight = CG[node][neighbor]['weight']
+    base_prob = random.normal(0.5, 0.2) * node.infestation ( neighbor.toh_density + neighbor.tree_density)
+    spread_prob = base_prob / edge_weight * node.traffic_level
+
+    spread_prob = max(0, min(spread_prob, 1))
+    return spread_prob
+
+
+def spread_infestation(node, neighbor, spread_prob):
+    max_transferable = node.infestation * spread_prob
+    variablity = random.uniform(0.05, 0.10)
+
+    transfer_amount = max_transferable * variablity
+    transfer_amount = min(transfer_amount, neighbor.infestation)
+
+    neighbor.infestation += transfer_amount
+    neighbor.infestation = min(neighbor.infestation, 1.0)
+
+    return transfer_amount
+
+def calculate_infestion(CG, neighbor_obj, schema, cumulative_df, month_tracker):
+    infestation_collector = []
+
+    for county_net in neighbor_obj:
+        county = get_object(county_net, schema)
+        new_infestations = 0
+
+        for net_neighbor in neighbor_obj[county_net]:
+            spread_prob = calculate_spread_prob(CG, county, net_neighbor)
+            spread_infestation(county, net_neighbor, spread_prob)
+            new_infestations += net_neighbor.infestation
+        infestation_collector.append(county.infestation)
+
+    cumulative_df.insert(month_tracker + 1, f'month {month_tracker}', infestation_collector, True)
+    return schema, cumulative_df
 
 def baseline_calc(neighbor_obj, schema, cumulative_df, month_tracker):
     """
@@ -260,7 +300,7 @@ def baseline_calc(neighbor_obj, schema, cumulative_df, month_tracker):
     for county_net in neighbor_obj:
         all_new_infestations = 0
         county = get_object(county_net, schema)
-        county.infestation = county.infestation + (county.infestation * random.normal(0.025, 0.01))
+        # county.infestation = county.infestation + (county.infestation * random.normal(0.025, 0.01))
         for net_neighbors in neighbor_obj[county_net]:
             probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
             ToH_modifier = (net_neighbors.infestation ** 2
@@ -295,7 +335,7 @@ def ToH_calc(neighbor_obj, schema, cumulative_df, month_tracker):
     for county_net in neighbor_obj:
         all_new_infestations = 0
         county = get_object(county_net, schema)
-        county.infestation = county.infestation + (county.infestation * random.normal(0.025, 0.01))
+        # county.infestation = county.infestation + (county.infestation * random.normal(0.025, 0.01))
         for net_neighbors in neighbor_obj[county_net]:
             probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
             ToH_modifier = (net_neighbors.infestation ** 2
@@ -330,7 +370,7 @@ def population_calc(neighbor_obj, schema, cumulative_df, month_tracker):
     for county_net in neighbor_obj:
         all_new_infestations = 0
         county = get_object(county_net, schema)
-        county.infestation = county.infestation + (county.infestation * random.normal(0.025, 0.01))
+        # county.infestation = county.infestation + (county.infestation * random.normal(0.025, 0.01))
         for net_neighbors in neighbor_obj[county_net]:
             probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
             bug_smash = random.normal(0.3, 0.1) * 0.01
@@ -360,7 +400,7 @@ def quarantine_calc(neighbor_obj, schema, cumulative_df, month_tracker):
     for county_net in neighbor_obj:
         all_new_infestations = 0
         county = get_object(county_net, schema)
-        county.infestation = county.infestation + (county.infestation * random.normal(0.025, 0.01))
+        # county.infestation = county.infestation + (county.infestation * random.normal(0.025, 0.01))
         for net_neighbors in neighbor_obj[county_net]:
             if (net_neighbors in quarantine_list) or (net_neighbors.infestation > 0.5 and random.choice([True, False])):
                 new_infestation = 0
@@ -386,4 +426,4 @@ def quarantine_calc(neighbor_obj, schema, cumulative_df, month_tracker):
 
 
 if __name__ == '__main__':
-    infestation_main('Population-Based Countermeasures', 10)
+    infestation_main('Baseline', 10)

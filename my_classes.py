@@ -30,7 +30,7 @@ class County:
 
     def __init__(self, name, lat=None, lon=None, geometry=None, centroid=False, pop=None, popdense_sqmi=None,
                  infestation=0.0, mated=0.0, laid_eggs=0.0, egg_count=0,
-                 toh_density=0.0, traffic_level=1.0, quarantine=False):
+                 tree_density=0.0, toh_density=0.0, traffic_level=1.0, quarantine=False):
         self.name = name
         self.lat, self.lon, self.geometry, self.centroid = lat, lon, geometry, centroid
         self.pop, self.popdense_sqmi = pop, popdense_sqmi
@@ -38,6 +38,7 @@ class County:
         self.mated = mated
         self.laid_eggs = laid_eggs
         self.egg_count = egg_count
+        self.tree_density = tree_density
         self.toh_density = toh_density
         self.traffic_level = traffic_level
         self.quarantine = quarantine
@@ -143,8 +144,8 @@ class MonthQueue(Queue):
             'May': 0.96, 'June': 0.98, 'July': 1.0, 'August': 0.98,
             'September': 0.96, 'October': 0.94, 'November': 0.92, 'December': 0.90
         }
-        for traffic_level in self.months_traffic_levels:
-            self.put(traffic_level)
+        for month, traffic_level in self.months_traffic_levels.items():
+            self.put((month, traffic_level))
 
     def rotate(self):
         old_month = self.get()
@@ -152,7 +153,7 @@ class MonthQueue(Queue):
         return old_month
 
     def get_traffic_level(self, month):
-        return self.months_traffic_levels.get(month, None)
+        return self.months_traffic_levels[month]
 
 
 # class County(Location):

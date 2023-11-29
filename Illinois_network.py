@@ -137,6 +137,19 @@ def calc_toh_density_coef(df, handler, county_tots, county_counts):
         node.toh_density = round((avg_infest / max_infest), 2) if max_infest > 0 else 0
 
 
+def add_tree_density(handler):
+    peoria = handler['Peoria']
+    hardin = handler['Hardin']
+    clark = handler['Clark']
+    for name, county in handler.items():
+        if (county.centroid.y <= hardin.centroid.y) or \
+                ((county.centroid.y <= peoria.cenroid.y) and (county.centroid.x >= peoria.cenroid.x)):
+            county.tree_density = 0.6
+        elif county.centroid.y <= clark.centroid.y:
+            county.tree_density = 0.4
+        else:
+            county.tree_density = 0.2
+
 if __name__ == '__main__':
     path = 'data/location'
     county_df = pd.read_csv(f'{path}/counties.csv')  # for nodes
@@ -156,6 +169,7 @@ if __name__ == '__main__':
 
     county_tots, county_counts = get_toh_totals_by_county(toh_df, county_dict)
     calc_toh_density_coef(toh_df, county_dict, county_tots, county_counts)
+    add_tree_density(county_dict)
 
     # pickling
     pickle.dump(CG, open(f'{path}/IL_graph.dat', 'wb'))
