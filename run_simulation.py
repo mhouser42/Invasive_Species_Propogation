@@ -102,7 +102,7 @@ def set_coefficients(schema):
         'Crawford': {'infestation': 0.0, 'egg_count': 0},
         'Moultrie': {'infestation': 0.0, 'egg_count': 0},
         'Montgomery': {'infestation': 0.0, 'egg_count': 0},
-        'Union': {'infestation': 0.0, 'egg_count': 0},
+        'Union': {'infestation': 0.0, 'egg_count': 55},
         'Fulton': {'infestation': 0.0, 'egg_count': 0},
         'DeWitt': {'infestation': 0.0, 'egg_count': 0},
         'Menard': {'infestation': 0.0, 'egg_count': 0},
