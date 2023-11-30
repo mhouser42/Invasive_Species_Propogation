@@ -332,7 +332,7 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
         county.quarantine = True if county.infestation >= .75 else county.quarantine
         if county.quarantine is True:
             neighbor.public_awareness = True
-            CG[county][neighbor]['weight'] = 2.0
+            CG[county][neighbor]['weight'] = 5.0
 
 
 
