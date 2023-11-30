@@ -174,10 +174,10 @@ def iterate_through_months(CG: nx.Graph, schema: dict, neighbor_schema: dict, it
     months_queue = MonthQueue()
 
     for _ in range(iterations):
-        current_month, traffic_level = months_queue.rotate()
+        current_month = months_queue.rotate()
         if use_methods:
             for name, county in schema.items():
-                county.traffic_level = traffic_level
+                county.traffic_level = current_month['traffic_level']
                 if current_month in ['May', 'June']:
                     county.hatch_eggs()
                 elif current_month in ["August", "September", "October", "November", "December"]:
