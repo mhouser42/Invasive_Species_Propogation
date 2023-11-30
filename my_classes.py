@@ -162,8 +162,9 @@ class MonthQueue(Queue):
 
     def add_atr_dict_to_queue(self, atr_name, atr_dict):
         """
-        :param atr_name:
-        :param atr_dict:
+        Adds a dictionary of a new attribute to the MonthQueue
+        :param atr_name: the name of the attribute you want to insert
+        :param atr_dict: a dictionary of values to be added to each month
 
         >>> queue = MonthQueue()
         >>> temp = {
