@@ -229,19 +229,22 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, year_tracker, run_mod
     for county_net in neighbor_obj:
         all_new_saturations = 0
         county = get_object(county_net, schema)
-        county.saturation = county.saturation + (county.saturation * random.normal(0.025, 0.01))
+        county.saturation = county.saturation + (random.normal(0.025, 0.05) *
+                                                 (county.saturation * (county.toh_density_percentile / 100)))
         for net_neighbors in neighbor_obj[county_net]:
-
+            probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
             if run_mode == 'Baseline':
-                new_saturation = baseline_calc(net_neighbors)
+                new_saturation = baseline_calc(net_neighbors, probability)
             elif run_mode == 'Poison ToH':
-                new_saturation = ToH_calc(net_neighbors)
+                new_saturation = ToH_calc(net_neighbors, probability)
             elif run_mode == 'Population-Based Countermeasures':
-                new_saturation = population_calc(county, net_neighbors)
+                new_saturation = population_calc(county, net_neighbors, probability)
             elif run_mode == 'Quarantine':
-                quarantine_list, new_saturation = quarantine_calc(quarantine_list, net_neighbors)
+                quarantine_list, new_saturation = quarantine_calc(quarantine_list, net_neighbors, probability)
             elif run_mode == 'All':
-                quarantine_list, new_saturation = all_modes(quarantine_list, county, net_neighbors)
+                quarantine_list, new_saturation = all_modes(quarantine_list, county, net_neighbors, probability)
+            else:
+                raise ValueError('This is not a valid run mode.')
 
             all_new_saturations += new_saturation
         all_new_saturations = round(all_new_saturations / (len(neighbor_obj[county_net])), 8) + county.saturation
@@ -253,31 +256,25 @@ def calculate_changes(neighbor_obj, schema, cumulative_df, year_tracker, run_mod
     return schema, cumulative_df
 
 
-def baseline_calc(net_neighbors):
+def baseline_calc(net_neighbors, probability):
 
-    probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
-    ToH_modifier = (net_neighbors.saturation ** 2
-                    * net_neighbors.toh_density_percentile
+    ToH_modifier = (net_neighbors.saturation
+                    * (net_neighbors.toh_density_percentile)
                     * random.exponential(0.02))
-    new_saturation = ((net_neighbors.saturation * probability) +
-                       (ToH_modifier * net_neighbors.saturation))
+    new_saturation = ((net_neighbors.saturation * probability) * 3  + (ToH_modifier * net_neighbors.saturation))/2
     return new_saturation
 
 
-def ToH_calc(net_neighbors):
-    probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
-    ToH_modifier = (net_neighbors.saturation ** 2
+def ToH_calc(net_neighbors, probability):
+    ToH_modifier = -(net_neighbors.saturation ** 2
                     * net_neighbors.toh_density_percentile
-                    * random.exponential(0.02)
-                    * -1)
+                    * random.exponential(0.02))
     new_saturation = net_neighbors.saturation * probability + ToH_modifier * net_neighbors.saturation
     return new_saturation
 
 
-def population_calc(county, net_neighbors):
-
-    probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
-    bug_smash = random.normal(0.3, 0.1) * 0.01
+def population_calc(county, net_neighbors, probability):
+    bug_smash = random.normal(0.2, 0.1) * 0.01
     ToH_modifier = (net_neighbors.saturation ** 2
                     * net_neighbors.toh_density_percentile
                     * random.exponential(0.02))
@@ -288,12 +285,11 @@ def population_calc(county, net_neighbors):
     return new_saturation
 
 
-def quarantine_calc(quarantine_list, net_neighbors):
+def quarantine_calc(quarantine_list, net_neighbors, probability):
     if (net_neighbors in quarantine_list) or (net_neighbors.saturation > 0.5 and random.choice([True, False])):
         new_saturation = 0
         quarantine_list.add(net_neighbors)
     else:
-        probability = random.normal(0.5, 0.8)
         ToH_modifier = (net_neighbors.saturation ** 2
                         * net_neighbors.toh_density_percentile
                         * random.exponential(0.02))
@@ -307,7 +303,7 @@ def all_modes(quarantine_list, county, net_neighbors):
         quarantine_list.add(net_neighbors)
     else:
         probability = random.normal(0.5, 0.8)
-        bug_smash = random.normal(0.3, 0.1) * 0.01
+        bug_smash = random.normal(0.2, 0.1) * 0.01
         ToH_modifier = -(net_neighbors.saturation ** 2
                         * net_neighbors.toh_density_percentile
                         * random.exponential(0.02))

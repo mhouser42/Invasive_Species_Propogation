@@ -13,7 +13,7 @@ import numpy as np
 import networkx as nx
 import osmnx as ox
 from collections import Counter
-from my_classes import City, County
+from my_classes import County
 
 
 def get_lower_and_upper_bounds(df: pd.DataFrame, col_name):
@@ -56,11 +56,11 @@ def construct_nodes(CG: nx.Graph, df: pd.DataFrame, is_county=True):
                           bbox_n=gdf['bbox_north'], bbox_s=gdf['bbox_south'],
                           bbox_e=gdf['bbox_east'], bbox_w=gdf['bbox_west'],
                           pop=pop, popdense_sqmi=pop_dense, centroid=gdf['geometry'].centroid)
-        else:
-            node = City(name, lat=gdf['lat'], lon=gdf['lon'], geometry=gdf['geometry'],
-                        bbox_n=gdf['bbox_north'], bbox_s=gdf['bbox_south'],
-                        bbox_e=gdf['bbox_east'], bbox_w=gdf['bbox_west'],
-                        pop=pop, popdense_sqmi=pop_dense, centroid=gdf['geometry'].centroid)
+        # else:
+        #     node = City(name, lat=gdf['lat'], lon=gdf['lon'], geometry=gdf['geometry'],
+        #                 bbox_n=gdf['bbox_north'], bbox_s=gdf['bbox_south'],
+        #                 bbox_e=gdf['bbox_east'], bbox_w=gdf['bbox_west'],
+        #                 pop=pop, popdense_sqmi=pop_dense, centroid=gdf['geometry'].centroid)
         CG.add_node(node)
         handler[name] = node
         count += 1
