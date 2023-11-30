@@ -158,7 +158,39 @@ class MonthQueue(Queue):
             'September': 0.96, 'October': 0.94, 'November': 0.92, 'December': 0.90
         }
         for month, traffic_level in self.months_traffic_levels.items():
-            self.put((month, traffic_level))
+            self.put({'month': month, 'traffic_level': traffic_level})
+
+    def add_atr_dict_to_queue(self, atr_name, atr_dict):
+        """
+        :param atr_name:
+        :param atr_dict:
+
+        >>> queue = MonthQueue()
+        >>> temp = {
+        ...   'January': 0.1, 'February': 0.1, 'March': 0.2, 'April': 0.2,
+        ...   'May': 0.4, 'June': 0.4, 'July': .8, 'August': 0.9,
+        ...   'September': 0.4, 'October': 0.4, 'November': 0.2, 'December': 0.2
+        ... }
+        >>> queue = queue.add_atr_dict_to_queue('temp', temp)
+        >>> queue.get_atr_level('January', 'temp')
+        0.1
+        """
+        for _ in range(12):
+            month_data = self.rotate()
+            month = month_data['month']
+            if month in atr_dict:
+                month_data[atr_name] = atr_dict[month]
+        return self
+
+    def reset_year(self):
+        """
+        method returns MonthQueue to have January at the front of it.
+        """
+        jan = False
+        while not jan:
+            current_month = self.rotate()
+            if current_month['month'] == 'January':
+                jan = True
 
     def rotate(self):
         """
@@ -174,17 +206,23 @@ class MonthQueue(Queue):
         self.put(old_month)
         return old_month
 
-    def get_traffic_level(self, month):
+    def get_atr_level(self, month_name, atr):
         """
-        find the traffic level of a month
+        find the value of attribute for month
         :param month: month to be accessed
         :return: the traffic level for this month
 
         >>> my_queue = MonthQueue()
-        >>> my_queue.get_traffic_level('July')
+        >>> my_queue.get_atr_level('July', 'traffic_level')
         1.0
         """
-        return self.months_traffic_levels[month]
+
+        correct_month = False
+        while not correct_month:
+            month = self.rotate()
+            correct_month = True if month['month'] == month_name else False
+            if correct_month:
+                return month.get(atr, None)
 
 
 # class County(Location):
