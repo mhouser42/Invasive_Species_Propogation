@@ -10,17 +10,17 @@ import pandas as pd
 from my_classes import MonthQueue
 
 
-def infestation_main(run_mode: str, iterations: int, use_methods=False) -> pd.DataFrame:
+def infestation_main(run_mode: str, iterations: int, life_cycle=False) -> pd.DataFrame:
     """
     Main Function that sequences the order of events when running this file
-    :param use_methods: a Boolean that decided if infestation is affected by class methods.
+    :param life_cycle: a Boolean that decided if infestation is affected by class methods.
     :param run_mode: version of Monte Carlo to run
     :param iterations: number of times to run Monte Carlo
     :return : pandas dataframe of cumulative months
     """
     CG, schema, neighbor_schema = set_up()
     schema = set_coefficients(schema)
-    cumulative_df = iterate_through_months(CG, schema, neighbor_schema, iterations, run_mode, use_methods=use_methods)
+    cumulative_df = iterate_through_months(CG, schema, neighbor_schema, iterations, run_mode, life_cycle=life_cycle)
     return cumulative_df
 
 
@@ -157,10 +157,10 @@ def set_coefficients(schema: dict) -> dict:
 
 
 def iterate_through_months(CG: nx.Graph, schema: dict, neighbor_schema: dict, iterations: int,
-                           run_mode='Baseline', use_methods=False) -> pd.DataFrame:
+                           run_mode='Baseline', life_cycle=False) -> pd.DataFrame:
     """
     Takes the initial schema and iterates it through a number of months
-    :param use_methods: determines if class methods are used
+    :param life_cycle: determines if methods related to SLF life cycle are used in simulation
     :param CG: graph of Illinois network
     :param schema: handler dictionary for graph with name of nodes for keys and County object for values
     :param neighbor_schema: handler dictionary with name of nodes for keys and a list of neighboring County objects
@@ -175,20 +175,20 @@ def iterate_through_months(CG: nx.Graph, schema: dict, neighbor_schema: dict, it
 
     for _ in range(iterations):
         current_month = months_queue.rotate()
-        if use_methods:
+        if life_cycle:
             for name, county in schema.items():
                 county.traffic_level = current_month['traffic_level']
                 if current_month in ['May', 'June']:
                     county.hatch_eggs()
-                elif current_month in ["August", "September", "October", "November", "December"]:
+                elif current_month in ['August', 'September', 'October', 'November', 'December']:
                     county.mate()
-                    if current_month in ["September", "October", "November"]:
+                    if current_month in ['September', 'October', 'November']:
                         county.lay_eggs()
                 elif current_month in ['January', 'February']:
-                        county.die_off()
+                        county.die_off(1.0)
         neighbor_obj = find_neighbor_status(CG, schema)
-        schema, cumulative_df = calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker,
-                                                  run_mode, use_methods=use_methods)
+        schema, cumulative_df = calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker, current_month,
+                                                  run_mode, life_cycle=life_cycle)
         month_tracker += 1
 
     return cumulative_df
@@ -238,7 +238,8 @@ def find_neighbor_status(CG, schema: dict) -> dict:
     return neighbor_obj
 
 
-def calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode='Baseline', use_methods=False):
+def calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker, current_month,
+                      run_mode='Baseline', life_cycle=False):
     """
     TODO: had a hard time describing this one - Matt
     This iterates outcomes of month interactions
@@ -252,8 +253,8 @@ def calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker, ru
     :return:
     """
     # print('------------------------- Begin New month -------------------------')
-    if use_methods:
-        schema, cumulative_df = calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode=run_mode)
+    if life_cycle:
+        schema, cumulative_df = calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, current_month, run_mode=run_mode)
         return schema, cumulative_df
     else:
         if run_mode == 'Baseline':
@@ -289,7 +290,7 @@ def calculate_spread_prob(CG, county, neighbor):
     return spread_prob
 
 
-def spread_infestation(county, neighbor, spread_prob):
+def spread_infestation(county, neighbor, spread_prob, current_month):
     """
     updates the infestation level of a neighboring county to source county
     :param county: source node that infestation spreads from
@@ -304,6 +305,8 @@ def spread_infestation(county, neighbor, spread_prob):
 
     neighbor.infestation += transfer_amount
     neighbor.infestation = min(neighbor.infestation, 1.0)
+    if current_month in ['September', 'October', 'November']:
+        neighbor.egg_count += int(transfer_amount * 100)
 
 
 def implement_counter_measures(CG, county, neighbor, run_mode):
@@ -315,14 +318,14 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
     :param run_mode: Type of simulation to run
     """
     if run_mode == 'Poison ToH':
-        county.die_off(mortality_rate=county.toh_density/1.25)
-        # county.toh_density = county.toh_density - .1 if county.toh_density > 0.0 else county.toh_density
+        county.die_off(mortality_rate=county.toh_density/20)
+        county.toh_density = county.toh_density - .001 if county.toh_density > 0.0 else county.toh_density
     elif run_mode in ('Population-Based', 'Quarantine'):
         county.public_awareness = True if county.infestation >= .5 else county.public_awareness
         if county.public_awareness:
             neighbor.public_awareness = True if neighbor.infestation >= county.infestation / 1.5\
                 else neighbor.public_awareness
-            county.die_off(mortality_rate=county.popdense_sqmi/100000)
+            county.die_off(mortality_rate=county.popdense_sqmi/10000)
             county.egg_count = county.egg_count - int(county.popdense_sqmi / 1000)
     elif run_mode == 'All':
         implement_counter_measures(CG, county, neighbor, run_mode='Poison ToH')
@@ -335,8 +338,7 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
             CG[county][neighbor]['weight'] = 5.0
 
 
-
-def calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode='Baseline'):
+def calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, current_month, run_mode='Baseline'):
     """
     updates the new infestation levels for all nodes in county graph.
     :param CG: The graph of counties
@@ -351,7 +353,7 @@ def calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode
     infest_data = {}
 
     for county_net in neighbor_obj:
-        county = get_object(county_net, schema)
+        county = schema[county_net]
         county.public_awareness = True if county.infestation > .6 else county.public_awareness
         county.toh_density = county.toh_density + .01  # shows slow growth of ToH, might delete
         new_infestations = 0
@@ -359,7 +361,7 @@ def calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, run_mode
         for net_neighbor in neighbor_obj[county_net]:
             spread_prob = calculate_spread_prob(CG, county, net_neighbor)
             implement_counter_measures(CG, county, net_neighbor, run_mode=run_mode)
-            spread_infestation(county, net_neighbor, spread_prob)
+            spread_infestation(county, net_neighbor, spread_prob, current_month=current_month)
 
             new_infestations += net_neighbor.infestation
         infestation_collector.append(county.infestation)
@@ -509,4 +511,4 @@ def quarantine_calc(neighbor_obj, schema, cumulative_df, month_tracker):
 
 
 if __name__ == '__main__':
-    infestation_main('All', 100, use_methods=True)
+    infestation_main('All', 100, life_cycle=True)

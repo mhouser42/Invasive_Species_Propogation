@@ -106,7 +106,7 @@ class County:
         0.0
         """
         if mortality_rate is None:
-            mortality_rate = random.uniform(0.75, 1.0)
+            mortality_rate = random.uniform(0.85, 1.0)
         die_off_number = self.infestation * mortality_rate
         self.infestation -= die_off_number
         self.mated = 0.0
@@ -147,7 +147,8 @@ class County:
 
 class MonthQueue(Queue):
     """
-    A Queue which keeps track of which month it is. Stored as a series of tuples, with month first and then traffic level.
+    A Queue which keeps track of which month it is. Each item in Queue is a dictionary correspond to the month and
+    attributes associated with it. Begins with traffic levels inserted
     :param months_traffic_levels: A dictionary of corresponding traffic levels for each month.
     """
     def __init__(self):

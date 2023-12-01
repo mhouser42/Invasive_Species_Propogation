@@ -61,7 +61,7 @@ def make_network_heat(CG, simulation_df, handler, month: int):
                             ax=ax,
                             font_color='k')
 
-    edge_colors = ['gray' if CG[src][tgt]['rel'] == 'interstate' else 'gray' for src, tgt in CG.edges()]
+    edge_colors = ['black' if CG[src][tgt]['rel'] == 'interstate' else 'gray' for src, tgt in CG.edges()]
     edge_widths = [5 if CG[src][tgt]['rel'] == 'interstate' else 1 for src, tgt in CG.edges()]
     nx.draw_networkx_edges(CG, pos=node_positions, edge_color=edge_colors, ax=ax, width=edge_widths)
 
@@ -88,7 +88,7 @@ def make_average_graphs(df: pd.DataFrame, sim_months: int):
     plt.plot(avg_df.index, avg_df, linewidth=0.5)
 
 
-def model_variables(run_mode: str, sims_run: int, sim_months: int):
+def model_variables(run_mode: str, sims_run: int, sim_months: int, life_cycle=False):
     """
     Loops through the number of simulations run
     Passes the resulting df to make_average_graphs()
@@ -102,14 +102,14 @@ def model_variables(run_mode: str, sims_run: int, sim_months: int):
     plt.grid()
 
     for i in range(0, sims_run):
-        df = infestation_main(run_mode, sim_months)
+        df = infestation_main(run_mode, sim_months, life_cycle=life_cycle)
         make_average_graphs(df,
                             sim_months)  # hopefully putting this inside the loop will allow the code to forget the df
 
     plt.show()
 
 
-def model_variables_avg(run_mode: str, sims_run: int, sim_months: int, all_trends: dict) -> dict:
+def model_variables_avg(run_mode: str, sims_run: int, sim_months: int, all_trends: dict, life_cycle=False) -> dict:
     """
     A modified version of model_variables
     includes an trend line that averages all the simulations graphed
@@ -127,7 +127,7 @@ def model_variables_avg(run_mode: str, sims_run: int, sim_months: int, all_trend
     all_avg_lines = []
 
     for i in range(sims_run):
-        df = infestation_main(run_mode, sim_months)
+        df = infestation_main(run_mode, sim_months, life_cycle=life_cycle)
         make_average_graphs(df, sim_months)
 
         vis_df = make_visual_df(df)
