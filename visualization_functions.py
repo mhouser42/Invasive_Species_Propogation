@@ -14,8 +14,25 @@ def make_visual_df(simulation_df: pd.DataFrame) -> pd.DataFrame:
     """
     Utility function.
     rotates the run_simulation output df to help with some visualizations
-    :param simulation_df:
-    :return visual_df:
+    :param simulation_df: the resulting df from running the MC simulation showing saturation rates
+    :return visual_df: a rotated version of simualtion_df with the correct index and columns
+
+    >>> df = pd.DataFrame({'A': [1, 2, 3], 'B': [0, 0, 0]})
+    >>> make_visual_df(df)
+    A  1  2  3
+    B  0  0  0
+
+    >>> df2 = pd.DataFrame({'A': [1, 2], 'B': [0, 0], 'C': [100, 77]})
+    >>> make_visual_df(df2)
+    A    1   2
+    B    0   0
+    C  100  77
+
+    >>> df3 = pd.DataFrame({'E': [13, 45, 15, 0, 0, 0]})
+    >>> make_visual_df(df3)
+    Empty DataFrame
+    Columns: [13, 45, 15, 0, 0, 0]
+    Index: []
     """
     visual_df = simulation_df.T
     visual_df.columns = visual_df.iloc[0]
@@ -23,14 +40,22 @@ def make_visual_df(simulation_df: pd.DataFrame) -> pd.DataFrame:
     return visual_df
 
 
-def make_network_heat(CG, simulation_df, handler, year: int):
+def make_network_heat(CG: nx.Graph, simulation_df: pd.DataFrame, handler: dict, year: int):
     """
     Makes a heatmap from the NX nodes, edges, and object instances
     :param CG: graph of county network
     :param handler: a dictionary with the names of counties for keys and the objects themselves for values
-    :param simulation_df:
+    :param simulation_df: df generated from on trial instance of the MC simulation
     :param year: The number of years from the interactive ipywidget
-    TODO: describe simulation_df
+
+    >>> simulation_data = {'Cook': ['0', '0', '0'], 'year 1': [0.2, 0.6, 0.8], 'year 2': [0.4, 0.7, 0.5]}
+    >>> simulation_df = pd.DataFrame(simulation_data)
+    >>> CG = nx.Graph()
+    >>> handler = {'A': object(), 'B': object(), 'C': object()}
+    >>> make_network_heat(CG, simulation_df, handler, year=1)
+
+    # this returns nothing, but passes when given proper input
+
     """
     year = f'year {year}'
     #     min_value = simulation_df[year].min()
@@ -78,6 +103,25 @@ def make_average_graphs(df: pd.DataFrame, sim_years: int):
     Plots them all within the same graph
     :param df:
     :param sim_years: number of years in sim runs
+
+    >>> data = {'Year': [0, 1, 2], 'La Salle': [0.2, 0.5, 0.8], 'Williamson': [0.3, 0.6, 0.7]}
+    >>> simulation_df = pd.DataFrame(data)
+    >>> make_average_graphs(simulation_df, sim_years=2)
+
+    # this returns nothing, but passes when given proper input
+
+    >>> data = {'Year': [0, 1, 2], 'La Salle': [0.2, 0.5, 0.8], 'Williamson': [0.3, 0.6, 0.7]}
+    >>> simulation_df = pd.DataFrame(data)
+    >>> make_average_graphs(simulation_df, sim_years=1.5)
+    Traceback (most recent call last):
+    ...
+    TypeError: 'float' object cannot be interpreted as an integer
+
+    >>> data = {'Year': [0, 1, 2], 'La Salle': [0.2, 0.5, 0.8], 'Williamson': [0.3, 0.6, 0.7]}
+    >>> make_average_graphs(data, sim_years=1)
+    Traceback (most recent call last):
+    ...
+    AttributeError: 'dict' object has no attribute 'T'
     """
     vis_df = make_visual_df(df)
     avg_df = vis_df.mean(axis=1)
@@ -96,6 +140,21 @@ def model_variables(run_mode: str, sims_run: int, sim_years: int):
     :param run_mode: The name of the simulation being run
     :param sims_run: number of runs
     :param sim_years: number of years in each run
+
+    >>> model_variables('Baseline', 5, 3)
+
+    # this returns nothing, but passes when given proper input
+
+    >>> model_variables('Poison ToH', 'SLF', 3)
+    Traceback (most recent call last):
+    ...
+    TypeError: 'str' object cannot be interpreted as an integer
+
+    >>> model_variables('Parasitic Wasp', 7, 3)
+    Traceback (most recent call last):
+    ...
+    ValueError: This is not a valid run mode.
+
     """
     plt.figure(figsize=(12, 8))
     plt.tick_params(labelsize=8)
@@ -117,9 +176,26 @@ def model_variables_avg(run_mode: str, sims_run: int, sim_years: int, all_trends
     :param run_mode: type of mode the simulation runs in
     :param sims_run: number of runs
     :param sim_years: number of years per run
-    :param all_trends: a dictionary of...trends?
-    :return all_trends:
-    TODO: Please describe all_trends, not 100% sure -Matt
+    :param all_trends: a dictionary that accumulates trends for each of the simulations run in different modes.
+    :return all_trends: output dict that gets passed to the next run mode simulation.
+
+    >>> all_trends = {}
+    >>> result = model_variables_avg('Baseline', 5, 3, all_trends)
+    >>> isinstance(result, dict)
+    True
+
+    >>> all_trends = {}
+    >>> result = model_variables_avg('Flamethrower', 5, 3, all_trends)
+    Traceback (most recent call last):
+    ...
+    ValueError: This is not a valid run mode.
+
+    >>> all_trends = {}
+    >>> result = model_variables_avg('Poison ToH', 5.5, 3, all_trends)
+    Traceback (most recent call last):
+    ...
+    TypeError: 'float' object cannot be interpreted as an integer
+
     """
     plt.figure(figsize=(12, 8))
     plt.title(f'{run_mode} Saturation Model')
