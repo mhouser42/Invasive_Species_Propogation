@@ -1,5 +1,12 @@
+# run_simulation.py
+
 """
-TODO: write doctests
+Takes the output of the illinois network as well as the classes defined as the nodes
+inputs parameters for run mode and how long to run the simulation for.
+Uses an accumulated dataframe that inserts rows based on each successive year the simuation is run
+returns result in a dataframe
+
+TODO: doctest iterate_through_years
 """
 
 import pickle
@@ -7,6 +14,7 @@ import pickle
 import networkx as nx
 from numpy import random
 import pandas as pd
+import json
 from my_classes import MonthQueue
 
 
@@ -16,7 +24,10 @@ def saturation_main(run_mode: str, iterations: int, use_methods=False) -> pd.Dat
     :param use_methods: a Boolean that decided if saturation is affected by class methods.
     :param run_mode: version of Monte Carlo to run
     :param iterations: number of times to run Monte Carlo
-    :return : pandas dataframe of cumulative years
+    :return cumulative_df: pandas dataframe of cumulative years
+
+    # do main function sneed doctests?
+
     """
     CG, schema, neighbor_schema = set_up()
     schema = set_coefficients(schema)
@@ -30,6 +41,24 @@ def set_up() -> (nx.Graph, dict, dict):
     :return CG: Picked graph from illinois_network.py
     :return schema: a dict containing each county and its own class instance
     :return neighbor_schema: a dict containing each county and references the instances of adjacent counties
+
+    >>> CG = nx.Graph()
+    >>> schema = {'County A': object(), 'County B': object()}
+    >>> neighbor_schema = {'County A': [object()], 'County B': [object()]}
+    >>> with open('data/location/IL_graph.dat', 'wb') as f:
+    ...     pickle.dump(CG, f)
+    >>> with open('data/location/graph_handler_counties.dat', 'wb') as f:
+    ...     pickle.dump(schema, f)
+    >>> with open('data/location/graph_handler_neighbors.dat', 'wb') as f:
+    ...     pickle.dump(neighbor_schema, f)
+    >>> result = set_up()
+    >>> isinstance(result[0], nx.Graph)
+    True
+    >>> isinstance(result[1], dict)
+    True
+    >>> isinstance(result[2], dict)
+    True
+
     """
     path = 'data/location'
     CG = pickle.load(open(f'{path}/IL_graph.dat', 'rb'))
@@ -44,112 +73,29 @@ def set_coefficients(schema: dict) -> dict:
     Changes the attributes within the schema
     :param schema: handler for dictionary
     :return: handler but updated
-    """
 
-    coef_dict = {
-        'Cook': {'saturation': 0.3, 'egg_count': 105},
-        'DuPage': {'saturation': 0.0, 'egg_count': 0},
-        'Kane': {'saturation': 0.1, 'egg_count': 20},
-        'Will': {'saturation': 0.0, 'egg_count': 0},
-        'Winnebago': {'saturation': 0.0, 'egg_count': 0},
-        'Lake': {'saturation': 0.0, 'egg_count': 0},
-        'McHenry': {'saturation': 0.0, 'egg_count': 0},
-        'St. Clair': {'saturation': 0.0, 'egg_count': 0},
-        'Kendall': {'saturation': 0.0, 'egg_count': 0},
-        'Madison': {'saturation': 0.0, 'egg_count': 0},
-        'Rock Island': {'saturation': 0.0, 'egg_count': 0},
-        'Peoria': {'saturation': 0.0, 'egg_count': 0},
-        'Sangamon': {'saturation': 0.0, 'egg_count': 0},
-        'Tazewell': {'saturation': 0.0, 'egg_count': 0},
-        'Champaign': {'saturation': 0.2, 'egg_count': 100},
-        'Boone': {'saturation': 0.0, 'egg_count': 0},
-        'Macon': {'saturation': 0.0, 'egg_count': 0},
-        'Kankakee': {'saturation': 0.0, 'egg_count': 0},
-        'DeKalb': {'saturation': 0.0, 'egg_count': 0},
-        'Williamson': {'saturation': 0.0, 'egg_count': 0},
-        'McLean': {'saturation': 0.0, 'egg_count': 0},
-        'Grundy': {'saturation': 0.0, 'egg_count': 0},
-        'Coles': {'saturation': 0.0, 'egg_count': 0},
-        'Jackson': {'saturation': 0.0, 'egg_count': 0},
-        'LaSalle': {'saturation': 0.0, 'egg_count': 0},
-        'Franklin': {'saturation': 0.0, 'egg_count': 0},
-        'Vermilion': {'saturation': 0.0, 'egg_count': 0},
-        'Monroe': {'saturation': 0.0, 'egg_count': 0},
-        'Stephenson': {'saturation': 0.0, 'egg_count': 0},
-        'Whiteside': {'saturation': 0.0, 'egg_count': 0},
-        'Adams': {'saturation': 0.0, 'egg_count': 0},
-        'Clinton': {'saturation': 0.0, 'egg_count': 0},
-        'Knox': {'saturation': 0.0, 'egg_count': 0},
-        'Woodford': {'saturation': 0.0, 'egg_count': 0},
-        'Effingham': {'saturation': 0.0, 'egg_count': 0},
-        'Ogle': {'saturation': 0.0, 'egg_count': 0},
-        'Marion': {'saturation': 0.0, 'egg_count': 0},
-        'Jefferson': {'saturation': 0.0, 'egg_count': 0},
-        'Saline': {'saturation': 0.0, 'egg_count': 0},
-        'Massac': {'saturation': 0.0, 'egg_count': 0},
-        'Morgan': {'saturation': 0.0, 'egg_count': 0},
-        'Henry': {'saturation': 0.8, 'egg_count': 0},
-        'Jersey': {'saturation': 0.0, 'egg_count': 0},
-        'Randolph': {'saturation': 0.0, 'egg_count': 0},
-        'McDonough': {'saturation': 0.0, 'egg_count': 0},
-        'Macoupin': {'saturation': 0.0, 'egg_count': 0},
-        'Wabash': {'saturation': 0.0, 'egg_count': 0},
-        'Perry': {'saturation': 0.0, 'egg_count': 0},
-        'Logan': {'saturation': 0.0, 'egg_count': 0},
-        'Lee': {'saturation': 0.0, 'egg_count': 0},
-        'Christian': {'saturation': 0.0, 'egg_count': 0},
-        'Douglas': {'saturation': 0.0, 'egg_count': 0},
-        'Bond': {'saturation': 0.0, 'egg_count': 0},
-        'Lawrence': {'saturation': 0.0, 'egg_count': 0},
-        'Richland': {'saturation': 0.0, 'egg_count': 0},
-        'Crawford': {'saturation': 0.0, 'egg_count': 0},
-        'Moultrie': {'saturation': 0.0, 'egg_count': 0},
-        'Montgomery': {'saturation': 0.0, 'egg_count': 0},
-        'Union': {'saturation': 0.0, 'egg_count': 55},
-        'Fulton': {'saturation': 0.0, 'egg_count': 0},
-        'DeWitt': {'saturation': 0.0, 'egg_count': 0},
-        'Menard': {'saturation': 0.0, 'egg_count': 0},
-        'Bureau': {'saturation': 0.0, 'egg_count': 0},
-        'Piatt': {'saturation': 0.0, 'egg_count': 0},
-        'Livingston': {'saturation': 0.0, 'egg_count': 0},
-        'Johnson': {'saturation': 0.0, 'egg_count': 0},
-        'Jo Daviess': {'saturation': 0.0, 'egg_count': 0},
-        'Cass': {'saturation': 0.0, 'egg_count': 0},
-        'Putnam': {'saturation': 0.0, 'egg_count': 0},
-        'Warren': {'saturation': 0.0, 'egg_count': 0},
-        'Carroll': {'saturation': 0.0, 'egg_count': 0},
-        'Clark': {'saturation': 0.0, 'egg_count': 0},
-        'Cumberland': {'saturation': 0.0, 'egg_count': 0},
-        'Alexander': {'saturation': 0.0, 'egg_count': 0},
-        'Marshall': {'saturation': 0.0, 'egg_count': 0},
-        'Fayette': {'saturation': 0.0, 'egg_count': 0},
-        'Edwards': {'saturation': 0.0, 'egg_count': 0},
-        'Pulaski': {'saturation': 0.0, 'egg_count': 0},
-        'Clay': {'saturation': 0.0, 'egg_count': 0},
-        'Edgar': {'saturation': 0.0, 'egg_count': 0},
-        'White': {'saturation': 0.0, 'egg_count': 0},
-        'Shelby': {'saturation': 0.0, 'egg_count': 0},
-        'Ford': {'saturation': 0.0, 'egg_count': 0},
-        'Mercer': {'saturation': 0.0, 'egg_count': 0},
-        'Iroquois': {'saturation': 0.0, 'egg_count': 0},
-        'Washington': {'saturation': 0.0, 'egg_count': 0},
-        'Mason': {'saturation': 0.0, 'egg_count': 0},
-        'Greene': {'saturation': 0.0, 'egg_count': 0},
-        'Hardin': {'saturation': 0.0, 'egg_count': 0},
-        'Wayne': {'saturation': 0.0, 'egg_count': 0},
-        'Hancock': {'saturation': 0.0, 'egg_count': 0},
-        'Brown': {'saturation': 0.0, 'egg_count': 0},
-        'Scott': {'saturation': 0.0, 'egg_count': 0},
-        'Stark': {'saturation': 0.0, 'egg_count': 0},
-        'Jasper': {'saturation': 0.0, 'egg_count': 0},
-        'Hamilton': {'saturation': 0.0, 'egg_count': 0},
-        'Pike': {'saturation': 0.0, 'egg_count': 0},
-        'Henderson': {'saturation': 0.0, 'egg_count': 0},
-        'Calhoun': {'saturation': 0.0, 'egg_count': 0},
-        'Schuyler': {'saturation': 0.0, 'egg_count': 0},
-        'Gallatin': {'saturation': 0.0, 'egg_count': 0},
-        'Pope': {'saturation': 0.3, 'egg_count': 300}
-    }
+    >>> class County:
+    ...     def __init__(self, name, infestation, pop, toh):
+    ...         self.name = name
+    ...         self.infestation = infestation
+    ...         self.pop = pop
+    ...         self.toh = toh
+    >>> Pope = County('Pope', 0, 0, 0)
+    >>> Cook = County('Cook', 0, 0, 0)
+    >>> schema = {'Pope': Pope, 'Cook': Cook}
+    >>> coef_dict = {'Pope': {'infestation': 0.5, 'pop': 0.7}, 'Cook': {'toh': 0.2}}
+    >>> with open('data/coef_dict.JSON', 'w') as f:
+    ...     json.dump(coef_dict, f)
+    >>> updated_schema = set_coefficients(schema)
+    >>> isinstance(updated_schema, dict)
+    True
+    >>> all(hasattr(county, 'infestation') for county in updated_schema.values())
+    True
+    >>> hasattr(updated_schema['Cook'], 'toh')
+    True
+    """
+    coef_dict = open('data/coef_dict.JSON')
+    coef_dict = json.load(coef_dict)
     for coef_county in coef_dict:
         for attribute in coef_dict[coef_county]:
             setattr(schema[coef_county], attribute, coef_dict[coef_county][attribute])
@@ -167,13 +113,38 @@ def iterate_through_years(CG: nx.Graph, schema: dict, neighbor_schema: dict, ite
     :param iterations: number of years
     :param run_mode: whether it is baseline mode or another format
     :return cumulative_df: a df that contains the full data for all counties in a run simulation
+
+    # I cannot for the life of me figure out how to get this to work
+    # >>> class County:
+    # ...     def __init__(self, name, saturation, toh_density):
+    # ...         self.name = name
+    # ...         self.saturation = saturation
+    # ...         self.toh_density = toh_density
+    # ...     def get_neighbor_objects(self, name):
+    # ...         return []
+    #
+    # >>> schema = {}
+    # >>> CG = nx.Graph()
+    # >>> for county in ['Coles', 'Bond', 'Edwards', 'Kane', 'Macon']:
+    # ...     county_obj = County(county, 0.5, 0.3)
+    # ...     schema[county] = county_obj
+    # >>> neighbor_schema = {'Coles': ['Edwards', 'Kane', 'Macon'], 'Bond': ['Edwards', 'Kane', 'Macon']}
+    # >>> test_iterations = 5
+    # >>> test_df = iterate_through_years(CG, schema, neighbor_schema, test_iterations)
+    # >>> isinstance(test_df, pd.DataFrame)
+    # True
+    # >>> len(test_df)
+    # 5
+
     """
-    # years = input('How many years are you running? \n')
     cumulative_df = make_starting_df(schema)
     year_tracker = 1
     # months_queue = MonthQueue()
-    #
     for _ in range(iterations):
+        neighbor_obj = find_neighbor_status(CG, schema)
+        schema, cumulative_df = calculate_changes(CG, neighbor_obj, schema, cumulative_df, year_tracker,
+                                                  run_mode, use_methods=use_methods)
+        year_tracker += 1
         # current_year, traffic_level = years_queue.rotate()
         # if use_methods:
         #     for name, county in schema.items():
@@ -186,10 +157,7 @@ def iterate_through_years(CG: nx.Graph, schema: dict, neighbor_schema: dict, ite
         #                 county.lay_eggs()
         #         elif current_year in ['January', 'February']:
         #                 county.die_off()
-        neighbor_obj = find_neighbor_status(CG, schema)
-        schema, cumulative_df = calculate_changes(CG, neighbor_obj, schema, cumulative_df, year_tracker,
-                                                  run_mode, use_methods=use_methods)
-        year_tracker += 1
+
 
     return cumulative_df
 
@@ -199,6 +167,23 @@ def make_starting_df(schema: dict) -> pd.DataFrame:
     Creates an initial dataframe with the list of counties and the starting infection rate for each county
     :param schema:
     :return: instantiated dataframe based on graph handler
+
+    >>> class County:
+    ...     def __init__(self, name, saturation):
+    ...         self.name = name
+    ...         self.saturation = saturation
+    >>> counties = {'Mercer': County('Mercer', 0.2), 'Perry': County('Perry', 0.5)}
+    >>> df = make_starting_df(counties)
+    >>> isinstance(df, pd.DataFrame)
+    True
+    >>> df.columns.tolist()
+    ['County', 'year 0']
+    >>> len(df)
+    2
+    >>> df.loc[df['County'] == 'Mercer', 'year 0'].values[0]
+    0.2
+    >>> df.loc[df['County'] == 'Perry', 'year 0'].values[0]
+    0.5
     """
     county_list = list(schema[county].name for county in schema)
     starting_saturation = list(schema[county].saturation for county in schema)
@@ -213,7 +198,24 @@ def get_object(name: str, schema: dict) -> None:
     Retrieves the county instance object from the schema when given its name
     :param name: name of object
     :param schema: handler to be searched
-    :return:
+    :return schmea[county]: the object that corresponds to the name in the schema
+
+    >>> class County:
+    ...     def __init__(self, name):
+    ...         self.name = name
+    >>> counties = {'Richland': County('Richland'), 'Scott': County('Scott')}
+    >>> obj_a = get_object('Richland', counties)
+    >>> isinstance(obj_a, County)  # Check if object returned is an instance of County
+    True
+    >>> obj_a.name  # Check the name of the retrieved object
+    'Richland'
+    >>> obj_b = get_object('Scott', counties)
+    >>> isinstance(obj_b, County)  # Check if object returned is an instance of County
+    True
+    >>> obj_b.name  # Check the name of the retrieved object
+    'Scott'
+    >>> get_object('Travis', counties) is None  # Check if non-existent object returns None
+    True
     """
     for county in schema:
         if county == name:
@@ -221,13 +223,38 @@ def get_object(name: str, schema: dict) -> None:
 
 
 
-def find_neighbor_status(CG, schema: dict) -> dict:
+def find_neighbor_status(CG: nx.Graph, schema: dict) -> dict:
     """
     Ascertains the saturation status of all neighbors for each county instance,
     returns them as a neighbor object
     :param schema: dictionary handler of graph, with keys as the names of counties and the counties themselves as values
     :param neighbor_schema: dictionary with county names for keys and a list of neighboring county objects.
-    :return: the
+    :return neighbor_obj: the dict object of the neighbors for the county
+
+    >>> class County:
+    ...     def __init__(self, name):
+    ...         self.name = name
+    ...     def get_neighbor_objects(self, CG):
+    ...         return [County('Stark'), County('Neighbor B')]
+    >>> counties = {'Stark': County('Stark'), 'Massac': County('Massac')}
+    >>> CG = {}  # Your graph here
+    >>> neighbors = find_neighbor_status(CG, counties)
+    >>> isinstance(neighbors, dict)  # Check if the returned value is a dictionary
+    True
+    >>> len(neighbors)  # Check if the dictionary has expected length based on the number of counties
+    2
+    >>> isinstance(neighbors['Stark'], list)  # Check if the neighbors are returned as lists
+    True
+    >>> len(neighbors['Stark'])
+    2
+    >>> neighbors['Stark'][0].name
+    'Stark'
+    >>> neighbors['Stark'][10].name
+    Traceback (most recent call last):
+    ...
+    IndexError: list index out of range
+    >>> len(neighbors['Massac'])  # Check the number of neighbors for County B
+    2
     """
     neighbor_obj = {}
     for county in schema:
@@ -239,10 +266,12 @@ def find_neighbor_status(CG, schema: dict) -> dict:
     return neighbor_obj
 
 
-def calculate_changes(CG, neighbor_obj, schema, cumulative_df, year_tracker, run_mode='Baseline', use_methods=False):
+def calculate_changes(CG: nx.Graph, neighbor_obj: None, schema: dict, cumulative_df: pd.DataFrame,
+                      year_tracker: int, run_mode='Baseline', use_methods=False):
     """
-    TODO: had a hard time describing this one - Matt
-    This iterates outcomes of year interactions
+    Models interactions between every county and every county it is adjacent to
+    This is a yearly interaction
+    calculates one county's change in saturation based on the counties adjoining it
 
     :param CG: graph of county network
     :param neighbor_obj: the adjacent object
@@ -251,6 +280,8 @@ def calculate_changes(CG, neighbor_obj, schema, cumulative_df, year_tracker, run
     :param year_tracker: count of current year
     :param run_mode: type of simulation
     :return:
+
+    # going to have trouble doctesting this because it's not deterministic...
     """
     # print('------------------------- Begin New year -------------------------')
     # if use_methods:
@@ -267,7 +298,7 @@ def calculate_changes(CG, neighbor_obj, schema, cumulative_df, year_tracker, run
                                                  (county.saturation * (county.toh_density)))
 
         for net_neighbors in neighbor_obj[county_net]:
-            probability = random.normal(0.5, 0.8)  # random.normal(loc= , scale= )  # SAMPLE EQUATION
+            probability = random.normal(0.5, 0.8)
             ToH_modifier = (net_neighbors.saturation
                             * (net_neighbors.toh_density)
                             * random.exponential(0.02))
@@ -292,8 +323,6 @@ def calculate_changes(CG, neighbor_obj, schema, cumulative_df, year_tracker, run
         saturation_collector.append(all_new_saturations)
     cumulative_df.insert(year_tracker + 1, f'year {year_tracker}', saturation_collector, True)
     return schema, cumulative_df
-
-
 
 
 # def calculate_spread_prob(CG, county, neighbor):
@@ -399,24 +428,109 @@ def calculate_changes(CG, neighbor_obj, schema, cumulative_df, year_tracker, run
 #     return schema, cumulative_df
 
 
-def baseline_calc(net_neighbors, probability, ToH_modifier):
-    new_saturation = ((net_neighbors.saturation * probability) * 3  + (ToH_modifier * net_neighbors.saturation))/2
+def baseline_calc(net_neighbors: None, probability: float, ToH_modifier: float) -> float:
+    """
+    A baseline calculation that serves as a an initial model to modify for different interventions
+    :param net_neighbors: the particualr instance of an neighbor object used to change saturation
+    :param probability: the random probability of infection on a normal distribution
+    :param ToH_modifier: the maount that ToH chances the succeptability to SLF
+    :return new_saturation: the new amount of saturation for that county
+
+    >>> class County:
+    ...     def __init__(self, saturation):
+    ...         self.saturation = saturation
+    >>> neighbor = County(0.5)
+    >>> probability_value = 0.7
+    >>> ToH_value = 0.
+    >>> new_saturation = baseline_calc(neighbor, probability_value, ToH_value)
+    >>> isinstance(new_saturation, float)
+    True
+    >>> new_saturation
+    0.5249999999999999
+    """
+    new_saturation = ((net_neighbors.saturation * probability) * 3 + (ToH_modifier * net_neighbors.saturation))/2
     return new_saturation
 
 
-def ToH_calc(net_neighbors, probability, ToH_modifier):
+def ToH_calc(net_neighbors: None, probability: float, ToH_modifier: float) -> float:
+    """
+    A variation on baseline that modifies the effect of ToH to represent an intervention
+    :param net_neighbors: the neighboring object
+    :param probability: a random probability on a normal distribution
+    :param ToH_modifier: a randomized representation of the ToH modification
+    :return new_saturation: the new infection from the target county to the neighbor.
+
+    >>> class County:
+    ...     def __init__(self, saturation):
+    ...         self.saturation = saturation
+    >>> neighbor = County(0.5)
+    >>> probability_value = 0.7
+    >>> ToH_value = 0.002
+    >>> new_saturation = ToH_calc(neighbor, probability_value, ToH_value)
+    >>> isinstance(new_saturation, float)
+    True
+    >>> new_saturation
+    0.24999999999999997
+    """
     ToH_modifier = -ToH_modifier * 100
     new_saturation = net_neighbors.saturation * probability + ToH_modifier * net_neighbors.saturation
     return new_saturation
 
 
-def population_calc(county, net_neighbors, probability, ToH_modifier):
+def population_calc(county: None, net_neighbors: None, probability: float, ToH_modifier: float) -> float:
+    """
+    A modification of the baseline that models what may happen if citizen of a county
+    were inclined and educated to help eliminate SLF and their eggs
+    :param county: the object of the target county
+    :param net_neighbors: the object of the neighboring county
+    :param probability: random probability of transmission based on a normal distribution
+    :param ToH_modifier: random probability that transmission will influenced by ToH
+    :return new_infection: the new infection level from neighbor to target county
+
+    >>> class County:
+    ...     def __init__(self, saturation, popdense_sqmi):
+    ...         self.saturation = saturation
+    ...         self.popdense_sqmi = popdense_sqmi
+    >>> neighbor = County(0.5, 500)
+    >>> target = County(0.3, 300)
+    >>> probability_value = 5  # this is outrageously high to make sure the test is reliable
+    >>> ToH_value = 0.1
+    >>> new_infection = population_calc(target, neighbor, probability_value, ToH_value)
+    >>> isinstance(new_infection, float)
+    True
+    >>> new_infection > 0
+    True
+    """
     bug_smash = random.normal(0.2, 0.1) * 0.01
-    new_saturation = (net_neighbors.saturation * probability + ToH_modifier * net_neighbors.saturation - (county.saturation * net_neighbors.popdense_sqmi * bug_smash))
+    new_saturation = (net_neighbors.saturation * probability + ToH_modifier * net_neighbors.saturation
+                      - (county.saturation * net_neighbors.popdense_sqmi * bug_smash))
     return new_saturation
 
 
-def quarantine_calc(quarantine_list, net_neighbors, probability, ToH_modifier):
+def quarantine_calc(quarantine_list: set, net_neighbors: None, probability: float, ToH_modifier: float) -> (set, float):
+    """
+    Modification of baseline that models what would happen if
+    a county, reaching 50% of saturation, had a 50% chance of quarantining with 100% efficacy
+    counties are stored persistently if they decide to quarantine.
+    :param quarantine_list: not a list, but actually a set of the counties that are quarantined
+    :param net_neighbors: neighbor object
+    :param probability: probability on a normal distribution of transmission from one county to another
+    :param ToH_modifier: probability of ToH influencing saturation
+    :return quarantine_list: the new set of quarantining counties, possibly with the target added.
+    :return new_infection: the new infection rate from a neighbor to a target county
+
+    >>> class County:
+    ...     def __init__(self, saturation, popdense_sqmi):
+    ...         self.saturation = saturation
+    ...         self.popdense_sqmi = popdense_sqmi
+    >>> neighbor = County(0.5, 500)
+    >>> target = County(0.3, 300)
+    >>> probability_value = 0.002
+    >>> ToH_value = 0.1
+    >>> new_infection = population_calc(target, neighbor, probability_value, ToH_value)
+    >>> isinstance(new_infection, float)
+    True
+    """
     if (net_neighbors in quarantine_list) or (net_neighbors.saturation > 0.5 and random.choice([True, False])):
         new_saturation = 0
         quarantine_list.add(net_neighbors)
@@ -425,7 +539,37 @@ def quarantine_calc(quarantine_list, net_neighbors, probability, ToH_modifier):
     return quarantine_list, new_saturation
 
 
-def all_modes(quarantine_list, county, net_neighbors, probability, ToH_modifier):
+def all_modes(quarantine_list: set, county: None, net_neighbors: None, probability: float,
+              ToH_modifier: float) -> (set, float):
+    """
+    A variation of baseline that includes all interventions modeled in all other functions
+
+    :param quarantine_list: not a list, but a set of quarantining counties
+    :param county: target county object
+    :param net_neighbors: neighboring county object
+    :param probability: the probabiltiy, on a normal distribution, that one county infects a neighbor
+    :param ToH_modifier: the probabilty that extant ToH populations will influence saturation growth
+    :return quarantine_list: the new set of quarantining counties, possibly with the target added.
+    :return new_infection: the new infection rate from a neighbor to a target county
+
+    >>> class County:
+    ...     def __init__(self, saturation, popdense_sqmi):
+    ...         self.saturation = saturation
+    ...         self.popdense_sqmi = popdense_sqmi
+    >>> quarantine_set = set()
+    >>> target_county = County(0.2, 100)
+    >>> neighbor_1 = County(0.3, 150)
+    >>> neighbor_2 = County(0.7, 80)
+    >>> quarantine_list, new_saturation_1 = all_modes(quarantine_set, target_county, neighbor_1, 0.5, 0.1)
+    >>> isinstance(quarantine_list, set)
+    True
+    >>> isinstance(new_saturation_1, float)
+    True
+    >>> quarantine_list, new_saturation_2 = all_modes(quarantine_list, target_county, neighbor_2, 0.5, 0.1)
+    >>> isinstance(quarantine_list, set)
+    True
+    """
+
     if (net_neighbors in quarantine_list) or (net_neighbors.saturation > 0.5 and random.choice([True, False])):
         new_saturation = 0
         quarantine_list.add(net_neighbors)
