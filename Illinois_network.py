@@ -22,7 +22,7 @@ def get_lower_and_upper_bounds(df: pd.DataFrame, col_name):
     :param df: dataframe to be accessed
     :param col_name: string name of column to retrieve boundaries
     :return: the lower and upper bounds
-    >>> pd.DataFrame()
+    # >>> pd.DataFrame()
     """
     Q1 = np.percentile(df[col_name], 25)
     Q3 = np.percentile(df[col_name], 75)
@@ -96,7 +96,7 @@ def construct_edges(CG: nx.Graph, edge_df: pd.DataFrame, handler: dict):
 
 def get_neighbor_handler(CG, handler):
     """
-    Ascertains the infestation status of all neighbors for each county instance,
+    Ascertains the saturation status of all neighbors for each county instance,
     returns them as a neighbor object
     :param CG: the graph of county network
     :param handler: the graph handler, with county names for keys and the counties themselves for values
@@ -115,10 +115,10 @@ def get_neighbor_handler(CG, handler):
 
 def get_toh_totals_by_county(df, handler):
     """
-    calculates the total infestation_index (acreage X density) and number of sightings of tree of heaven for all nodes
+    calculates the total saturation_index (acreage X density) and number of sightings of tree of heaven for all nodes
     :param df: dataframe to be assessed
     :param handler: graph handler with county names for keys and the counties themselves as values
-    :return county_tots, county_counts: the total infestation of tree of heaven by county
+    :return county_tots, county_counts: the total saturation of tree of heaven by county
     :return county_counts: the number of tree of heaven sightings in a county.
     """
 
@@ -134,12 +134,12 @@ def get_toh_totals_by_county(df, handler):
 
 def calc_toh_density_coef(df, handler, county_tots, county_counts):
     """
-    takes  total infestation and sightings and returns relative tree of heaven density for each county in the network,
+    takes  total saturation and sightings and returns relative tree of heaven density for each county in the network,
     capping at 1.0 and bottoming out at 0.0. This is a relative level based on sightings, with outlier being
 
     :param df: dataframe of tree of heaven data
     :param handler: graph handler with county names as keys and the counties themselves as values
-    :param county_tots: total infestation index by county
+    :param county_tots: total saturation index by county
     :param county_counts: total sightings by county
     """
     lower, upper = get_lower_and_upper_bounds(toh_df, 'infest_index')

@@ -12,7 +12,7 @@ from numpy import random
 
 class County:
     """
-    Hashable object with various attributes related to lanternfly infestation and geographical data.
+    Hashable object with various attributes related to lanternfly saturation and geographical data.
 
     :param name: Name of the location.
     :param lat: Latitude coordinate.
@@ -21,24 +21,24 @@ class County:
     :param centroid: Centroid of the location (if available).
     :param pop: Population of the location.
     :param popdense_sqmi: Population density per square mile.
-    :param infestation: Initial infestation level.
-    :param mated: Proportion of the infestation that has mated.
-    :param laid_eggs: Proportion of the infestation that has laid eggs.
+    :param saturation: Initial saturation level.
+    :param mated: Proportion of the saturation that has mated.
+    :param laid_eggs: Proportion of the saturation that has laid eggs.
     :param egg_count: Number of egg masses present.
     :param tree_density: rough approximation of tree density for counties
     :param toh_density: the relative density of tree of heaven for county.
     :param traffic_level: overall traffic amount for state. Changes on month updates.
     :param quarantine: Boolean indicating if the location is under quarantine.
-    :param public_awareness: Boolean indicating if people in the county has become aware of the infestation.
+    :param public_awareness: Boolean indicating if people in the county has become aware of the saturation.
     """
 
     def __init__(self, name, lat=None, lon=None, geometry=None, centroid=False, pop=None, popdense_sqmi=None,
-                 infestation=0.0, mated=0.0, laid_eggs=0.0, egg_count=0,
+                 saturation=0.0, mated=0.0, laid_eggs=0.0, egg_count=0,
                  tree_density=0.0, toh_density=0.0, traffic_level=1.0, quarantine=False, public_awareness=False):
         self.name = name
         self.lat, self.lon, self.geometry, self.centroid = lat, lon, geometry, centroid
         self.pop, self.popdense_sqmi = pop, popdense_sqmi
-        self.infestation = infestation
+        self.saturation = saturation
         self.mated = mated
         self.laid_eggs = laid_eggs
         self.egg_count = egg_count
@@ -61,9 +61,9 @@ class County:
 
     def mate(self, mating_chance=None):
         """
-        Simulate the mating process, updating the proportion of mated flies in the infestation
+        Simulate the mating process, updating the proportion of mated flies in the saturation
 
-        >>> county = County('Butts County', infestation=0.7)
+        >>> county = County('Butts County', saturation=0.7)
         >>> old_mate = county.mate()
         >>> new_mate = county.mate()
         >>> new_mate > old_mate
@@ -71,7 +71,7 @@ class County:
         """
         if mating_chance is None:
             mating_chance = random.uniform(0.5, 1.0)
-        newly_mated = self.infestation * mating_chance * (1.0 - self.mated)
+        newly_mated = self.saturation * mating_chance * (1.0 - self.mated)
         self.mated += newly_mated
         self.mated = min(self.mated, 1.0)  # caps the value at 100%
         return self.mated
@@ -84,7 +84,7 @@ class County:
         :param extra_eggmass_chance: Chance of laying an additional egg mass.
         :return self.eggcount: Total number of egg masses after laying.
 
-        >>> loc = County("Matt's County", infestation=0.37, toh_density=.5, tree_density=.5, mated=1.0)
+        >>> loc = County("Matt's County", saturation=0.37, toh_density=.5, tree_density=.5, mated=1.0)
         >>> old_eggs = loc.egg_count
         >>> current_eggs = loc.lay_eggs()
         >>> current_eggs > old_eggs
@@ -99,28 +99,28 @@ class County:
         """
         Simulates the natural death of SLF during the winter.
         :param mortality_rate: percent of flies killed off. If not provided, somewhere between .75 and 1.0
-        :return self.infestation: current infestation level of Location
-        >>> county = County("Justin's County", infestation=0.37)
+        :return self.saturation: current saturation level of Location
+        >>> county = County("Justin's County", saturation=0.37)
         >>> current_infest = county.die_off(mortality_rate=1.0)
         >>> current_infest
         0.0
         """
         if mortality_rate is None:
             mortality_rate = random.uniform(0.75, 1.0)
-        die_off_number = self.infestation * mortality_rate
-        self.infestation -= die_off_number
+        die_off_number = self.saturation * mortality_rate
+        self.saturation -= die_off_number
         self.mated = 0.0
         self.laid_eggs = 0.0
-        return self.infestation
+        return self.saturation
 
     def hatch_eggs(self, hatch_chance=None):
         """
-        Simulates the hatching of eggs and increases the infestation accordingly.
+        Simulates the hatching of eggs and increases the saturation accordingly.
 
-        :return: infestation level after hatching eggs.
+        :return: saturation level after hatching eggs.
 
-        >>> loc = County("Cook", infestation=0.0, egg_count=105)
-        >>> pre_hatch_infestation = loc.infestation
+        >>> loc = County("Cook", saturation=0.0, egg_count=105)
+        >>> pre_hatch_saturation = loc.saturation
         >>> current_infest = loc.hatch_eggs(hatch_chance=1.0)
         >>> current_infest > 0.37
         True
@@ -131,12 +131,12 @@ class County:
         hatched_eggs = int(self.egg_count * hatch_chance)
         while hatched_eggs > 0:
             egg_coef = random.uniform(0.0035, 0.0045)
-            self.infestation += egg_coef
+            self.saturation += egg_coef
             self.egg_count -= 1
             hatched_eggs -= 1
 
-        self.infestation = round(min(self.infestation, 1.0), 2)  # caps at 100%
-        return self.infestation
+        self.saturation = round(min(self.saturation, 1.0), 2)  # caps at 100%
+        return self.saturation
 
     def __hash__(self):
         return hash((self.name, type(self)))
