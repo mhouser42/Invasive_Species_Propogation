@@ -254,7 +254,8 @@ def calculate_changes(CG, neighbor_obj, schema, cumulative_df, month_tracker, cu
     """
     # print('------------------------- Begin New month -------------------------')
     if life_cycle:
-        schema, cumulative_df = calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, current_month, run_mode=run_mode)
+        schema, cumulative_df = calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, current_month,
+                                            run_mode=run_mode, life_cycle=life_cycle)
         return schema, cumulative_df
     else:
         if run_mode == 'Baseline':
@@ -290,7 +291,7 @@ def calculate_spread_prob(CG, county, neighbor):
     return spread_prob
 
 
-def spread_infestation(county, neighbor, spread_prob, current_month):
+def spread_infestation(county, neighbor, spread_prob, current_month, life_cycle=False):
     """
     updates the infestation level of a neighboring county to source county
     :param county: source node that infestation spreads from
@@ -305,7 +306,7 @@ def spread_infestation(county, neighbor, spread_prob, current_month):
 
     neighbor.infestation += transfer_amount
     neighbor.infestation = min(neighbor.infestation, 1.0)
-    if current_month in ['September', 'October', 'November']:
+    if current_month in ['September', 'October', 'November'] and life_cycle:
         neighbor.egg_count += int(transfer_amount * 100)
 
 
@@ -338,7 +339,7 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
             CG[county][neighbor]['weight'] = 5.0
 
 
-def calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, current_month, run_mode='Baseline'):
+def calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, current_month, run_mode='Baseline', life_cycle=False):
     """
     updates the new infestation levels for all nodes in county graph.
     :param CG: The graph of counties
@@ -361,7 +362,7 @@ def calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, current_
         for net_neighbor in neighbor_obj[county_net]:
             spread_prob = calculate_spread_prob(CG, county, net_neighbor)
             implement_counter_measures(CG, county, net_neighbor, run_mode=run_mode)
-            spread_infestation(county, net_neighbor, spread_prob, current_month=current_month)
+            spread_infestation(county, net_neighbor, spread_prob, current_month=current_month, life_cycle=life_cycle)
 
             new_infestations += net_neighbor.infestation
         infestation_collector.append(county.infestation)
