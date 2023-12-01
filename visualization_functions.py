@@ -195,7 +195,6 @@ def model_variables_avg(run_mode: str, sims_run: int, sim_years: int, all_trends
     Traceback (most recent call last):
     ...
     TypeError: 'float' object cannot be interpreted as an integer
-
     """
     plt.figure(figsize=(12, 8))
     plt.title(f'{run_mode} Saturation Model')
