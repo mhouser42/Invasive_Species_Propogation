@@ -29,11 +29,13 @@ def saturation_main(run_mode: str, iterations: int, use_methods=False) -> pd.Dat
     # do main functions need doctests?
 
     """
-    CG, schema, neighbor_schema = set_up()
-    schema = set_coefficients(schema)
-    cumulative_df = iterate_through_years(CG, schema, neighbor_schema, iterations, run_mode, use_methods=use_methods)
-    return cumulative_df
-
+    if type(iterations) == int and iterations > 0:
+        CG, schema, neighbor_schema = set_up()
+        schema = set_coefficients(schema)
+        cumulative_df = iterate_through_years(CG, schema, neighbor_schema, iterations, run_mode, use_methods=use_methods)
+        return cumulative_df
+    else:
+        raise ValueError('Please use an integer greater than zero.')
 
 def set_up() -> (nx.Graph, dict, dict):
     """
@@ -297,7 +299,7 @@ def calculate_changes(CG: nx.Graph, neighbor_obj: None, schema: dict, cumulative
         county.saturation = county.saturation + (random.normal(0.025, 0.05) *
                                                  (county.saturation * (county.toh_density)))
         for net_neighbors in neighbor_obj[county_net]:
-            probability = random.normal(0.5, 0.8)
+            probability = random.normal(0.45, 0.8)
             ToH_modifier = (net_neighbors.saturation
                             * (net_neighbors.toh_density) * 100
                             * random.exponential(0.02))
