@@ -296,25 +296,12 @@ def calculate_changes(CG: nx.Graph, neighbor_obj: None, schema: dict, cumulative
         county = get_object(county_net, schema)
         county.saturation = county.saturation + (random.normal(0.025, 0.05) *
                                                  (county.saturation * (county.toh_density)))
-
         for net_neighbors in neighbor_obj[county_net]:
             probability = random.normal(0.5, 0.8)
             ToH_modifier = (net_neighbors.saturation
-                            * (net_neighbors.toh_density)
+                            * (net_neighbors.toh_density) * 100
                             * random.exponential(0.02))
-            if run_mode == 'Baseline':
-                new_saturation = baseline_calc(net_neighbors, probability, ToH_modifier)
-            elif run_mode == 'Poison ToH':
-                new_saturation = ToH_calc(net_neighbors, probability, ToH_modifier)
-            elif run_mode == 'Population-Based Countermeasures':
-                new_saturation = population_calc(county, net_neighbors, probability, ToH_modifier)
-            elif run_mode == 'Quarantine':
-                quarantine_list, new_saturation = quarantine_calc(quarantine_list, net_neighbors, probability, ToH_modifier)
-            elif run_mode == 'All':
-                quarantine_list, new_saturation = all_modes(quarantine_list, county, net_neighbors, probability, ToH_modifier)
-            else:
-                raise ValueError('This is not a valid run mode.')
-
+            new_saturation = assign_mode(ToH_modifier, county, net_neighbors, probability, quarantine_list, run_mode)
             all_new_saturations += new_saturation
         all_new_saturations = round(all_new_saturations / (len(neighbor_obj[county_net])), 8) + county.saturation
         all_new_saturations = max(0, min(all_new_saturations, 1))
@@ -323,6 +310,22 @@ def calculate_changes(CG: nx.Graph, neighbor_obj: None, schema: dict, cumulative
         saturation_collector.append(all_new_saturations)
     cumulative_df.insert(year_tracker + 1, f'year {year_tracker}', saturation_collector, True)
     return schema, cumulative_df
+
+
+def assign_mode(ToH_modifier, county, net_neighbors, probability, quarantine_list, run_mode):
+    if run_mode == 'Baseline':
+        new_saturation = baseline_calc(net_neighbors, probability, ToH_modifier)
+    elif run_mode == 'Poison ToH':
+        new_saturation = ToH_calc(net_neighbors, probability, ToH_modifier)
+    elif run_mode == 'Population-Based Countermeasures':
+        new_saturation = population_calc(county, net_neighbors, probability, ToH_modifier)
+    elif run_mode == 'Quarantine':
+        quarantine_list, new_saturation = quarantine_calc(quarantine_list, net_neighbors, probability, ToH_modifier)
+    elif run_mode == 'All':
+        quarantine_list, new_saturation = all_modes(quarantine_list, county, net_neighbors, probability, ToH_modifier)
+    else:
+        raise ValueError('This is not a valid run mode.')
+    return new_saturation
 
 
 # def calculate_spread_prob(CG, county, neighbor):
@@ -472,7 +475,7 @@ def ToH_calc(net_neighbors: None, probability: float, ToH_modifier: float) -> fl
     >>> new_saturation
     0.24999999999999997
     """
-    ToH_modifier = -ToH_modifier * 100
+    ToH_modifier = -ToH_modifier
     new_saturation = net_neighbors.saturation * probability + ToH_modifier * net_neighbors.saturation
     return new_saturation
 
@@ -575,7 +578,7 @@ def all_modes(quarantine_list: set, county: None, net_neighbors: None, probabili
         quarantine_list.add(net_neighbors)
     else:
         bug_smash = random.normal(0.2, 0.1) * 0.01
-        ToH_modifier = -ToH_modifier * 100
+        ToH_modifier = -ToH_modifier
         new_saturation = (net_neighbors.saturation * probability +
                            ToH_modifier * net_neighbors.saturation -
                            (county.saturation * net_neighbors.popdense_sqmi * bug_smash))
