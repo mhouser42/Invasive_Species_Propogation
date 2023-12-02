@@ -146,7 +146,6 @@ def get_neighbor_handler(CG: nx.Graph, handler: dict) -> dict:
     # I don't know how to write doctests for this function
     """
     neighbor_handle = {}
-    print(type(handler))
     for county in handler:
         all_neighbors = []
         for neighbor in handler[county].get_neighbor_objects(CG):

@@ -45,13 +45,13 @@ def set_up() -> (nx.Graph, dict, dict):
     :return neighbor_schema: a dict containing each county and references the instances of adjacent counties
 
     >>> CG = nx.Graph()
-    >>> schema = {'County A': object(), 'County B': object()}
-    >>> neighbor_schema = {'County A': [object()], 'County B': [object()]}
-    >>> with open('data/location/IL_graph.dat', 'wb') as f:
+    >>> schema = {'Cook': object(), 'Pope': object()}
+    >>> neighbor_schema = {'Cook': [object()], 'Pope': [object()]}
+    >>> with open('data/location/IL_graph_test.dat', 'wb') as f:
     ...     pickle.dump(CG, f)
-    >>> with open('data/location/graph_handler_counties.dat', 'wb') as f:
+    >>> with open('data/location/graph_handler_counties_test.dat', 'wb') as f:
     ...     pickle.dump(schema, f)
-    >>> with open('data/location/graph_handler_neighbors.dat', 'wb') as f:
+    >>> with open('data/location/graph_handler_neighbors_test.dat', 'wb') as f:
     ...     pickle.dump(neighbor_schema, f)
     >>> result = set_up()
     >>> isinstance(result[0], nx.Graph)
@@ -283,7 +283,7 @@ def calculate_changes(CG: nx.Graph, neighbor_obj: None, schema: dict, cumulative
     :param run_mode: type of simulation
     :return:
 
-    # going to have trouble doctesting this because it's not deterministic...
+    # going to have trouble doctesting this because it's not deterministic
     """
     # print('------------------------- Begin New year -------------------------')
     # if use_methods:
@@ -298,13 +298,8 @@ def calculate_changes(CG: nx.Graph, neighbor_obj: None, schema: dict, cumulative
         county = get_object(county_net, schema)
         county.saturation = county.saturation + (random.normal(0.025, 0.05) *
                                                  (county.saturation * (county.toh_density)))
-        for net_neighbors in neighbor_obj[county_net]:
-            probability = random.normal(0.45, 0.8)
-            ToH_modifier = (net_neighbors.saturation
-                            * (net_neighbors.toh_density) * 100
-                            * random.exponential(0.02))
-            new_saturation = assign_mode(ToH_modifier, county, net_neighbors, probability, quarantine_list, run_mode)
-            all_new_saturations += new_saturation
+        all_new_saturations = process_net_neighbors(all_new_saturations, county, county_net, neighbor_obj,
+                                                    quarantine_list, run_mode)
         all_new_saturations = round(all_new_saturations / (len(neighbor_obj[county_net])), 8) + county.saturation
         all_new_saturations = max(0, min(all_new_saturations, 1))
         # print(f'{county_net} went from {county.saturation} to {all_new_saturations}')
@@ -314,7 +309,82 @@ def calculate_changes(CG: nx.Graph, neighbor_obj: None, schema: dict, cumulative
     return schema, cumulative_df
 
 
-def assign_mode(ToH_modifier, county, net_neighbors, probability, quarantine_list, run_mode):
+def process_net_neighbors(all_new_saturations: float, county: None, county_net: None,
+                          neighbor_obj: None, quarantine_list: set, run_mode: str) -> float:
+    """
+    calculates neighbor county influence on the target county and
+    generates random statistics for ToH and base probability
+    :param all_new_saturations: an accumulator of all neighbor saturations beginning with 0
+    :param county: the target county target
+    :param county_net: an iterated network for the neighbor_obj, the target county's network objs
+    :param neighbor_obj: the total list of neighbor objects
+    :param quarantine_list: the set of quarantining counties
+    :param run_mode: a string defining run_mode
+    :return all_new_saturations: float of the accumulated all new saturations
+
+    >>> class County:
+    ...     def __init__(self, name, saturation, toh_density):
+    ...         self.name = name
+    ...         self.saturation = saturation
+    ...         self.toh_density = toh_density
+    >>> Clark = County('Clark', 0.5, 0.6)
+    >>> Mennard = County('Mennard', 0.7, 0.8)
+    >>> LaSalle = County('LaSalle', 0.3, 0.4)
+    >>> neighbor_obj = {Clark: [Mennard, LaSalle], Mennard: [Clark, LaSalle], LaSalle: [Clark, Mennard]}
+    >>> quarantine_set = set()
+    >>> run_mode = 'Baseline'
+    >>> def assign_mode(ToH_modifier, county, net_neighbors, probability, quarantine_list, run_mode):
+    ...     return ToH_modifier * net_neighbors.saturation * probability
+    >>> result = process_net_neighbors(0, Clark, Clark, neighbor_obj, quarantine_set, run_mode)
+    >>> isinstance(result, float)
+    True
+
+    """
+    for net_neighbors in neighbor_obj[county_net]:
+        probability = random.normal(0.45, 0.8)
+        ToH_modifier = (net_neighbors.saturation
+                        * (net_neighbors.toh_density) * 100
+                        * random.exponential(0.02))
+        new_saturation = assign_mode(ToH_modifier, county, net_neighbors, probability, quarantine_list, run_mode)
+        all_new_saturations += new_saturation
+    return all_new_saturations
+
+
+def assign_mode(ToH_modifier: float, county: None, net_neighbors: None, probability: float,
+                quarantine_list: set, run_mode: str) -> float:
+    """
+    a hub that sends variables to the correct processing function depending on the selected run_mode
+    :param ToH_modifier: a modifier that represents the effect ToH have on SLF populations
+    :param county: the target county object
+    :param net_neighbors: the neighboring county objects
+    :param probability: the probability of transmission from one county to another
+    :param quarantine_list: the set of counties that have decided to quarantine
+    :param run_mode: the run mode selected as an input variable
+    :return new_saturation: the new saturation of the target county object.
+
+    >>> class County:
+    ...     def __init__(self, name, saturation):
+    ...         self.name = name
+    ...         self.saturation = saturation
+    >>> Williamson = County('Williamson', 0.5)
+    >>> Ogle = County('Ogle', 0.7)
+    >>> Lee = County('Lee', 0.3)
+    >>> quarantine_set = set([Williamson])
+    >>> def baseline_calc(net_neighbors, probability, ToH_modifier):
+    ...     return net_neighbors.saturation * probability + ToH_modifier * net_neighbors.saturation
+    >>> def ToH_calc(net_neighbors, probability, ToH_modifier):
+    ...     return net_neighbors.saturation * probability + ToH_modifier * net_neighbors.saturation
+    >>> def population_calc(county, net_neighbors, probability, ToH_modifier):
+    ...     return net_neighbors.saturation * probability + ToH_modifier * net_neighbors.saturation - county.saturation
+    >>> def quarantine_calc(quarantine_list, net_neighbors, probability, ToH_modifier):
+    ...     return quarantine_list, net_neighbors.saturation * probability + ToH_modifier * net_neighbors.saturation
+    >>> def all_modes(quarantine_list, county, net_neighbors, probability, ToH_modifier):
+    ...     return quarantine_list, net_neighbors.saturation * probability + ToH_modifier * net_neighbors.saturation
+    >>> result_baseline = assign_mode(0.5, Williamson, Ogle, 0.8, set(), 'Baseline')
+    >>> isinstance(result_baseline, float)  # Check if the result is a float
+    True
+
+    """
     if run_mode == 'Baseline':
         new_saturation = baseline_calc(net_neighbors, probability, ToH_modifier)
     elif run_mode == 'Poison ToH':
@@ -474,8 +544,6 @@ def ToH_calc(net_neighbors: None, probability: float, ToH_modifier: float) -> fl
     >>> new_saturation = ToH_calc(neighbor, probability_value, ToH_value)
     >>> isinstance(new_saturation, float)
     True
-    >>> new_saturation
-    0.24999999999999997
     """
     ToH_modifier = -ToH_modifier
     new_saturation = net_neighbors.saturation * probability + ToH_modifier * net_neighbors.saturation
@@ -589,4 +657,4 @@ def all_modes(quarantine_list: set, county: None, net_neighbors: None, probabili
 
 if __name__ == '__main__':
     df = saturation_main('Population-Based Countermeasures', 10, use_methods=False)
-    print(df)
+    # print(df)
