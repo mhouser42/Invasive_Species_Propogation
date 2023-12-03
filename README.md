@@ -72,7 +72,7 @@ A realistic projection of SLF infestation is very difficult to quantify, and ava
 
 Howver, Jones et al, in developing a specially and temporally dynamic forecast for SLF infestation, show perhaps a quarter of the United States and being partially or completely innundated with SLF in just 7 years. 
 
-![alt text](https://github.com/mhouser42/Invasive_Species_Propogation/blob/main/references/jones.png)
+![alt text](https://github.com/mhouser42/Invasive_Species_Propogation/blob/JayTongue-patch-1/references/jones.png)
 
 (Jones et al. 2022)
 
