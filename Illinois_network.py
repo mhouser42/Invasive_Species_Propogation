@@ -1,6 +1,10 @@
 # Illinois_network.py
 
 """
+### Authors:
+##### Justin Tung:      'https://github.com/JayTongue'
+##### Matt Adam-Houser: 'https://github.com/mhouser42'
+
 This file is for the creation of county network
 
 TODO: doctests for get_neighbor_handler, calc_toh_density_coef, add_tree_density

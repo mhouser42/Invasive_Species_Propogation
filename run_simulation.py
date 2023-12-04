@@ -1,9 +1,13 @@
 # run_simulation.py
 
 """
+### Authors:
+##### Justin Tung:      'https://github.com/JayTongue'
+##### Matt Adam-Houser: 'https://github.com/mhouser42'
+
 Takes the output of the illinois network as well as the classes defined as the nodes
 inputs parameters for run mode and how long to run the simulation for.
-Uses an accumulated dataframe that inserts rows based on each successive year the simuation is run
+Uses an accumulated dataframe that inserts rows based on each successive year the simulation is run
 returns result in a dataframe
 """
 
@@ -13,27 +17,44 @@ import networkx as nx
 from numpy import random
 import pandas as pd
 import json
-from my_classes import MonthQueue
+from my_classes import County, MonthQueue
 
 
 def saturation_main(run_mode: str, iterations: int, use_methods=False) -> pd.DataFrame:
     """
     Main Function that sequences the order of events when running this file
-    :param use_methods: a Boolean that decided if saturation is affected by class methods.
     :param run_mode: version of Monte Carlo to run
     :param iterations: number of times to run Monte Carlo
+    :param use_methods: a Boolean that decided if saturation is affected by class methods.
     :return cumulative_df: pandas dataframe of cumulative years
 
-    # do main functions need doctests?
-
+    >>> saturation_main('Baseline', -5)
+    Traceback (most recent call last):
+    ...
+    ValueError: Please use an integer greater than zero.
+    >>> saturation_main('Poison ToH', 'Hi mom')
+    Traceback (most recent call last):
+    ...
+    ValueError: Please use an integer greater than zero.
+    >>> saturation_main('Population-Based Countermeasures', 1.1)
+    Traceback (most recent call last):
+    ...
+    ValueError: Please use an integer greater than zero.
+    >>> saturation_main('Parasitic Wasps', 15)
+    Traceback (most recent call last):
+    ...
+    ValueError: This is not a valid run mode.
     """
     if type(iterations) == int and iterations > 0:
         CG, schema, neighbor_schema = set_up()
         schema = set_coefficients(schema)
-        cumulative_df = iterate_through_years(CG, schema, neighbor_schema, iterations, run_mode, use_methods=use_methods)
+        cumulative_df = iterate_through_years(CG, schema, neighbor_schema, iterations,
+                                              run_mode, use_methods=use_methods)
+            # "Never set a default value on a function parameter that is a literal mutable object."
         return cumulative_df
     else:
         raise ValueError('Please use an integer greater than zero.')
+
 
 def set_up() -> (nx.Graph, dict, dict):
     """
@@ -42,15 +63,15 @@ def set_up() -> (nx.Graph, dict, dict):
     :return schema: a dict containing each county and its own class instance
     :return neighbor_schema: a dict containing each county and references the instances of adjacent counties
 
-    >>> CG = nx.Graph()
-    >>> schema = {'Cook': object(), 'Pope': object()}
-    >>> neighbor_schema = {'Cook': [object()], 'Pope': [object()]}
+    >>> test_CG = nx.Graph()
+    >>> test_schema = {'Cook': object(), 'Pope': object()}
+    >>> test_neighbor_schema = {'Cook': [object()], 'Pope': [object()]}
     >>> with open('data/location/IL_graph_test.dat', 'wb') as f:
-    ...     pickle.dump(CG, f)
+    ...     pickle.dump(test_CG, f)
     >>> with open('data/location/graph_handler_counties_test.dat', 'wb') as f:
-    ...     pickle.dump(schema, f)
+    ...     pickle.dump(test_schema, f)
     >>> with open('data/location/graph_handler_neighbors_test.dat', 'wb') as f:
-    ...     pickle.dump(neighbor_schema, f)
+    ...     pickle.dump(test_neighbor_schema, f)
     >>> result = set_up()
     >>> isinstance(result[0], nx.Graph)
     True
@@ -58,7 +79,6 @@ def set_up() -> (nx.Graph, dict, dict):
     True
     >>> isinstance(result[2], dict)
     True
-
     """
     path = 'data/location'
     CG = pickle.load(open(f'{path}/IL_graph.dat', 'rb'))
@@ -95,7 +115,7 @@ def set_coefficients(schema: dict) -> dict:
     coef_dict = json.load(coef_dict)
     for coef_county in coef_dict:
         for attribute in coef_dict[coef_county]:
-            try:
+            try:  # Attempts to load coefficients and set starting corresponding attributes from the coefficient JSON.
                 setattr(schema[coef_county], attribute, coef_dict[coef_county][attribute])
             except KeyError:
                 continue
@@ -103,15 +123,15 @@ def set_coefficients(schema: dict) -> dict:
 
 
 def iterate_through_years(CG: nx.Graph, schema: dict, neighbor_schema: dict, iterations: int,
-                           run_mode='Baseline', use_methods=False) -> pd.DataFrame:
+                          run_mode='Baseline', use_methods=False) -> pd.DataFrame:
     """
     Takes the initial schema and iterates it through a number of years
-    :param use_methods: determines if class methods are used
     :param CG: graph of Illinois network
     :param schema: handler dictionary for graph with name of nodes for keys and County object for values
     :param neighbor_schema: handler dictionary with name of nodes for keys and a list of neighboring County objects
     :param iterations: number of years
     :param run_mode: whether it is baseline mode or another format
+    :param use_methods: determines if class methods are used
     :return cumulative_df: a df that contains the full data for all counties in a run simulation
 
     # I cannot for the life of me figure out how to get this to work
@@ -140,10 +160,11 @@ def iterate_through_years(CG: nx.Graph, schema: dict, neighbor_schema: dict, ite
     cumulative_df = make_starting_df(schema)
     year_tracker = 1
     # months_queue = MonthQueue()
-    for _ in range(iterations):
+    for i in range(iterations):  # Runs the iterations of time period specified in input
         neighbor_obj = find_neighbor_status(CG, schema)
         schema, cumulative_df = calculate_changes(CG, neighbor_obj, schema, cumulative_df, year_tracker,
                                                   run_mode, use_methods=use_methods)
+        # "Never set a default value on a function parameter that is a literal mutable object."
         year_tracker += 1
         # current_year, traffic_level = years_queue.rotate()
         # if use_methods:
@@ -157,16 +178,14 @@ def iterate_through_years(CG: nx.Graph, schema: dict, neighbor_schema: dict, ite
         #                 county.lay_eggs()
         #         elif current_year in ['January', 'February']:
         #                 county.die_off()
-
-
     return cumulative_df
 
 
 def make_starting_df(schema: dict) -> pd.DataFrame:
     """
     Creates an initial dataframe with the list of counties and the starting infection rate for each county
-    :param schema:
-    :return: instantiated dataframe based on graph handler
+    :param schema: a dictionary of the county objects based on their nx connection
+    :return cumulative_df: instantiated dataframe based on graph handler
 
     >>> class County:
     ...     def __init__(self, name, saturation):
@@ -192,7 +211,7 @@ def make_starting_df(schema: dict) -> pd.DataFrame:
     return cumulative_df
 
 
-def get_object(name: str, schema: dict) -> None:
+def get_object(name: str, schema: dict) -> County:
     """
     Utility function.
     Retrieves the county instance object from the schema when given its name
@@ -222,14 +241,13 @@ def get_object(name: str, schema: dict) -> None:
             return schema[county]
 
 
-
 def find_neighbor_status(CG: nx.Graph, schema: dict) -> dict:
     """
     Ascertains the saturation status of all neighbors for each county instance,
     returns them as a neighbor object
+    :param CG: the network graph of counties
     :param schema: dictionary handler of graph, with keys as the names of counties and the counties themselves as values
-    :param neighbor_schema: dictionary with county names for keys and a list of neighboring county objects.
-    :return neighbor_obj: the dict object of the neighbors for the county
+    :return neighbor_obj: the dict county objects
 
     >>> class County:
     ...     def __init__(self, name):
@@ -266,7 +284,7 @@ def find_neighbor_status(CG: nx.Graph, schema: dict) -> dict:
     return neighbor_obj
 
 
-def calculate_changes(CG: nx.Graph, neighbor_obj: None, schema: dict, cumulative_df: pd.DataFrame,
+def calculate_changes(CG: nx.Graph, neighbor_obj: dict, schema: dict, cumulative_df: pd.DataFrame,
                       year_tracker: int, run_mode='Baseline', use_methods=False):
     """
     Models interactions between every county and every county it is adjacent to
@@ -276,10 +294,11 @@ def calculate_changes(CG: nx.Graph, neighbor_obj: None, schema: dict, cumulative
     :param CG: graph of county network
     :param neighbor_obj: the adjacent object
     :param schema: county handler
-    :param cumulative_df:
+    :param cumulative_df: a dataframe that stores saturation levels from year to year for each county
     :param year_tracker: count of current year
     :param run_mode: type of simulation
-    :return:
+    :return schema: a dict of counties and their objects
+    :return cumulative_df: the df used to record, store, and access saturation rates
 
     # going to have trouble doctesting this because it's not deterministic
     """
@@ -299,19 +318,19 @@ def calculate_changes(CG: nx.Graph, neighbor_obj: None, schema: dict, cumulative
         all_new_saturations = process_net_neighbors(all_new_saturations, county, county_net, neighbor_obj,
                                                     quarantine_list, run_mode)
         all_new_saturations = round(all_new_saturations / (len(neighbor_obj[county_net])), 8) + county.saturation
-        all_new_saturations = max(0, min(all_new_saturations, 1))
-        # print(f'{county_net} went from {county.saturation} to {all_new_saturations}')
-        setattr(county, 'saturation', all_new_saturations)
-        saturation_collector.append(all_new_saturations)
-    cumulative_df.insert(year_tracker + 1, f'year {year_tracker}', saturation_collector, True)
+        all_new_saturations = max(0, min(all_new_saturations, 1)) # keeps all_new_saturations between 0 and 1
+        setattr(county, 'saturation', all_new_saturations) # changes the county instance attribute
+        saturation_collector.append(all_new_saturations)  # Adds the saturation to a list
+    cumulative_df.insert(year_tracker + 1, f'year {year_tracker}', saturation_collector, True) # adds list to df
     return schema, cumulative_df
 
 
-def process_net_neighbors(all_new_saturations: float, county: None, county_net: None,
-                          neighbor_obj: None, quarantine_list: set, run_mode: str) -> float:
+def process_net_neighbors(all_new_saturations: float, county: County, county_net: County,
+                          neighbor_obj: dict, quarantine_list: set, run_mode: str) -> float:
     """
     calculates neighbor county influence on the target county and
     generates random statistics for ToH and base probability
+    Assigns calculations to the correct run mode function
     :param all_new_saturations: an accumulator of all neighbor saturations beginning with 0
     :param county: the target county target
     :param county_net: an iterated network for the neighbor_obj, the target county's network objs
@@ -348,10 +367,11 @@ def process_net_neighbors(all_new_saturations: float, county: None, county_net: 
     return all_new_saturations
 
 
-def assign_mode(ToH_modifier: float, county: None, net_neighbors: None, probability: float,
+def assign_mode(ToH_modifier: float, county: County, net_neighbors: County, probability: float,
                 quarantine_list: set, run_mode: str) -> float:
     """
     a hub that sends variables to the correct processing function depending on the selected run_mode
+    catches invalid run modes
     :param ToH_modifier: a modifier that represents the effect ToH have on SLF populations
     :param county: the target county object
     :param net_neighbors: the neighboring county objects
@@ -367,7 +387,7 @@ def assign_mode(ToH_modifier: float, county: None, net_neighbors: None, probabil
     >>> Williamson = County('Williamson', 0.5)
     >>> Ogle = County('Ogle', 0.7)
     >>> Lee = County('Lee', 0.3)
-    >>> quarantine_set = set([Williamson])
+    >>> quarantine_set = {Williamson}
     >>> def baseline_calc(net_neighbors, probability, ToH_modifier):
     ...     return net_neighbors.saturation * probability + ToH_modifier * net_neighbors.saturation
     >>> def ToH_calc(net_neighbors, probability, ToH_modifier):
@@ -393,7 +413,7 @@ def assign_mode(ToH_modifier: float, county: None, net_neighbors: None, probabil
         quarantine_list, new_saturation = quarantine_calc(quarantine_list, net_neighbors, probability, ToH_modifier)
     elif run_mode == 'All':
         quarantine_list, new_saturation = all_modes(quarantine_list, county, net_neighbors, probability, ToH_modifier)
-    else:
+    else:  # catches invalid run modes
         raise ValueError('This is not a valid run mode.')
     return new_saturation
 
@@ -501,7 +521,7 @@ def assign_mode(ToH_modifier: float, county: None, net_neighbors: None, probabil
 #     return schema, cumulative_df
 
 
-def baseline_calc(net_neighbors: None, probability: float, ToH_modifier: float) -> float:
+def baseline_calc(net_neighbors: County, probability: float, ToH_modifier: float) -> float:
     """
     A baseline calculation that serves as a an initial model to modify for different interventions
     :param net_neighbors: the particualr instance of an neighbor object used to change saturation
@@ -521,11 +541,11 @@ def baseline_calc(net_neighbors: None, probability: float, ToH_modifier: float) 
     >>> new_saturation
     0.5249999999999999
     """
-    new_saturation = ((net_neighbors.saturation * probability) * 3 + (ToH_modifier * net_neighbors.saturation))/2
+    new_saturation = ((net_neighbors.saturation * probability) * 3 + (ToH_modifier * net_neighbors.saturation)) / 2
     return new_saturation
 
 
-def ToH_calc(net_neighbors: None, probability: float, ToH_modifier: float) -> float:
+def ToH_calc(net_neighbors: County, probability: float, ToH_modifier: float) -> float:
     """
     A variation on baseline that modifies the effect of ToH to represent an intervention
     :param net_neighbors: the neighboring object
@@ -539,8 +559,9 @@ def ToH_calc(net_neighbors: None, probability: float, ToH_modifier: float) -> fl
     >>> neighbor = County(0.5)
     >>> probability_value = 0.7
     >>> ToH_value = 0.002
-    >>> new_saturation = ToH_calc(neighbor, probability_value, ToH_value)
-    >>> isinstance(new_saturation, float)
+    >>> ToH_calc(neighbor, probability_value, ToH_value)
+    0.349
+    >>> isinstance(ToH_calc(neighbor, probability_value, ToH_value), float)
     True
     """
     ToH_modifier = -ToH_modifier
@@ -548,7 +569,7 @@ def ToH_calc(net_neighbors: None, probability: float, ToH_modifier: float) -> fl
     return new_saturation
 
 
-def population_calc(county: None, net_neighbors: None, probability: float, ToH_modifier: float) -> float:
+def population_calc(county: County, net_neighbors: County, probability: float, ToH_modifier: float) -> float:
     """
     A modification of the baseline that models what may happen if citizen of a county
     were inclined and educated to help eliminate SLF and their eggs
@@ -578,7 +599,8 @@ def population_calc(county: None, net_neighbors: None, probability: float, ToH_m
     return new_saturation
 
 
-def quarantine_calc(quarantine_list: set, net_neighbors: None, probability: float, ToH_modifier: float) -> (set, float):
+def quarantine_calc(quarantine_list: set, net_neighbors: County,
+                    probability: float, ToH_modifier: float) -> (set, float):
     """
     Modification of baseline that models what would happen if
     a county, reaching 50% of saturation, had a 50% chance of quarantining with 100% efficacy
@@ -610,7 +632,7 @@ def quarantine_calc(quarantine_list: set, net_neighbors: None, probability: floa
     return quarantine_list, new_saturation
 
 
-def all_modes(quarantine_list: set, county: None, net_neighbors: None, probability: float,
+def all_modes(quarantine_list: set, county: County, net_neighbors: County, probability: float,
               ToH_modifier: float) -> (set, float):
     """
     A variation of baseline that includes all interventions modeled in all other functions
@@ -648,8 +670,8 @@ def all_modes(quarantine_list: set, county: None, net_neighbors: None, probabili
         bug_smash = random.normal(0.2, 0.1) * 0.01
         ToH_modifier = -ToH_modifier
         new_saturation = (net_neighbors.saturation * probability +
-                           ToH_modifier * net_neighbors.saturation -
-                           (county.saturation * net_neighbors.popdense_sqmi * bug_smash))
+                          ToH_modifier * net_neighbors.saturation -
+                          (county.saturation * net_neighbors.popdense_sqmi * bug_smash))
     return quarantine_list, new_saturation
 
 
