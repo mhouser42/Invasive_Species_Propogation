@@ -9,6 +9,8 @@ Takes the output of the illinois network as well as the classes defined as the n
 inputs parameters for run mode and how long to run the simulation for.
 Uses an accumulated dataframe that inserts rows based on each successive year the simulation is run
 returns result in a dataframe
+
+TODO: remove unused code
 """
 
 import pickle
