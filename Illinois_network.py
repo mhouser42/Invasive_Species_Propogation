@@ -235,37 +235,69 @@ def add_tree_density(handler: dict):
             county.tree_density = 0.2
 
 
-if __name__ == '__main__':
-    path = 'data/location'
+def set_up(path):
+    """
+
+    :param path:
+    :return:
+    """
     county_df = pd.read_csv(f'{path}/counties.csv')  # for nodes
-
-    # edge_df = pd.read_csv(f'{path}/county_edges.csv')  # for edges
-    edge_df = pd.read_csv(f'{path}/county_edges_fast_highways.csv')  # makes edge weight on highways lower, inc spread
-
+    edge_df = pd.read_csv(f'{path}/county_edges.csv')  # for edges
+    f_edge_df = pd.read_csv(f'{path}/county_edges_fast_highways.csv')  # makes edge weight on highways lower, inc spread
     toh_df = pd.read_csv(f'data/tree/Il_toh.csv')
-    # city_df = pd.read_csv(f'{path}/target_cities.csv')
 
-    CG = nx.Graph()
+    return county_df, edge_df, f_edge_df, toh_df
 
+
+def construct_graph_and_handlers(CG, county_df, edge_df, toh_df):
+    """
+
+    :param CG:
+    :param county_df:
+    :param edge_df:
+    :param toh_df:
+    :return:
+    """
     # adding nodes
     county_handler = construct_nodes(CG, county_df)
-
     # adding edges
     construct_edges(CG, edge_df, county_handler)
-
     # adding Tree of Heaven and regular tree densities
-
     county_tots, county_counts = get_toh_totals_by_county(toh_df, county_handler)
     calc_toh_density_coef(toh_df, county_handler, county_tots, county_counts)
     add_tree_density(county_handler)
-
     # getting a handler of all node neighbors in graph
     neighbor_handler = get_neighbor_handler(CG, county_handler)
+    return CG, county_handler, neighbor_handler
+
+
+def dump_graph_and_handler(CG, county_handler, neighbor_handler, prefix=''):
+    """
+
+    :param CG:
+    :param county_handler:
+    :param neighbor_handler:
+    :param prefix:
+    """
+    pickle.dump(CG, open(f'{path}/{prefix}IL_graph.dat', 'wb'))
+    pickle.dump(county_handler, open(f'{path}/{prefix}graph_handler_counties.dat', 'wb'))
+    pickle.dump(neighbor_handler, open(f'{path}/{prefix}graph_handler_neighbors.dat', 'wb'))
+
+
+if __name__ == '__main__':
+    path = 'data/location'
+    county_df, edge_df, f_edge_df, toh_df = set_up(path)
+    # city_df = pd.read_csv(f'{path}/target_cities.csv')
+
+    CG = nx.Graph()
+    fCG = nx.Graph()
+
+    CG, county_handler, neighbor_handler = construct_graph_and_handlers(CG, county_df, edge_df, toh_df)
+    fCG, f_county_handler, f_neighbor_handler = construct_graph_and_handlers(fCG, county_df, f_edge_df, toh_df)
 
     # pickling
-    pickle.dump(CG, open(f'{path}/IL_graph.dat', 'wb'))
-    pickle.dump(county_handler, open(f'{path}/graph_handler_counties.dat', 'wb'))
-    pickle.dump(neighbor_handler, open(f'{path}/graph_handler_neighbors.dat', 'wb'))
+    dump_graph_and_handler(CG, county_handler, neighbor_handler)
+    dump_graph_and_handler(fCG, f_county_handler, f_neighbor_handler, prefix='fast_')
 
     # city_dict = construct_nodes(CG, city_df, is_county=False)
     # handler = {'C': county_dict, 'c': city_dict}

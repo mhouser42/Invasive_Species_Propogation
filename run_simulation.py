@@ -16,21 +16,22 @@ import json
 from my_classes import MonthQueue, County
 
 
-def saturation_main(run_mode: str, iterations: int, life_cycle=False) -> pd.DataFrame:
+def saturation_main(run_mode: str, iterations: int, life_cycle=False, prefix='') -> pd.DataFrame:
     """
     Main Function that sequences the order of events when running this file
-    :param life_cycle: a Boolean that decided if saturation is affected by class methods.
     :param run_mode: version of Monte Carlo to run
     :param iterations: number of times to run Monte Carlo
+    :param life_cycle: a Boolean that decided if saturation is affected by class methods.
+    :param prefix: set to call other versions of graphs and handlers, defaults to nothing to return primary objects
     :return : pandas dataframe of cumulative months
     """
-    CG, schema, neighbor_schema = set_up()
+    CG, schema, neighbor_schema = set_up(prefix)
     schema = set_coefficients(schema)
     cumulative_df = iterate_through_timeframe(CG, schema, neighbor_schema, iterations, run_mode, life_cycle=life_cycle)
     return cumulative_df
 
 
-def set_up() -> (nx.Graph, dict, dict):
+def set_up(prefix='') -> (nx.Graph, dict, dict):
     """
     return input files created by the illinois_network.py
     :return CG: Picked graph from illinois_network.py
@@ -57,9 +58,9 @@ def set_up() -> (nx.Graph, dict, dict):
 
     """
     path = 'data/location'
-    CG = pickle.load(open(f'{path}/IL_graph.dat', 'rb'))
-    schema = pickle.load(open(f'{path}/graph_handler_counties.dat', 'rb'))
-    neighbor_schema = pickle.load(open(f'{path}/graph_handler_neighbors.dat', 'rb'))
+    CG = pickle.load(open(f'{path}/{prefix}IL_graph.dat', 'rb'))
+    schema = pickle.load(open(f'{path}/{prefix}graph_handler_counties.dat', 'rb'))
+    neighbor_schema = pickle.load(open(f'{path}/{prefix}graph_handler_neighbors.dat', 'rb'))
     return CG, schema, neighbor_schema
 
 
@@ -245,7 +246,6 @@ def find_neighbor_status(CG: nx.Graph, schema: dict) -> dict:
 def calculate_changes(CG, neighbor_obj, schema, cumulative_df, time_tracker, current_month,
                       run_mode='Baseline', life_cycle=False):
     """
-    TODO: had a hard time describing this one - Matt
     Models interactions between every county and every county it is adjacent to
     This is either a yearly or 
     calculates one county's change in saturation based on the counties adjoining it
@@ -354,7 +354,7 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
     :param run_mode: Type of simulation to run
     """
     if run_mode == 'Poison ToH':
-        county.die_off(mortality_rate=county.toh_density/50)
+        county.die_off(mortality_rate=county.toh_density/75)
         # county.toh_density = county.toh_density - .01 if county.toh_density > 0.0 else county.toh_density
     elif run_mode in ('Population-Based', 'Quarantine'):
         implement_pop_kill(county, neighbor)
@@ -399,7 +399,7 @@ def implement_quarantine(CG, county, neighbor):
     county.quarantine = False if county.saturation <= .25 else county.quarantine
     if county.quarantine is True:
         neighbor.public_awareness = True
-        CG[county][neighbor]['weight'] = 7.5
+        CG[county][neighbor]['weight'] = 2.5
     elif county.quarantine is False and neighbor.quarantine is True:
         pass
     elif CG[county][neighbor]['rel'] == 'interstate':

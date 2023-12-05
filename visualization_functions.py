@@ -87,7 +87,7 @@ def make_average_graphs(df: pd.DataFrame, sim_iterations: int):
     plt.plot(avg_df.index, avg_df, linewidth=0.5)
 
 
-def model_variables(run_mode: str, sims_run: int, sim_iteration: int, life_cycle=False):
+def model_variables(run_mode: str, sims_run: int, sim_iteration: int, life_cycle=False, prefix=''):
     """
     Loops through the number of simulations run
     Passes the resulting df to make_average_graphs()
@@ -101,14 +101,15 @@ def model_variables(run_mode: str, sims_run: int, sim_iteration: int, life_cycle
     plt.grid()
 
     for i in range(0, sims_run):
-        df = saturation_main(run_mode, sim_iteration, life_cycle=life_cycle)
+        df = saturation_main(run_mode, sim_iteration, life_cycle=life_cycle, prefix=prefix)
         make_average_graphs(df,
                             sim_iteration)  # hopefully putting this inside the loop will allow the code to forget the df
 
     plt.show()
 
 
-def model_variables_avg(run_mode: str, sims_run: int, sim_iteration: int, all_trends: dict, life_cycle=False) -> dict:
+def model_variables_avg(run_mode: str, sims_run: int, sim_iteration: int, all_trends: dict,
+                        life_cycle=False, prefix='') -> dict:
     """
     A modified version of model_variables
     includes an trend line that averages all the simulations graphed
@@ -125,7 +126,7 @@ def model_variables_avg(run_mode: str, sims_run: int, sim_iteration: int, all_tr
     all_avg_lines = []
 
     for i in range(sims_run):
-        df = saturation_main(run_mode, sim_iteration, life_cycle=life_cycle)
+        df = saturation_main(run_mode, sim_iteration, life_cycle=life_cycle, prefix=prefix)
         make_average_graphs(df, sim_iteration)
 
         vis_df = make_visual_df(df)
