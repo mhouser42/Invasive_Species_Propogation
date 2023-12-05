@@ -1,7 +1,7 @@
 {
-        "Cook": {"saturation": 0.3, "egg_count": 105},
+        "Cook": {"saturation": 0.3, "egg_count": 50},
         "DuPage": {"saturation": 0.0, "egg_count": 0},
-        "Kane": {"saturation": 0.1, "egg_count": 20},
+        "Kane": {"saturation": 0.0, "egg_count": 0},
         "Will": {"saturation": 0.0, "egg_count": 0},
         "Winnebago": {"saturation": 0.0, "egg_count": 0},
         "Lake": {"saturation": 0.0, "egg_count": 0},
@@ -13,7 +13,7 @@
         "Peoria": {"saturation": 0.0, "egg_count": 0},
         "Sangamon": {"saturation": 0.0, "egg_count": 0},
         "Tazewell": {"saturation": 0.0, "egg_count": 0},
-        "Champaign": {"saturation": 0.2, "egg_count": 100},
+        "Champaign": {"saturation": 0.3, "egg_count": 40},
         "Boone": {"saturation": 0.0, "egg_count": 0},
         "Macon": {"saturation": 0.0, "egg_count": 0},
         "Kankakee": {"saturation": 0.0, "egg_count": 0},
@@ -29,7 +29,7 @@
         "Monroe": {"saturation": 0.0, "egg_count": 0},
         "Stephenson": {"saturation": 0.0, "egg_count": 0},
         "Whiteside": {"saturation": 0.0, "egg_count": 0},
-        "Adams": {"saturation": 0.0, "egg_count": 0},
+        "Adams": {"saturation": 0.1 , "egg_count": 0},
         "Clinton": {"saturation": 0.0, "egg_count": 0},
         "Knox": {"saturation": 0.0, "egg_count": 0},
         "Woodford": {"saturation": 0.0, "egg_count": 0},
@@ -40,7 +40,7 @@
         "Saline": {"saturation": 0.0, "egg_count": 0},
         "Massac": {"saturation": 0.0, "egg_count": 0},
         "Morgan": {"saturation": 0.0, "egg_count": 0},
-        "Henry": {"saturation": 0.8, "egg_count": 0},
+        "Henry": {"saturation": 0.0, "egg_count": 0},
         "Jersey": {"saturation": 0.0, "egg_count": 0},
         "Randolph": {"saturation": 0.0, "egg_count": 0},
         "McDonough": {"saturation": 0.0, "egg_count": 0},
@@ -57,7 +57,7 @@
         "Crawford": {"saturation": 0.0, "egg_count": 0},
         "Moultrie": {"saturation": 0.0, "egg_count": 0},
         "Montgomery": {"saturation": 0.0, "egg_count": 0},
-        "Union": {"saturation": 0.0, "egg_count": 55},
+        "Union": {"saturation": 0.3, "egg_count": 100},
         "Fulton": {"saturation": 0.0, "egg_count": 0},
         "DeWitt": {"saturation": 0.0, "egg_count": 0},
         "Menard": {"saturation": 0.0, "egg_count": 0},
@@ -100,5 +100,5 @@
         "Calhoun": {"saturation": 0.0, "egg_count": 0},
         "Schuyler": {"saturation": 0.0, "egg_count": 0},
         "Gallatin": {"saturation": 0.0, "egg_count": 0},
-        "Pope": {"saturation": 0.3, "egg_count": 300}
+        "Pope": {"saturation": 0.3, "egg_count": 0}
     }

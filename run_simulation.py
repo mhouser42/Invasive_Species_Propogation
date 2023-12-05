@@ -114,7 +114,7 @@ def iterate_through_timeframe(CG: nx.Graph, schema: dict, neighbor_schema: dict,
     :param run_mode: whether it is baseline mode or another format
     :return cumulative_df: a df that contains the full data for all counties in a run simulation
     """
-    cumulative_df = make_starting_df(schema)
+    cumulative_df = make_starting_df(schema, time_frame='month') if life_cycle else make_starting_df(schema)
     month_tracker = 1
     months_queue = MonthQueue()
 
@@ -319,7 +319,7 @@ def calculate_spread_prob(CG, county, neighbor):
     :return spread_prob: probability of spread, between 0.0 and 1.0
     """
     edge_weight = CG[county][neighbor]['weight']
-    base_prob = random.normal(0.5, 0.2) * county.saturation / (neighbor.toh_density + neighbor.tree_density)
+    base_prob = random.normal(0.3, 0.2) * county.saturation / (neighbor.toh_density + neighbor.tree_density)
     spread_prob = base_prob / edge_weight * county.traffic_level
 
     spread_prob = max(0, min(spread_prob, 1))
@@ -347,31 +347,65 @@ def spread_saturation(county, neighbor, spread_prob, current_month):
 
 def implement_counter_measures(CG, county, neighbor, run_mode):
     """
-    manipulates saturation and egg levels based on run mode
+    Manipulates saturation and egg levels based on run mode
     :param CG: graph of county network
     :param county: county node being assessed
     :param neighbor: node adjacent to county node
     :param run_mode: Type of simulation to run
     """
     if run_mode == 'Poison ToH':
-        county.die_off(mortality_rate=county.toh_density / 20)
-        county.toh_density = county.toh_density - .001 if county.toh_density > 0.0 else county.toh_density
+        county.die_off(mortality_rate=county.toh_density/50)
+        # county.toh_density = county.toh_density - .01 if county.toh_density > 0.0 else county.toh_density
     elif run_mode in ('Population-Based', 'Quarantine'):
-        county.public_awareness = True if county.saturation >= .5 else county.public_awareness
-        if county.public_awareness:
-            neighbor.public_awareness = True if neighbor.saturation >= county.saturation / 1.5 \
-                else neighbor.public_awareness
-            county.die_off(mortality_rate=county.popdense_sqmi / 10000)
-            county.egg_count = county.egg_count - int(county.popdense_sqmi / 1000)
+        implement_pop_kill(county, neighbor)
     elif run_mode == 'All':
         implement_counter_measures(CG, county, neighbor, run_mode='Poison ToH')
         implement_counter_measures(CG, county, neighbor, run_mode='Quarantine')
 
     if run_mode == 'Quarantine':
-        county.quarantine = True if county.saturation >= .75 else county.quarantine
-        if county.quarantine is True:
-            neighbor.public_awareness = True
-            CG[county][neighbor]['weight'] = 5.0
+        implement_quarantine(CG, county, neighbor)
+
+
+def implement_pop_kill(county, neighbor):
+    """
+    Toggles county's public_awareness if they reach certain thresholds.
+    If the county is aware, triggers die_off and egg removal based off population density.
+
+    Can also toggle neighbor's public awareness at certain thresholds.
+    :param county: County obj being assessed
+    :param neighbor: neighboring county
+    """
+    if neighbor.quarantine:
+        county.public_awareness = True if county.saturation >= neighbor.saturation/2 else county.public_awareness
+    county.public_awareness = False if county.saturation <= .15 else county.public_awareness
+    if county.public_awareness:
+        neighbor.public_awareness = True if neighbor.saturation >= county.saturation / 2 \
+            else neighbor.public_awareness
+        county.die_off(mortality_rate=county.popdense_sqmi / 10000)
+        county.egg_count = county.egg_count - int(county.popdense_sqmi / 1000)
+
+
+def implement_quarantine(CG, county, neighbor):
+    """
+    Toggles a county's quarantine once it reaches certain thresholds.
+    Toggles neighbor's public awareness if its saturation is half of quarantine
+    Changes wieght of edge between county and neighbor if certain conditions are met.
+
+    :param CG: Network Graph
+    :param county: County node object
+    :param neighbor: County node object connected to county by edge.
+    """
+    county.quarantine = True if county.saturation >= .75 else county.quarantine
+    county.quarantine = False if county.saturation <= .25 else county.quarantine
+    if county.quarantine is True:
+        neighbor.public_awareness = True
+        CG[county][neighbor]['weight'] = 7.5
+    elif county.quarantine is False and neighbor.quarantine is True:
+        pass
+    elif CG[county][neighbor]['rel'] == 'interstate':
+        CG[county][neighbor]['weight'] = .25
+    else:
+        CG[county][neighbor]['weight'] = 1.0
 
 
 def calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, current_month, run_mode='Baseline'):
@@ -563,4 +597,4 @@ def all_modes(quarantine_list: set, county: None, net_neighbors: None, probabili
 
 
 if __name__ == '__main__':
-    saturation_main('All', 15, life_cycle=False)
+    saturation_main('Quarantine', 15, life_cycle=True)

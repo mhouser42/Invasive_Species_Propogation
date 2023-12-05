@@ -238,7 +238,10 @@ def add_tree_density(handler: dict):
 if __name__ == '__main__':
     path = 'data/location'
     county_df = pd.read_csv(f'{path}/counties.csv')  # for nodes
-    edge_df = pd.read_csv(f'{path}/county_edges.csv')  # for edges
+
+    # edge_df = pd.read_csv(f'{path}/county_edges.csv')  # for edges
+    edge_df = pd.read_csv(f'{path}/county_edges_fast_highways.csv')  # makes edge weight on highways lower, inc spread
+
     toh_df = pd.read_csv(f'data/tree/Il_toh.csv')
     # city_df = pd.read_csv(f'{path}/target_cities.csv')
 

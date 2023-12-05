@@ -112,6 +112,7 @@ class County:
         self.saturation -= die_off_number
         self.mated = 0.0
         self.laid_eggs = 0.0
+        self.saturation = min(self.saturation, 1)
         return self.saturation
 
     def hatch_eggs(self, hatch_chance=None):
@@ -131,7 +132,7 @@ class County:
             hatch_chance = random.uniform(.75, 1.0)
         hatched_eggs = int(self.egg_count * hatch_chance)
         while hatched_eggs > 0:
-            egg_coef = random.uniform(0.0035, 0.0045)
+            egg_coef = random.uniform(0.00035, 0.00045)
             self.saturation += egg_coef
             self.egg_count -= 1
             hatched_eggs -= 1

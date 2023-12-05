@@ -30,7 +30,6 @@ def make_network_heat(CG, simulation_df, handler, iteration: int, time_frame='ye
     :param handler: a dictionary with the names of counties for keys and the objects themselves for values
     :param simulation_df:
     :param iteration: The number of iteration from the interactive ipywidget
-    TODO: describe simulation_df
     """
     iteration = f'{time_frame} {iteration}'
     #     min_value = simulation_df[iteration].min()
@@ -117,9 +116,8 @@ def model_variables_avg(run_mode: str, sims_run: int, sim_iteration: int, all_tr
     :param run_mode: type of mode the simulation runs in
     :param sims_run: number of runs
     :param sim_iteration: number of iteration per run
-    :param all_trends: a dictionary of...trends?
+    :param all_trends: a dictionary of trends
     :return all_trends:
-    TODO: Please describe all_trends, not 100% sure -Matt
     """
     plt.figure(figsize=(12, 8))
     plt.title(f'{run_mode} Infestation Model')
