@@ -354,7 +354,7 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
     :param run_mode: Type of simulation to run
     """
     if run_mode == 'Poison ToH':
-        county.die_off(mortality_rate=county.toh_density/75)
+        county.die_off(mortality_rate=county.toh_density/65)
         # county.toh_density = county.toh_density - .01 if county.toh_density > 0.0 else county.toh_density
     elif run_mode in ('Population-Based', 'Quarantine'):
         implement_pop_kill(county, neighbor)
@@ -377,11 +377,11 @@ def implement_pop_kill(county, neighbor):
     """
     if neighbor.quarantine:
         county.public_awareness = True if county.saturation >= neighbor.saturation/2 else county.public_awareness
-    county.public_awareness = False if county.saturation <= .15 else county.public_awareness
+    county.public_awareness = False if county.saturation <= .20 else county.public_awareness
     if county.public_awareness:
         neighbor.public_awareness = True if neighbor.saturation >= county.saturation / 2 \
             else neighbor.public_awareness
-        county.die_off(mortality_rate=county.popdense_sqmi / 10000)
+        county.die_off(mortality_rate=county.popdense_sqmi / 7500)
         county.egg_count = county.egg_count - int(county.popdense_sqmi / 1000)
 
 
@@ -399,7 +399,7 @@ def implement_quarantine(CG, county, neighbor):
     county.quarantine = False if county.saturation <= .25 else county.quarantine
     if county.quarantine is True:
         neighbor.public_awareness = True
-        CG[county][neighbor]['weight'] = 2.5
+        CG[county][neighbor]['weight'] = 2
     elif county.quarantine is False and neighbor.quarantine is True:
         pass
     elif CG[county][neighbor]['rel'] == 'interstate':
