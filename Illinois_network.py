@@ -9,7 +9,7 @@ This file is for the creation of county network
 It constructs a network with nodes and edges
 outputs three binary files: the NX network, a county handler, and a neighbor handler.
 
-TODO: doctests for get_neighbor_handler, calc_toh_density_coef, add_tree_density
+TODO: doctests for get_neighbor_handler, calc_toh_density_coef, add_tree_density?
 TODO: Remove unused code
 """
 import collections
