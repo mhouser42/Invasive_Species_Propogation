@@ -1,9 +1,16 @@
 # Illinois_network.py
 
 """
-This file is for the creation of county network
+### Authors:
+##### Justin Tung:      'https://github.com/JayTongue'
+##### Matt Adam-Houser: 'https://github.com/mhouser42'
 
-TODO: doctests for get_neighbor_handler, calc_toh_density_coef, add_tree_density
+This file is for the creation of county network
+It constructs a network with nodes and edges
+outputs three binary files: the NX network, a county handler, and a neighbor handler.
+
+TODO: doctests for get_neighbor_handler, calc_toh_density_coef, add_tree_density?
+TODO: Remove unused code
 """
 import collections
 import time
@@ -18,7 +25,7 @@ from collections import Counter
 from my_classes import County
 
 
-def get_lower_and_upper_bounds(df: pd.DataFrame, col_name):
+def get_lower_and_upper_bounds(df: pd.DataFrame, col_name) -> tuple:
     """
     return the lower and upper bounds of a column's values
     :param df: dataframe to be accessed
@@ -45,10 +52,9 @@ def get_lower_and_upper_bounds(df: pd.DataFrame, col_name):
     return lower_bound, upper_bound
 
 
-def construct_nodes(CG: nx.Graph, df: pd.DataFrame, is_county=True):
+def construct_nodes(CG: nx.Graph, df: pd.DataFrame) -> dict:
     """
     takes a dataframe of county information, finds geolocation with OSMnx
-    :param is_county: 
     :param CG: graph to be populated
     :param df: dataframe with county information
     :return count_dict: a dictionary to reference nodes by name
@@ -72,17 +78,14 @@ def construct_nodes(CG: nx.Graph, df: pd.DataFrame, is_county=True):
     pbar = tqdm(df.iterrows(), desc='Assembling Nodes')
     for index, row in pbar:
 
-        county = ' County' if is_county else f', {row["county"]}'
+        county = ' County'
         name, pop, pop_dense = row['name'], row['pop'], row['PD_sqmi']
         pbar.set_postfix_str(f'Working on {name}{county}, IL')
 
         gdf = ox.geocode_to_gdf(f'{name}{county}, IL').iloc[0]
-        if is_county:
-            node = County(name, lat=gdf['lat'], lon=gdf['lon'], geometry=gdf['geometry'],
-                          pop=pop, popdense_sqmi=pop_dense, centroid=gdf['geometry'].centroid)
-        # else:
-        #     node = City(name, lat=gdf['lat'], lon=gdf['lon'], geometry=gdf['geometry'],
-        #                 pop=pop, popdense_sqmi=pop_dense, centroid=gdf['geometry'].centroid)
+        node = County(name, lat=gdf['lat'], lon=gdf['lon'], geometry=gdf['geometry'],
+                      pop=pop, popdense_sqmi=pop_dense, centroid=gdf['geometry'].centroid)
+
         CG.add_node(node)
         handler[name] = node
         count += 1
@@ -99,7 +102,6 @@ def construct_edges(CG: nx.Graph, edge_df: pd.DataFrame, handler: dict):
     :param CG:
     :param edge_df:
     :param handler:
-    :param rel:
 
     >>> CG = nx.Graph()
     >>> handler = {'A': object(), 'B': object(), 'C': object()}
@@ -116,9 +118,6 @@ def construct_edges(CG: nx.Graph, edge_df: pd.DataFrame, handler: dict):
     >>> construct_edges(CG, edges_df, handler)
     Key error: 'C': This node doesn't exist in the handler
     """
-    # src_h = handler['C'] if rel == 'adjacent' else handler['c']  # code from when we were trying City and County nodes
-    # tgt_h = handler['C'] if rel != 'interstate' else handler['c']
-
     edges = []
     for i, row in edge_df.iterrows():
         src = row.iloc[0]
@@ -126,9 +125,8 @@ def construct_edges(CG: nx.Graph, edge_df: pd.DataFrame, handler: dict):
         rel = row.iloc[2]
         weight = row.iloc[3]
         try:
-            # edge = (src_h[src], tgt_h[tgt], {'weight': weight, 'rel': irel})  # for city/county handler
             edge = (handler[src], handler[tgt], {'weight': weight, 'rel': rel})
-            edges.append(edge)  # appending to list as it is more efficient to add all edges at once
+            edges.append(edge)
         except KeyError as e:
             print(f'Key error: {e}: This node doesn\'t exist in the handler')
     CG.add_edges_from(edges)
@@ -141,12 +139,11 @@ def get_neighbor_handler(CG: nx.Graph, handler: dict) -> dict:
     :param CG: the graph of county network
     :param handler: the graph handler, with county names for keys and the counties themselves for values
     :return neighbor_handle: another handler, with county names for keys and a
-    list of neighboring county nodes for values
+                                list of neighboring county nodes for values
 
     # I don't know how to write doctests for this function
     """
     neighbor_handle = {}
-    print(type(handler))
     for county in handler:
         all_neighbors = []
         for neighbor in handler[county].get_neighbor_objects(CG):
@@ -156,7 +153,7 @@ def get_neighbor_handler(CG: nx.Graph, handler: dict) -> dict:
     return neighbor_handle
 
 
-def get_toh_totals_by_county(df, handler):
+def get_toh_totals_by_county(df: pd.DataFrame, handler: dict) -> (dict, int):
     """
     calculates the total saturation_index (acreage X density) and number of sightings of tree of heaven for all nodes
     :param df: dataframe to be assessed
@@ -219,8 +216,6 @@ def add_tree_density(handler: dict):
     adds regular tree densities to nodes, based on the counties latitude and longitude.
     REFERENCE: https://www.fs.usda.gov/nrs/pubs/rb/rb_nrs113.pdf, pages 5-6
     :param handler: graph handler with county names for keys and the counties themselves as values
-
-    # not sure how to doctest this func
     """
     peoria = handler['Peoria']
     hardin = handler['Hardin']

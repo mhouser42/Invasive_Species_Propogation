@@ -227,22 +227,3 @@ class MonthQueue(Queue):
             correct_month = True if month['month'] == month_name else False
             if correct_month:
                 return month.get(atr, None)
-
-
-# class County(Location):
-#     def __init__(self, name, toh_density_percentile=None, *args, **kwargs):
-#         super().__init__(name, *args, **kwargs)
-#         self.toh_density_percentile = toh_density_percentile
-#         _ToH_density_list = []
-#
-#     def track_ToH_density(self):
-#         self._ToH_density_list = self._ToH_density_list.append(self.toh_density_percentile)
-#         return self._ToH_density_list
-#
-#     def deforestation(self):
-#         return self.ToH_density / 2
-#
-#
-# class City(Location):
-#     def __init__(self, name, *args, **kwargs):
-#         super().__init__(name, *args, **kwargs)
