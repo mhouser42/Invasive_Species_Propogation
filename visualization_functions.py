@@ -1,6 +1,6 @@
 """
 Functions used in our visualizations of the simulation
-TODO: not sure how to write doctests for these
+TODO: Once current_month inputs get sorted, then that should fix the doctests.
 """
 
 import pandas as pd
