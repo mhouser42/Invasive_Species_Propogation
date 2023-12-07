@@ -3,7 +3,6 @@
 """
 This file will contain the classes to be used in the MC simulation
 
-TODO: Write documentation for the code in this file
 """
 
 from queue import Queue
@@ -189,12 +188,19 @@ class MonthQueue(Queue):
     def reset_year(self):
         """
         method returns MonthQueue to have January at the front of it.
+        >>> queue = MonthQueue()
+        >>> queue.rotate()
+        {'month': 'January', 'traffic_level': 0.9}
+        >>> queue.rotate()
+        {'month': 'February', 'traffic_level': 0.9}
+        >>> queue.reset_year()
+        >>> queue.rotate()
+        {'month': 'January', 'traffic_level': 0.9}
         """
-        jan = False
-        while not jan:
+        while True:
             current_month = self.rotate()
-            if current_month['month'] == 'January':
-                jan = True
+            if current_month['month'] == 'December':
+                break
 
     def rotate(self):
         """

@@ -1,6 +1,5 @@
 """
 Functions used in our visualizations of the simulation
-TODO: Once current_month inputs get sorted, then that should fix the doctests.
 """
 
 import pandas as pd
@@ -89,7 +88,7 @@ def make_network_heat(CG: nx.Graph, simulation_df: pd.DataFrame, handler: dict, 
                             ax=ax,
                             font_color='k')
 
-    edge_colors = ['gray' if CG[src][tgt]['rel'] == 'interstate' else 'gray' for src, tgt in CG.edges()]
+    edge_colors = ['black' if CG[src][tgt]['rel'] == 'interstate' else 'gray' for src, tgt in CG.edges()]
     edge_widths = [5 if CG[src][tgt]['rel'] == 'interstate' else 1 for src, tgt in CG.edges()]
     nx.draw_networkx_edges(CG, pos=node_positions, edge_color=edge_colors, ax=ax, width=edge_widths)
 
