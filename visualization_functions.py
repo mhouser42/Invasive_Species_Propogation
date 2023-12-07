@@ -40,33 +40,36 @@ def make_visual_df(simulation_df: pd.DataFrame) -> pd.DataFrame:
     return visual_df
 
 
-def make_network_heat(CG: nx.Graph, simulation_df: pd.DataFrame, handler: dict, year: int):
+def make_network_heat(CG: nx.Graph, simulation_df: pd.DataFrame, handler: dict, iteration: int, time_frame=None):
     """
     Makes a heatmap from the NX nodes, edges, and object instances
     :param CG: graph of county network
     :param handler: a dictionary with the names of counties for keys and the objects themselves for values
     :param simulation_df: df generated from on trial instance of the MC simulation
-    :param year: The number of years from the interactive ipywidget
+    :param iteration: The number of iterations from the interactive ipywidget
+    :param
 
     >>> simulation_data = {'Cook': ['0', '0', '0'], 'year 1': [0.2, 0.6, 0.8], 'year 2': [0.4, 0.7, 0.5]}
     >>> simulation_df = pd.DataFrame(simulation_data)
     >>> CG = nx.Graph()
     >>> handler = {'A': object(), 'B': object(), 'C': object()}
-    >>> make_network_heat(CG, simulation_df, handler, year=1)
+    >>> make_network_heat(CG, simulation_df, handler, iteration=1)
 
     # this returns nothing, but passes when given proper input
 
     """
-    year = f'year {year}'
-    #     min_value = simulation_df[year].min()
-    #     max_value = simulation_df[year].max()  # This makes the scale variable for each chart
+    time_frame = 'year' if time_frame is None else time_frame
+
+    iteration = f'{time_frame} {iteration}'
+    #     min_value = simulation_df[iteration].min()
+    #     max_value = simulation_df[iteration].max()  # This makes the scale variable for each chart
     max_value = 1  # This keeps the scale constant
     min_value = 0
     cmap = matplotlib.colormaps['YlOrRd']
 
     node_colors = {}
     for node in CG.nodes():
-        value = simulation_df.loc[simulation_df['County'] == node.name, year].iloc[0]
+        value = simulation_df.loc[simulation_df['County'] == node.name, iteration].iloc[0]
         normalized_value = (value - min_value) / (max_value - min_value)
         node_colors[node.name] = cmap(normalized_value)
 
@@ -97,49 +100,51 @@ def make_network_heat(CG: nx.Graph, simulation_df: pd.DataFrame, handler: dict, 
     plt.show()
 
 
-def make_average_graphs(df: pd.DataFrame, sim_years: int):
+def make_average_graphs(df: pd.DataFrame, sim_iterations: int):
     """
     Takes the average values over the whole state for each given simulation df.
     Plots them all within the same graph
     :param df:
-    :param sim_years: number of years in sim runs
+    :param sim_iterations: number of iterations in sim runs
 
     >>> data = {'Year': [0, 1, 2], 'La Salle': [0.2, 0.5, 0.8], 'Williamson': [0.3, 0.6, 0.7]}
     >>> simulation_df = pd.DataFrame(data)
-    >>> make_average_graphs(simulation_df, sim_years=2)
+    >>> make_average_graphs(simulation_df, sim_iterations=2)
 
     # this returns nothing, but passes when given proper input
 
     >>> data = {'Year': [0, 1, 2], 'La Salle': [0.2, 0.5, 0.8], 'Williamson': [0.3, 0.6, 0.7]}
     >>> simulation_df = pd.DataFrame(data)
-    >>> make_average_graphs(simulation_df, sim_years=1.5)
+    >>> make_average_graphs(simulation_df, sim_iterations=1.5)
     Traceback (most recent call last):
     ...
     TypeError: 'float' object cannot be interpreted as an integer
 
     >>> data = {'Year': [0, 1, 2], 'La Salle': [0.2, 0.5, 0.8], 'Williamson': [0.3, 0.6, 0.7]}
-    >>> make_average_graphs(data, sim_years=1)
+    >>> make_average_graphs(data, sim_iterations=1)
     Traceback (most recent call last):
     ...
     AttributeError: 'dict' object has no attribute 'T'
     """
     vis_df = make_visual_df(df)
     avg_df = vis_df.mean(axis=1)
-    plt.xticks(ticks=range(0, sim_years + 1),
-               labels=range(0, sim_years + 1))
+    plt.xticks(ticks=range(0, sim_iterations + 1),
+               labels=range(0, sim_iterations + 1))
     plt.xlabel('Years')
     plt.ylabel('Saturation Percentage')
     plt.plot(avg_df.index, avg_df, linewidth=0.5)
 
 
-def model_variables(run_mode: str, sims_run: int, sim_years: int):
+def model_variables(run_mode: str, sims_run: int, sim_iterations: int, life_cycle=False, prefix=None):
     """
     Loops through the number of simulations run
     Passes the resulting df to make_average_graphs()
     shows the plot at the end
     :param run_mode: The name of the simulation being run
     :param sims_run: number of runs
-    :param sim_years: number of years in each run
+    :param sim_iterations: number of iterations in each run
+    :param life_cycle: Toggles whether the model runs on the annual or month simulation.
+    :param prefix: parameter allowing for different graphs/handlers to be loaded in.
 
     >>> model_variables('Baseline', 5, 3)
 
@@ -160,23 +165,29 @@ def model_variables(run_mode: str, sims_run: int, sim_years: int):
     plt.tick_params(labelsize=8)
     plt.grid()
 
+    prefix = '' if prefix is None else prefix
+
     for i in range(0, sims_run):
-        df = saturation_main(run_mode, sim_years)
+        df = saturation_main(run_mode, sim_iterations, life_cycle=life_cycle, prefix=prefix)
         make_average_graphs(df,
-                            sim_years)  # hopefully putting this inside the loop will allow the code to forget the df
+                            sim_iterations)  # hopefully putting this inside the loop will allow the code to forget the df
 
     plt.show()
 
 
-def model_variables_avg(run_mode: str, sims_run: int, sim_years: int, all_trends: dict) -> dict:
+def model_variables_avg(run_mode: str, sims_run: int, sim_iterations: int, all_trends: dict,
+                        life_cycle=False, prefix=None) -> dict:
     """
     A modified version of model_variables
     includes an trend line that averages all the simulations graphed
     Average line is made with the all_trends dict to get passed to the next block of simulations
     :param run_mode: type of mode the simulation runs in
     :param sims_run: number of runs
-    :param sim_years: number of years per run
+    :param sim_iterations: number of iterations per run
     :param all_trends: a dictionary that accumulates trends for each of the simulations run in different modes.
+    :param life_cycle: a boolean which determine if the annual or monthly simulation runs.
+    :param prefix: alter this to change which network and handlers handled by the system
+
     :return all_trends: output dict that gets passed to the next run mode simulation.
 
     >>> all_trends = {}
@@ -196,14 +207,16 @@ def model_variables_avg(run_mode: str, sims_run: int, sim_years: int, all_trends
     ...
     TypeError: 'float' object cannot be interpreted as an integer
     """
+    prefix = '' if prefix is None else prefix
+
     plt.figure(figsize=(12, 8))
     plt.title(f'{run_mode} Saturation Model')
     plt.tick_params(labelsize=8)
     all_avg_lines = []
 
     for i in range(sims_run):
-        df = saturation_main(run_mode, sim_years)
-        make_average_graphs(df, sim_years)
+        df = saturation_main(run_mode, sim_iterations, life_cycle=life_cycle, prefix=prefix)
+        make_average_graphs(df, sim_iterations)
 
         vis_df = make_visual_df(df)
         avg_df = vis_df.mean(axis=1)
@@ -213,8 +226,8 @@ def model_variables_avg(run_mode: str, sims_run: int, sim_years: int, all_trends
         overall_avg = pd.DataFrame(all_avg_lines).mean()
         plt.plot(overall_avg.index, overall_avg, 'k-', linewidth=3)  # Plotting the overall trend line
     all_trends[run_mode] = overall_avg
-    plt.xticks(ticks=range(0, sim_years + 1),
-               labels=range(0, sim_years + 1))
+    plt.xticks(ticks=range(0, sim_iterations + 1),
+               labels=range(0, sim_iterations + 1))
     plt.xlabel('Years')
     plt.ylabel('Saturation Percentage')
     plt.show()

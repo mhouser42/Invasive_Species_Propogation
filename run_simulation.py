@@ -22,12 +22,14 @@ import json
 from my_classes import MonthQueue, County
 
 
-def saturation_main(run_mode: str, iterations: int, life_cycle=False) -> pd.DataFrame:
+def saturation_main(run_mode: str, iterations: int, life_cycle=False, prefix=None) -> pd.DataFrame:
     """
     Main Function that sequences the order of events when running this file
     :param run_mode: version of Monte Carlo to run
     :param iterations: number of times to run Monte Carlo
-    :param use_methods: a Boolean that decided if saturation is affected by class methods.
+    :param life_cycle: a Boolean that decided if saturation is affected by class methods.
+    :param prefix: set to call other versions of graphs and handlers, defaults to nothing to return primary objects
+
     :return cumulative_df: pandas dataframe of cumulative years
 
     >>> saturation_main('Baseline', -5)
@@ -47,18 +49,20 @@ def saturation_main(run_mode: str, iterations: int, life_cycle=False) -> pd.Data
     ...
     ValueError: This is not a valid run mode.
     """
+    prefix = '' if prefix is None else prefix
+
     if type(iterations) == int and iterations > 0:
-        CG, schema, neighbor_schema = set_up()
+        CG, schema, neighbor_schema = set_up(prefix=prefix)
         schema = set_coefficients(schema)
         cumulative_df = iterate_through_timeframe(CG, schema, neighbor_schema, iterations,
-                                              run_mode, life_cycle=life_cycle)
-            # "Never set a default value on a function parameter that is a literal mutable object."
+                                                  run_mode, life_cycle=life_cycle)
+
         return cumulative_df
     else:
         raise ValueError('Please use an integer greater than zero.')
 
 
-def set_up() -> (nx.Graph, dict, dict):
+def set_up(prefix=None) -> (nx.Graph, dict, dict):
     """
     return input files created by the illinois_network.py
     :return CG: Picked graph from illinois_network.py
@@ -82,7 +86,7 @@ def set_up() -> (nx.Graph, dict, dict):
     >>> isinstance(result[2], dict)
     True
     """
-    prefix = ''
+    prefix = '' if prefix is None else prefix
     path = 'data/location'
     CG = pickle.load(open(f'{path}/{prefix}IL_graph.dat', 'rb'))
     schema = pickle.load(open(f'{path}/{prefix}graph_handler_counties.dat', 'rb'))
@@ -128,13 +132,13 @@ def set_coefficients(schema: dict) -> dict:
 def iterate_through_timeframe(CG: nx.Graph, schema: dict, neighbor_schema: dict, iterations: int,
                               run_mode='Baseline', life_cycle=False) -> pd.DataFrame:
     """
-    Takes the initial schema and iterates it through a number of years
+    Takes the initial schema and iterates it through a number of years or months
     :param CG: graph of Illinois network
     :param schema: handler dictionary for graph with name of nodes for keys and County object for values
     :param neighbor_schema: handler dictionary with name of nodes for keys and a list of neighboring County objects
-    :param iterations: number of years
+    :param iterations: number of years or months
     :param run_mode: whether it is baseline mode or another format
-    :param use_methods: determines if class methods are used
+    :param life_cycle: determines the model uses the County class methods to flucate the levels of SLF
     :return cumulative_df: a df that contains the full data for all counties in a run simulation
 
     # I cannot for the life of me figure out how to get this to work
@@ -153,24 +157,21 @@ def iterate_through_timeframe(CG: nx.Graph, schema: dict, neighbor_schema: dict,
     # ...     schema[county] = county_obj
     # >>> neighbor_schema = {'Coles': ['Edwards', 'Kane', 'Macon'], 'Bond': ['Edwards', 'Kane', 'Macon']}
     # >>> test_iterations = 5
-    # >>> test_df = iterate_through_years(CG, schema, neighbor_schema, test_iterations)
+    # >>> test_df = iterate_through_timeframe(CG, schema, neighbor_schema, test_iterations)
     # >>> isinstance(test_df, pd.DataFrame)
     # True
     # >>> len(test_df)
     # 5
 
     """
-    cumulative_df = make_starting_df(schema, time_frame='month') if life_cycle else make_starting_df(schema)
-    year_tracker = 1
+    cumulative_df = make_starting_df(schema, time_frame='month') if life_cycle \
+        else make_starting_df(schema, time_frame='year')
+    time_tracker = 1
     months_queue = MonthQueue()
-
     for _ in range(iterations):
-        neighbor_obj = find_neighbor_status(CG, schema)
-        schema, cumulative_df = calculate_changes(CG, neighbor_obj, schema, cumulative_df, year_tracker, current_month,
-                                                  run_mode, life_cycle=0)
-        year_tracker += 1
-
         current_month = months_queue.rotate()
+        time_tracker += 1
+
         if life_cycle:
             for name, county in schema.items():
                 county.traffic_level = current_month['traffic_level']
@@ -183,14 +184,19 @@ def iterate_through_timeframe(CG: nx.Graph, schema: dict, neighbor_schema: dict,
                 elif current_month in ['January', 'February']:
                     county.die_off(1.0)
 
+        neighbor_obj = find_neighbor_status(CG,
+                                            schema)  # this needs to be below the if life cycle statement for both models to work correctly. if you put above, none of my changes occur in the monthly cycle -Matt
+        schema, cumulative_df = calculate_changes(CG, neighbor_obj, schema, cumulative_df, time_tracker, current_month,
+                                                  run_mode, life_cycle=life_cycle)
 
     return cumulative_df
 
 
-def make_starting_df(schema: dict, time_frame='year') -> pd.DataFrame:
+def make_starting_df(schema: dict, time_frame=None) -> pd.DataFrame:
     """
     Creates an initial dataframe with the list of counties and the starting infection rate for each county
     :param schema:
+    :param time_frame: changes if the df column names are years or months
     :return: instantiated dataframe based on graph handler
 
     >>> class County:
@@ -210,6 +216,8 @@ def make_starting_df(schema: dict, time_frame='year') -> pd.DataFrame:
     >>> df.loc[df['County'] == 'Perry', 'year 0'].values[0]
     0.5
     """
+    time_frame = 'year' if time_frame is None else time_frame
+
     county_list = list(schema[county].name for county in schema)
     starting_saturation = list(schema[county].saturation for county in schema)
     cumulative_df = pd.DataFrame({'County': county_list})
@@ -291,7 +299,7 @@ def find_neighbor_status(CG: nx.Graph, schema: dict) -> dict:
 
 
 def calculate_changes(CG: nx.Graph, neighbor_obj: dict, schema: dict, cumulative_df: pd.DataFrame,
-                      year_tracker: int, run_mode='Baseline', use_methods=False):
+                      time_tracker: int, current_month=None, run_mode=None, life_cycle=False):
     """
     Models interactions between every county and every county it is adjacent to
     This is a yearly interaction
@@ -301,34 +309,38 @@ def calculate_changes(CG: nx.Graph, neighbor_obj: dict, schema: dict, cumulative
     :param neighbor_obj: the adjacent object
     :param schema: county handler
     :param cumulative_df: a dataframe that stores saturation levels from year to year for each county
-    :param year_tracker: count of current year
+    :param time_tracker: count of current year or month
     :param run_mode: type of simulation
+    :param life_cycle: Boolean determining if the annually or monthly simulation runs
+    :param current_month: current month in MonthQueue() if passed. Defaults to None.
     :return schema: a dict of counties and their objects
     :return cumulative_df: the df used to record, store, and access saturation rates
 
     # going to have trouble doctesting this because it's not deterministic
     """
+    run_mode = 'Baseline' if run_mode is None else run_mode
     # print('------------------------- Begin New year -------------------------')
-    # if use_methods:
-    #     schema, cumulative_df = calc_infest(CG, neighbor_obj, schema, cumulative_df, year_tracker, run_mode=run_mode)
-    #     return schema, cumulative_df
-    # else:
+    if life_cycle:
+        schema, cumulative_df = calc_infest(CG, neighbor_obj, schema, cumulative_df, time_tracker, current_month,
+                                            run_mode=run_mode)
+        return schema, cumulative_df
+    else:
 
-    saturation_collector = []
-    quarantine_list = set()
-    for county_net in neighbor_obj:
-        all_new_saturations = 0
-        county = get_object(county_net, schema)
-        county.saturation = county.saturation + (random.normal(0.025, 0.05) *
-                                                 (county.saturation * (county.toh_density)))
-        all_new_saturations = process_net_neighbors(all_new_saturations, county, county_net, neighbor_obj,
-                                                    quarantine_list, run_mode)
-        all_new_saturations = round(all_new_saturations / (len(neighbor_obj[county_net])), 8) + county.saturation
-        all_new_saturations = max(0, min(all_new_saturations, 1)) # keeps all_new_saturations between 0 and 1
-        setattr(county, 'saturation', all_new_saturations) # changes the county instance attribute
-        saturation_collector.append(all_new_saturations)  # Adds the saturation to a list
-    cumulative_df.insert(year_tracker + 1, f'year {year_tracker}', saturation_collector, True) # adds list to df
-    return schema, cumulative_df
+        saturation_collector = []
+        quarantine_list = set()
+        for county_net in neighbor_obj:
+            all_new_saturations = 0
+            county = get_object(county_net, schema)
+            county.saturation = county.saturation + (random.normal(0.025, 0.05) *
+                                                     (county.saturation * county.toh_density))
+            all_new_saturations = process_net_neighbors(all_new_saturations, county, county_net, neighbor_obj,
+                                                        quarantine_list, run_mode)
+            all_new_saturations = round(all_new_saturations / (len(neighbor_obj[county_net])), 8) + county.saturation
+            all_new_saturations = max(0, min(all_new_saturations, 1))  # keeps all_new_saturations between 0 and 1
+            setattr(county, 'saturation', all_new_saturations)  # changes the county instance attribute
+            saturation_collector.append(all_new_saturations)  # Adds the saturation to a list
+        cumulative_df.insert(time_tracker, f'year {time_tracker-1}', saturation_collector, True)  # adds list to df
+        return schema, cumulative_df
 
 
 def process_net_neighbors(all_new_saturations: float, county: County, county_net: County,
@@ -366,7 +378,7 @@ def process_net_neighbors(all_new_saturations: float, county: County, county_net
     for net_neighbors in neighbor_obj[county_net]:
         probability = random.normal(0.45, 0.8)
         ToH_modifier = (net_neighbors.saturation
-                        * (net_neighbors.toh_density) * 100
+                        * net_neighbors.toh_density * 100
                         * random.exponential(0.02))
         new_saturation = assign_mode(ToH_modifier, county, net_neighbors, probability, quarantine_list, run_mode)
         all_new_saturations += new_saturation
@@ -422,6 +434,7 @@ def assign_mode(ToH_modifier: float, county: County, net_neighbors: County, prob
     else:  # catches invalid run modes
         raise ValueError('This is not a valid run mode.')
     return new_saturation
+
 
 def baseline_calc(net_neighbors: County, probability: float, ToH_modifier: float) -> float:
     """
@@ -576,6 +589,7 @@ def all_modes(quarantine_list: set, county: County, net_neighbors: County, proba
                           (county.saturation * net_neighbors.popdense_sqmi * bug_smash))
     return quarantine_list, new_saturation
 
+
 def calculate_spread_prob(CG, county, neighbor):
     """
     returns the likelyhood of an saturation spreading from one county to another.
@@ -626,7 +640,7 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
     :param run_mode: Type of simulation to run
     """
     if run_mode == 'Poison ToH':
-        county.die_off(mortality_rate=county.toh_density/65)
+        county.die_off(mortality_rate=county.toh_density / 65)
         # county.toh_density = county.toh_density - .01 if county.toh_density > 0.0 else county.toh_density
     elif run_mode in ('Population-Based', 'Quarantine'):
         implement_pop_kill(county, neighbor)
@@ -648,7 +662,7 @@ def implement_pop_kill(county, neighbor):
     :param neighbor: neighboring county
     """
     if neighbor.quarantine:
-        county.public_awareness = True if county.saturation >= neighbor.saturation/2 else county.public_awareness
+        county.public_awareness = True if county.saturation >= neighbor.saturation / 2 else county.public_awareness
     county.public_awareness = False if county.saturation <= .20 else county.public_awareness
     if county.public_awareness:
         neighbor.public_awareness = True if neighbor.saturation >= county.saturation / 2 \
@@ -680,17 +694,19 @@ def implement_quarantine(CG, county, neighbor):
         CG[county][neighbor]['weight'] = 1.0
 
 
-def calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, current_month, run_mode='Baseline'):
+def calc_infest(CG, neighbor_obj, schema, cumulative_df, time_tracker, current_month, run_mode=None):
     """
     updates the new saturation levels for all nodes in county graph.
     :param CG: The graph of counties
     :param neighbor_obj: a collection of the neighbors of all nodes.
     :param schema:
     :param cumulative_df:
-    :param month_tracker:
+    :param time_tracker:
+    :param current_month:
     :param run_mode:
     :return:
     """
+    run_mode = 'Baseline' if run_mode is None else run_mode
     saturation_collector = []
     infest_data = {}
 
@@ -707,7 +723,7 @@ def calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, current_
 
             new_saturations += net_neighbor.saturation
         saturation_collector.append(county.saturation)
-        infest_data[f'month {month_tracker}'] = saturation_collector
+        infest_data[f'month {time_tracker}'] = saturation_collector
 
     new_trackers = pd.DataFrame(infest_data)
     cumulative_df = pd.concat([cumulative_df, new_trackers], axis=1)
@@ -715,4 +731,4 @@ def calc_infest(CG, neighbor_obj, schema, cumulative_df, month_tracker, current_
 
 
 if __name__ == '__main__':
-    saturation_main('Quarantine', 15, life_cycle=True)
+    saturation_main('Baseline', 15, life_cycle=False)
