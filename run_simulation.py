@@ -140,14 +140,6 @@ def iterate_through_timeframe(CG: nx.Graph, schema: dict, neighbor_schema: dict,
     :return cumulative_df: a df that contains the full data for all counties in a run simulation
 
     # I cannot for the life of me figure out how to get this to work
-    # >>> class County:
-    # ...     def __init__(self, name, saturation, toh_density):
-    # ...         self.name = name
-    # ...         self.saturation = saturation
-    # ...         self.toh_density = toh_density
-    # ...     def get_neighbor_objects(self, name):
-    # ...         return []
-    #
     # >>> schema = {}
     # >>> CG = nx.Graph()
     # >>> for county in ['Coles', 'Bond', 'Edwards', 'Kane', 'Macon']:
@@ -590,10 +582,10 @@ def all_modes(quarantine_list: set, county: County, net_neighbors: County, proba
 
 def calculate_spread_prob(CG, county, neighbor):
     """
-    returns the likelyhood of an saturation spreading from one county to another.
+    returns the likelyhood of an infestation/saturation spreading from one county to another.
     the spread is based on:
         - The current saturation level of source county
-        - The combined density of tree of heaven and regular trees
+        - The combined density of tree of heaven and regular trees for neighboring county
         - The weight of edge connecting the two counties
         - The current traffic level of the month
 
@@ -601,31 +593,54 @@ def calculate_spread_prob(CG, county, neighbor):
     :param county: the source node the saturation is spreading from
     :param neighbor: target node saturation might spread to.
     :return spread_prob: probability of spread, between 0.0 and 1.0
+    >>> CG = nx.Graph()
+    >>> county_1 = County('Main County', saturation=.9, traffic_level=.8)
+    >>> county_2 = County('Neighbor County', toh_density=.7, tree_density=.6)
+    >>> CG.add_nodes_from([county_1, county_2])
+    >>> CG.add_edge(county_1, county_2, weight=1.0)
+    >>> prob = calculate_spread_prob(CG, county_1, county_2)
+    >>> prob < 0.6
+    True
+
     """
     edge_weight = CG[county][neighbor]['weight']
     base_prob = random.normal(0.3, 0.2) * county.saturation / (neighbor.toh_density + neighbor.tree_density)
-    spread_prob = base_prob / edge_weight * county.traffic_level
+    spread_prob = base_prob / edge_weight / county.traffic_level
 
     spread_prob = max(0, min(spread_prob, 1))
     return spread_prob
 
 
-def spread_saturation(county, neighbor, spread_prob, current_month=0):
+def spread_saturation(county, neighbor, spread_prob, current_month=None):
     """
     updates the saturation level of a neighboring county to source county
     :param county: source node that saturation spreads from
     :param neighbor: target node the saturation will spread to
     :param spread_prob: probability that the saturation will spread
-
+    :param current_month:
+    >>> CG = nx.Graph()
+    >>> months_queue = MonthQueue()
+    >>> prob = 1.0
+    >>> for i in range(10):
+    ...     current_month = months_queue.rotate()
+    >>> county_1 = County('Main County', saturation=.5, egg_count=100)
+    >>> county_2 = County('Neighbor County', saturation=.3, egg_count=0)
+    >>> CG.add_nodes_from([county_1, county_2])
+    >>> CG.add_edge(county_1, county_2, wieght=.25)
+    >>> spread_saturation(county_1, county_2, prob, current_month)
+    >>> county_2.egg_count > 0
+    True
+    >>> county_2.saturation > 0.3
+    True
     """
     max_transferable = county.saturation * spread_prob
-    variablity = random.uniform(0.05, 0.10)
+    variability = random.uniform(0.05, 0.10)
 
-    transfer_amount = max_transferable * variablity
+    transfer_amount = max_transferable * variability
 
     neighbor.saturation += transfer_amount
     neighbor.saturation = min(neighbor.saturation, 1.0)
-    if current_month in ['September', 'October', 'November']:
+    if current_month['month'] in ['September', 'October', 'November']:
         neighbor.egg_count += int(transfer_amount * 100)
 
 
@@ -636,9 +651,27 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
     :param county: county node being assessed
     :param neighbor: node adjacent to county node
     :param run_mode: Type of simulation to run
+    >>> CG = nx.Graph()
+    >>> county_1 = County('Some County', saturation=0.9, egg_count=100, toh_density=0.5, popdense_sqmi=1000,
+    ... public_awareness=True, quarantine=True)
+    >>> county_2 = County('Another County', saturation=0.4, egg_count=50, toh_density=0.3)
+    >>> CG.add_nodes_from([county_1, county_2])
+    >>> CG.add_edge(county_1, county_2, weight=1.0, rel = 'interstate')
+    >>> implement_counter_measures(CG, county_2, county_1, 'Poison ToH')
+    >>> county_2.saturation < 0.4
+    True
+    >>> implement_counter_measures(CG, county_1, county_2, 'Population-Based')
+    >>> county_1.saturation < 0.9
+    True
+    >>> weight = CG[county_1][county_2]['weight']
+    >>> implement_counter_measures(CG, county_1, county_2, 'Quarantine')
+    >>> new_weight = CG[county_1][county_2]['weight']
+    >>> new_weight > weight
+    True
+
     """
     if run_mode == 'Poison ToH':
-        county.die_off(mortality_rate=county.toh_density / 65)
+        county.die_off(mortality_rate=county.toh_density / 55)
         # county.toh_density = county.toh_density - .01 if county.toh_density > 0.0 else county.toh_density
     elif run_mode in ('Population-Based', 'Quarantine'):
         implement_pop_kill(county, neighbor)
@@ -658,6 +691,13 @@ def implement_pop_kill(county, neighbor):
     Can also toggle neighbor's public awareness at certain thresholds.
     :param county: County obj being assessed
     :param neighbor: neighboring county
+    >>> county_1 = County('Dog County', saturation=0.6, egg_count=100, popdense_sqmi=5000, public_awareness=True)
+    >>> county_2 = County('Cat County', saturation=0.3, egg_count=50, popdense_sqmi=3000)
+    >>> implement_pop_kill(county_1, county_2)
+    >>> county_1.egg_count < 100
+    True
+    >>> county_2.public_awareness
+    True
     """
     if neighbor.quarantine:
         county.public_awareness = True if county.saturation >= neighbor.saturation / 2 else county.public_awareness
@@ -678,12 +718,25 @@ def implement_quarantine(CG, county, neighbor):
     :param CG: Network Graph
     :param county: County node object
     :param neighbor: County node object connected to county by edge.
+    >>> CG = nx.Graph()
+    >>> county_1 = County('The Greatest County', saturation=0.8, quarantine=False)
+    >>> county_2 = County('The Worst County', saturation=0.2, quarantine=True, public_awareness=True)
+    >>> CG.add_nodes_from([county_1, county_2])
+    >>> CG.add_edge(county_1, county_2, weight=1.0)
+    >>> implement_quarantine(CG, county_1, county_2)
+    >>> county_1.quarantine
+    True
+    >>> implement_quarantine(CG, county_2, county_1)
+    >>> county_2.quarantine
+    False
+    >>> CG[county_1][county_2]['weight']
+    2.0
     """
     county.quarantine = True if county.saturation >= .75 else county.quarantine
     county.quarantine = False if county.saturation <= .25 else county.quarantine
     if county.quarantine is True:
         neighbor.public_awareness = True
-        CG[county][neighbor]['weight'] = 2
+        CG[county][neighbor]['weight'] = 2.0
     elif county.quarantine is False and neighbor.quarantine is True:
         pass
     elif CG[county][neighbor]['rel'] == 'interstate':
@@ -697,12 +750,12 @@ def calc_infest(CG, neighbor_obj, schema, cumulative_df, time_tracker, current_m
     updates the new saturation levels for all nodes in county graph.
     :param CG: The graph of counties
     :param neighbor_obj: a collection of the neighbors of all nodes.
-    :param schema:
-    :param cumulative_df:
-    :param time_tracker:
-    :param current_month:
-    :param run_mode:
-    :return:
+    :param schema: a handler of counties for easy reference
+    :param cumulative_df: dataframe which keeps track of all county saturations over time
+    :param time_tracker: count of current iteration
+    :param current_month: current month from MonthQueue
+    :param run_mode: Kind of simulation to run
+    :return: updated schema and cumulative_df
     """
     run_mode = 'Baseline' if run_mode is None else run_mode
     saturation_collector = []
@@ -711,7 +764,7 @@ def calc_infest(CG, neighbor_obj, schema, cumulative_df, time_tracker, current_m
     for county_net in neighbor_obj:
         county = schema[county_net]
         county.public_awareness = True if county.saturation > .6 else county.public_awareness
-        county.toh_density = county.toh_density + .01  # shows slow growth of ToH, might delete
+        county.toh_density = county.toh_density + .005  # shows slow growth of ToH, might delete
         new_saturations = 0
 
         for net_neighbor in neighbor_obj[county_net]:
