@@ -58,7 +58,7 @@ def get_IL_geocoords(df: pd.DataFrame, locator: Nominatim, col='name') -> pd.Dat
     :param df: the dataframe to be modified
     :param locator: a Nominatim geolocator used to find the latitude and longitude of a city or town
     :param col: the column to iterate over
-    :return:
+    :return: of geocoordinate
     """
     pbar = tqdm(df[col].items(), desc='Obtaining Geographic Coordinates by Municipality')
     try:
@@ -75,10 +75,7 @@ def get_IL_geocoords(df: pd.DataFrame, locator: Nominatim, col='name') -> pd.Dat
         print(f'Your dataframe does not contain the "{col}" column')
 
 
-def get_IL_df(df: pd.DataFrame, years=5, columns=['ObjectID', 'Status',
-                                                  'ObsDate', 'DateEnt', 'DateUp',
-                                                  'Location', 'Latitude', 'Longitude',
-                                                  'InfestAcre', 'Density', 'Habitat', 'Verified']) -> pd.DataFrame:
+def get_IL_ToH_df(df: pd.DataFrame, years=5, columns=None) -> pd.DataFrame:
     """
     Take a dataframe of recorded Tree of Heaven observations and returns all positive rows that are in Illinois.
     :param df: Dataframe of invasive species data. obtained from www.eddmaps.org
@@ -86,6 +83,12 @@ def get_IL_df(df: pd.DataFrame, years=5, columns=['ObjectID', 'Status',
     :param columns: desired columns to return
     :return IL_df: new dataframe of relevant information in Illinois
     """
+    if columns is None:
+        columns = ['ObjectID', 'Status',
+                   'ObsDate', 'DateEnt', 'DateUp',
+                   'Location', 'Latitude', 'Longitude',
+                   'InfestAcre', 'Density', 'Habitat', 'Verified']
+
     df = df[columns].copy()
     df['DateUp'] = pd.to_datetime(df['DateUp'], format='%m-%d-%y', errors='coerce')
     IL_df = df[(df['Location'].str.contains('Illinois'))
@@ -207,7 +210,9 @@ def update_with_revisits(toh_df, rev_df):
     :param rev_df: Revisits to sight locations
     :return toh_df: the updated tree of heaven dataframe
     """
-    rev_df = rev_df.sort_values(by='DateUp', ascending=False).drop_duplicates(subset='ObjectID', keep='first')
+    rev_df = rev_df.sort_values(by='DateUp',
+                                ascending=False).drop_duplicates(subset='ObjectID',
+                                                                 keep='first')
     toh_df.set_index('ObjectID', inplace=True)
     rev_df.set_index('ObjectID', inplace=True)
     toh_df.update(rev_df[['Density', 'InfestAcre']])
@@ -221,13 +226,13 @@ def handle_toh():
     """
 
     path = 'data/tree'
-    toh_df = get_IL_df(pd.read_csv(f'{path}/mappings.csv', encoding='latin-1',
-                                   low_memory=False).rename(columns={'objectid': 'ObjectID'}))
-    rev_df = get_IL_df(pd.read_csv(f'{path}/revisits.csv', encoding='latin-1'),
-                       columns=['ObjectID', 'Status',
-                                'DateEnt', 'DateUp',
-                                'Location', 'Latitude', 'Longitude',
-                                'InfestAcre', 'Density', 'Verified'])
+    toh_df = get_IL_ToH_df(pd.read_csv(f'{path}/mappings.csv', encoding='latin-1',
+                                       low_memory=False).rename(columns={'objectid': 'ObjectID'}))
+    rev_df = get_IL_ToH_df(pd.read_csv(f'{path}/revisits.csv', encoding='latin-1'),
+                           columns=['ObjectID', 'Status',
+                                    'DateEnt', 'DateUp',
+                                    'Location', 'Latitude', 'Longitude',
+                                    'InfestAcre', 'Density', 'Verified'])
     # handling duplicates in rev_df
     toh_df = update_with_revisits(toh_df, rev_df)
     # changing names and saving to csv
