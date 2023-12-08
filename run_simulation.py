@@ -163,19 +163,10 @@ def iterate_through_timeframe(CG: nx.Graph, schema: dict, neighbor_schema: dict,
         time_tracker += 1
 
         if life_cycle:
-            for name, county in schema.items():
-                county.traffic_level = current_month['traffic_level']
-                if current_month in ['May', 'June']:
-                    county.hatch_eggs()
-                elif current_month in ['August', 'September', 'October', 'November', 'December']:
-                    county.mate()
-                    if current_month in ['September', 'October', 'November']:
-                        county.lay_eggs()
-                elif current_month in ['January', 'February']:
-                    county.die_off(1.0)
+            handle_life_cycle_for_county(current_month, schema)
 
         neighbor_obj = find_neighbor_status(CG,
-                                            schema)  # this needs to be below the if life cycle statement for both models to work correctly. if you put above, none of my changes occur in the monthly cycle -Matt
+                                            schema)  # this needs to be below the of life cycle statement for both models to work correctly. if you put above, none of my changes occur in the monthly cycle -Matt
         schema, cumulative_df = calculate_changes(CG, neighbor_obj, schema, cumulative_df, time_tracker, current_month,
                                                   run_mode, life_cycle=life_cycle)
 
@@ -211,7 +202,7 @@ def make_starting_df(schema: dict, time_frame=None) -> pd.DataFrame:
     county_list = list(schema[county].name for county in schema)
     starting_saturation = list(schema[county].saturation for county in schema)
     cumulative_df = pd.DataFrame({'County': county_list})
-    cumulative_df.insert(1, f'{time_frame} 0', starting_saturation, True)
+    cumulative_df.insert(1, f'{time_frame} 1', starting_saturation, True)
     return cumulative_df
 
 
@@ -329,7 +320,7 @@ def calculate_changes(CG: nx.Graph, neighbor_obj: dict, schema: dict, cumulative
             all_new_saturations = max(0, min(all_new_saturations, 1))  # keeps all_new_saturations between 0 and 1
             setattr(county, 'saturation', all_new_saturations)  # changes the county instance attribute
             saturation_collector.append(all_new_saturations)  # Adds the saturation to a list
-        cumulative_df.insert(time_tracker, f'year {time_tracker-1}', saturation_collector, True)  # adds list to df
+        cumulative_df.insert(time_tracker, f'year {time_tracker}', saturation_collector, True)  # adds list to df
         return schema, cumulative_df
 
 
@@ -582,7 +573,7 @@ def all_modes(quarantine_list: set, county: County, net_neighbors: County, proba
 
 def calculate_spread_prob(CG, county, neighbor):
     """
-    returns the likelyhood of an infestation/saturation spreading from one county to another.
+    returns the likelyhood of an saturation spreading from one county to another.
     the spread is based on:
         - The current saturation level of source county
         - The combined density of tree of heaven and regular trees for neighboring county
@@ -594,8 +585,8 @@ def calculate_spread_prob(CG, county, neighbor):
     :param neighbor: target node saturation might spread to.
     :return spread_prob: probability of spread, between 0.0 and 1.0
     >>> CG = nx.Graph()
-    >>> county_1 = County('Main County', saturation=.9, traffic_level=.8)
-    >>> county_2 = County('Neighbor County', toh_density=.7, tree_density=.6)
+    >>> county_1 = County('Main County', slf_pop=.4, traffic_level=.8)
+    >>> county_2 = County('Neighbor County', toh_density=.8, tree_density=.2)
     >>> CG.add_nodes_from([county_1, county_2])
     >>> CG.add_edge(county_1, county_2, weight=1.0)
     >>> prob = calculate_spread_prob(CG, county_1, county_2)
@@ -604,14 +595,14 @@ def calculate_spread_prob(CG, county, neighbor):
 
     """
     edge_weight = CG[county][neighbor]['weight']
-    base_prob = random.normal(0.3, 0.2) * county.saturation / (neighbor.toh_density + neighbor.tree_density)
-    spread_prob = base_prob / edge_weight / county.traffic_level
+    base_prob = random.normal(0.2, 0.1) * county.slf_pop / (neighbor.toh_density + neighbor.tree_density)
+    spread_prob = (base_prob / edge_weight / county.traffic_level)
 
-    spread_prob = max(0, min(spread_prob, 1))
+    spread_prob = max(0.0, min(spread_prob, 1.0))
     return spread_prob
 
 
-def spread_saturation(county, neighbor, spread_prob, current_month=None):
+def spread_infest(county, neighbor, spread_prob, current_month=None):
     """
     updates the saturation level of a neighboring county to source county
     :param county: source node that saturation spreads from
@@ -623,25 +614,27 @@ def spread_saturation(county, neighbor, spread_prob, current_month=None):
     >>> prob = 1.0
     >>> for i in range(10):
     ...     current_month = months_queue.rotate()
-    >>> county_1 = County('Main County', saturation=.5, egg_count=100)
-    >>> county_2 = County('Neighbor County', saturation=.3, egg_count=0)
+    >>> county_1 = County('Main County', slf_pop=.5, egg_pop=1.0)
+    >>> county_2 = County('Neighbor County', slf_pop=.3, egg_pop=0)
     >>> CG.add_nodes_from([county_1, county_2])
     >>> CG.add_edge(county_1, county_2, wieght=.25)
-    >>> spread_saturation(county_1, county_2, prob, current_month)
-    >>> county_2.egg_count > 0
+    >>> spread_infest(county_1, county_2, prob, current_month)
+    >>> county_2.egg_pop > 0
     True
     >>> county_2.saturation > 0.3
     True
     """
-    max_transferable = county.saturation * spread_prob
-    variability = random.uniform(0.05, 0.10)
+    max_transferable = county.slf_pop * spread_prob
+    variability = random.normal(0.05, 0.15)
 
     transfer_amount = max_transferable * variability
 
-    neighbor.saturation += transfer_amount
-    neighbor.saturation = min(neighbor.saturation, 1.0)
+    neighbor.slf_pop += transfer_amount
+    neighbor.stabilize_levels()
+
     if current_month['month'] in ['September', 'October', 'November']:
-        neighbor.egg_count += int(transfer_amount * 100)
+        neighbor.egg_pop += transfer_amount
+        neighbor.stabilize_levels()
 
 
 def implement_counter_measures(CG, county, neighbor, run_mode):
@@ -652,9 +645,9 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
     :param neighbor: node adjacent to county node
     :param run_mode: Type of simulation to run
     >>> CG = nx.Graph()
-    >>> county_1 = County('Some County', saturation=0.9, egg_count=100, toh_density=0.5, popdense_sqmi=1000,
+    >>> county_1 = County('Some County', saturation=0.9, egg_pop=1.0, toh_density=0.5, popdense_sqmi=1000,
     ... public_awareness=True, quarantine=True)
-    >>> county_2 = County('Another County', saturation=0.4, egg_count=50, toh_density=0.3)
+    >>> county_2 = County('Another County', saturation=0.4, egg_pop=0.5, toh_density=0.3)
     >>> CG.add_nodes_from([county_1, county_2])
     >>> CG.add_edge(county_1, county_2, weight=1.0, rel = 'interstate')
     >>> implement_counter_measures(CG, county_2, county_1, 'Poison ToH')
@@ -671,7 +664,7 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
 
     """
     if run_mode == 'Poison ToH':
-        county.die_off(mortality_rate=county.toh_density / 55)
+        county.die_off(mortality_rate=county.toh_density/20)
         # county.toh_density = county.toh_density - .01 if county.toh_density > 0.0 else county.toh_density
     elif run_mode in ('Population-Based', 'Quarantine'):
         implement_pop_kill(county, neighbor)
@@ -691,10 +684,10 @@ def implement_pop_kill(county, neighbor):
     Can also toggle neighbor's public awareness at certain thresholds.
     :param county: County obj being assessed
     :param neighbor: neighboring county
-    >>> county_1 = County('Dog County', saturation=0.6, egg_count=100, popdense_sqmi=5000, public_awareness=True)
-    >>> county_2 = County('Cat County', saturation=0.3, egg_count=50, popdense_sqmi=3000)
+    >>> county_1 = County('Dog County', slf_pop=0.6, egg_pop=1.0, popdense_sqmi=5000, public_awareness=True)
+    >>> county_2 = County('Cat County', slf_pop=0.3, egg_pop=.50, popdense_sqmi=3000)
     >>> implement_pop_kill(county_1, county_2)
-    >>> county_1.egg_count < 100
+    >>> county_1.egg_pop < 1.0
     True
     >>> county_2.public_awareness
     True
@@ -705,8 +698,11 @@ def implement_pop_kill(county, neighbor):
     if county.public_awareness:
         neighbor.public_awareness = True if neighbor.saturation >= county.saturation / 2 \
             else neighbor.public_awareness
-        county.die_off(mortality_rate=county.popdense_sqmi / 7500)
-        county.egg_count = county.egg_count - int(county.popdense_sqmi / 1000)
+        county.die_off(mortality_rate=county.popdense_sqmi / 10000)
+        county.egg_pop = county.egg_pop - county.popdense_sqmi / 10000
+        county.stabilize_levels()
+    max_pop = max(county.slf_pop, county.egg_pop)
+    county.saturation = max_pop
 
 
 def implement_quarantine(CG, county, neighbor):
@@ -733,16 +729,38 @@ def implement_quarantine(CG, county, neighbor):
     2.0
     """
     county.quarantine = True if county.saturation >= .75 else county.quarantine
-    county.quarantine = False if county.saturation <= .25 else county.quarantine
+    county.quarantine = False if county.saturation <= .05 else county.quarantine
     if county.quarantine is True:
         neighbor.public_awareness = True
-        CG[county][neighbor]['weight'] = 2.0
+        CG[county][neighbor]['weight'] = 1000
     elif county.quarantine is False and neighbor.quarantine is True:
         pass
     elif CG[county][neighbor]['rel'] == 'interstate':
         CG[county][neighbor]['weight'] = .25
     else:
         CG[county][neighbor]['weight'] = 1.0
+
+
+def handle_life_cycle_for_county(current_month, schema):
+    """
+    Activates different class methods based on the current month
+    :param current_month: month from MonthQueue
+    :param schema: county handler
+    """
+    for name, county in schema.items():
+        county.traffic_level = current_month['traffic_level']
+        if current_month['month'] in ['May', 'June']:
+            county.hatch_eggs()
+            county.saturation = county.slf_pop if county.slf_pop > county.saturation else county.saturation
+        elif current_month['month'] in ['August', 'September', 'October', 'November', 'December']:
+            county.mate()
+            county.saturation = county.slf_pop if county.slf_pop > county.saturation else county.saturation
+            if current_month['month'] in ['September', 'October', 'November']:
+                county.lay_eggs()
+                county.saturation = county.slf_pop if county.slf_pop > county.saturation else county.saturation
+        elif current_month['month'] in ['January', 'February']:
+            county.die_off()
+            county.saturation = county.egg_pop if county.egg_pop > county.saturation else county.saturation
 
 
 def calc_infest(CG, neighbor_obj, schema, cumulative_df, time_tracker, current_month, run_mode=None):
@@ -764,13 +782,13 @@ def calc_infest(CG, neighbor_obj, schema, cumulative_df, time_tracker, current_m
     for county_net in neighbor_obj:
         county = schema[county_net]
         county.public_awareness = True if county.saturation > .6 else county.public_awareness
-        county.toh_density = county.toh_density + .005  # shows slow growth of ToH, might delete
+        county.toh_density = county.toh_density + .01  # shows slow growth of ToH, might delete
         new_saturations = 0
 
         for net_neighbor in neighbor_obj[county_net]:
             spread_prob = calculate_spread_prob(CG, county, net_neighbor)
+            spread_infest(county, net_neighbor, spread_prob, current_month=current_month)
             implement_counter_measures(CG, county, net_neighbor, run_mode=run_mode)
-            spread_saturation(county, net_neighbor, spread_prob, current_month=current_month)
 
             new_saturations += net_neighbor.saturation
         saturation_collector.append(county.saturation)
@@ -782,4 +800,4 @@ def calc_infest(CG, neighbor_obj, schema, cumulative_df, time_tracker, current_m
 
 
 if __name__ == '__main__':
-    saturation_main('Baseline', 15, life_cycle=False)
+    saturation_main('Quarantine', 15, life_cycle=True)

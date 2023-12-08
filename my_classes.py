@@ -23,7 +23,7 @@ class County:
     :param saturation: Initial saturation level.
     :param mated: Proportion of the saturation that has mated.
     :param laid_eggs: Proportion of the saturation that has laid eggs.
-    :param egg_count: Number of egg masses present.
+    :param egg_pop: Number of egg masses present.
     :param tree_density: rough approximation of tree density for counties
     :param toh_density: the relative density of tree of heaven for county.
     :param traffic_level: overall traffic amount for state. Changes on month updates.
@@ -32,15 +32,16 @@ class County:
     """
 
     def __init__(self, name, lat=None, lon=None, geometry=None, centroid=False, pop=None, popdense_sqmi=None,
-                 saturation=0.0, mated=0.0, laid_eggs=0.0, egg_count=0,
+                 saturation=0.0, slf_pop=1.0, mated=0.0, laid_eggs=0.0, egg_pop=0.0,
                  tree_density=0.0, toh_density=0.0, traffic_level=1.0, quarantine=False, public_awareness=False):
         self.name = name
         self.lat, self.lon, self.geometry, self.centroid = lat, lon, geometry, centroid
         self.pop, self.popdense_sqmi = pop, popdense_sqmi
         self.saturation = saturation
+        self.slf_pop = slf_pop
         self.mated = mated
         self.laid_eggs = laid_eggs
-        self.egg_count = egg_count
+        self.egg_pop = egg_pop
         self.tree_density = tree_density
         self.toh_density = toh_density
         self.traffic_level = traffic_level
@@ -59,24 +60,32 @@ class County:
                 neighbors = [neighbor for neighbor in graph.neighbors(node)]
         return neighbors
 
+    def stabilize_levels(self):
+        """
+        ensures critical attributes never get above 1.0  or below 0.0
+        """
+        self.slf_pop = max(0.0, min(self.slf_pop, 1.0))  # caps the value at 100%
+        self.egg_pop = max(0.0, min(self.egg_pop, 1.0))  # caps the value at 100%
+        self.saturation = max(0.0, min(self.saturation, 1.0))  # caps the value at 100%
+
     def mate(self, mating_chance=None):
         """
         Simulate the mating process, updating the proportion of mated flies in the saturation
 
-        >>> county = County('Butts County', saturation=0.7)
+        >>> county = County('Butts County', slf_pop=0.7)
         >>> old_mate = county.mate()
         >>> new_mate = county.mate()
         >>> new_mate > old_mate
         True
         """
         if mating_chance is None:
-            mating_chance = random.uniform(0.5, 1.0)
-        newly_mated = self.saturation * mating_chance * (1.0 - self.mated)
+            mating_chance = random.uniform(0.5, 0.2)
+        newly_mated = self.slf_pop * mating_chance * (1.0 - self.mated)
         self.mated += newly_mated
-        self.mated = min(self.mated, 1.0)  # caps the value at 100%
+        self.stabilize_levels()  # caps the value at 100%
         return self.mated
 
-    def lay_eggs(self, scaling_factor=100, extra_eggmass_chance=0.12):
+    def lay_eggs(self, extra_eggmass_chance=0.12):
         """
         Simulates the laying of eggs based on the porportion of mated SLFs.
 
@@ -84,16 +93,17 @@ class County:
         :param extra_eggmass_chance: Chance of laying an additional egg mass.
         :return self.eggcount: Total number of egg masses after laying.
 
-        >>> loc = County("Matt's County", saturation=0.37, toh_density=.5, tree_density=.5, mated=1.0)
-        >>> old_eggs = loc.egg_count
+        >>> loc = County("Matt's County", saturation=0.37, slf_pop=.5, egg_pop=0.0, toh_density=1.0, tree_density=0.2, mated=.7)
+        >>> old_eggs = loc.egg_pop
         >>> current_eggs = loc.lay_eggs()
         >>> current_eggs > old_eggs
         True
         """
-        new_egg_masses = int(self.mated * scaling_factor * (self.toh_density + self.tree_density))
-        additional_egg_masses = int(new_egg_masses * extra_eggmass_chance)
-        self.egg_count += new_egg_masses + additional_egg_masses
-        return self.egg_count
+        new_egg_masses = self.mated * (self.toh_density + self.tree_density)
+        additional_egg_masses = new_egg_masses * extra_eggmass_chance
+        self.egg_pop += new_egg_masses + additional_egg_masses
+        self.stabilize_levels()
+        return self.egg_pop
 
     def die_off(self, mortality_rate=None):
         """
@@ -107,12 +117,12 @@ class County:
         """
         if mortality_rate is None:
             mortality_rate = random.uniform(0.85, 1.0)
-        die_off_number = self.saturation * mortality_rate
-        self.saturation -= die_off_number
+        die_off_number = self.slf_pop * mortality_rate
+        self.slf_pop -= die_off_number
         self.mated = 0.0
         self.laid_eggs = 0.0
-        self.saturation = min(self.saturation, 1)
-        return self.saturation
+        self.stabilize_levels()
+        return self.slf_pop
 
     def hatch_eggs(self, hatch_chance=None):
         """
@@ -120,8 +130,8 @@ class County:
 
         :return: saturation level after hatching eggs.
 
-        >>> loc = County("Cook", saturation=0.0, egg_count=105)
-        >>> pre_hatch_saturation = loc.saturation
+        >>> loc = County("Cook", slf_pop=0.0, egg_pop=.25)
+        >>> pre_hatch_slf_pop = loc.slf_pop
         >>> current_infest = loc.hatch_eggs(hatch_chance=1.0)
         >>> current_infest > 0.37
         True
@@ -129,15 +139,15 @@ class County:
         """
         if hatch_chance is None:
             hatch_chance = random.uniform(.75, 1.0)
-        hatched_eggs = int(self.egg_count * hatch_chance)
-        while hatched_eggs > 0:
-            egg_coef = random.uniform(0.00035, 0.00045)
-            self.saturation += egg_coef
-            self.egg_count -= 1
-            hatched_eggs -= 1
-
-        self.saturation = round(min(self.saturation, 1.0), 2)  # caps at 100%
-        return self.saturation
+        hatched_eggs = round(self.egg_pop * hatch_chance, 2)
+        while hatched_eggs > 0.0:
+            egg_coef = random.uniform(0.035, 0.045)
+            self.slf_pop += egg_coef
+            self.egg_pop -= .01
+            hatched_eggs -= .01
+            hatched_eggs = round(hatched_eggs, 2)
+        self.stabilize_levels()
+        return self.slf_pop
 
     def __hash__(self):
         return hash((self.name, type(self)))
@@ -152,6 +162,7 @@ class MonthQueue(Queue):
     attributes associated with it. Begins with traffic levels inserted
     :param months_traffic_levels: A dictionary of corresponding traffic levels for each month.
     """
+
     def __init__(self):
         super().__init__()
         self.months_traffic_levels = {

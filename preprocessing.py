@@ -58,7 +58,7 @@ def get_IL_geocoords(df: pd.DataFrame, locator: Nominatim, col='name') -> pd.Dat
     :param df: the dataframe to be modified
     :param locator: a Nominatim geolocator used to find the latitude and longitude of a city or town
     :param col: the column to iterate over
-    :return:
+    :return: of geocoordinate
     """
     pbar = tqdm(df[col].items(), desc='Obtaining Geographic Coordinates by Municipality')
     try:
