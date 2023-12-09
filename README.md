@@ -84,6 +84,7 @@ For quarantine measures, we let the decision to quarantine be 50/50. Since this 
 
 The specifications for the numbers are largely the product of our best estimates. This is because of the difficulty in finding established statistical models for simulating the infestation of an invasive species that was appropriate in data requirements, mathematical complexity, and scope to what would be a successful project. These numbers were also adjusted as the model was developed and refined.
 #### Monthly
+Small note: this model uses a different edge weight for interstate edges, of 0.25 instead of 0.5, increasing likelyhood of infestation spread along highway networks.
 ##### Life Cycle and Baseline Spread
 The SLF population is modulated on a monthly basis, with `County` class methods being triggered on different months, with `mate` occuring between August - December, `lay_eggs` occuring between September - November, `die_off` occuring January and February, and `hatch_eggs` occuring in May and June. The probabilities for each method are as follows:
 - `mate` - a random normal distribution centered around 25% and varying between 15% and 35%. This chance is modified by the current adult SLF population, adding to the total of mated adults.
@@ -91,7 +92,7 @@ The SLF population is modulated on a monthly basis, with `County` class methods 
 - `die_off` - a random uniform distribution of 85% to 100% of the adult lanternfly population.
 - `hatch_eggs` - a random uniform chance between 75% and 100% that an eggmass will hatch. For each eggmass, there is a random uniform distribution of between 0.035 - 0.045 to represent that each egg mass tends to hatch between 35 - 45 SLF.
 
-After life cycle methods have triggered, the calculation for the spread of infestation occurs. The probability of a infestation spreading from one county is a random normal distribution of 20%, with a variance of 10%. This is modified by the counties curred adult lanternfly population, and the combined regular tree and ToH densities for the neighboring county. While it is impossible that a SLF could know what a neighboring county's tree densities are before migrating, this represents the capability of them to establish themselves once they have arrived. Finally, the probaility is modified by the edge weight between counties and the current month's traffic levels. 
+After life cycle methods have triggered, the calculation for the spread of infestation occurs. The probability of a infestation spreading from one county is a random normal distribution of 20%, with a variance of 10%. This is modified by the counties current adult lanternfly population, and the combined regular tree and ToH densities for the neighboring county. While it is impossible that a SLF could know what a neighboring county's tree densities are before migrating, this represents the capability of them to establish themselves once they have arrived. Finally, the probaility is modified by the edge weight between counties and the current month's traffic levels. 
 
 Once a spread probability has been established, `spread_infest` then spreads adult lanterflies by that amount modified by a variability of between %5 - 15%. If the current month is during a `lay_eggs` cycle, this also can spread eggmasses.
 
@@ -102,7 +103,6 @@ Once baseline spread has occured, counter measures are implemented if simulation
 - Poisoning Tree of Heaven - If a county becomes aware of the infestation, a `toh_trigger` will change to `True`. Once `True`, this value will not revert. Each month after the trigger event, `die_off` occurs based on the `toh_density` of a county, divided by a random distribution of between 0 - 20. 
 
 ### 2- Validation
-#### Annual
 Our simulations, especially our baseline simulations, exhibited strong statistical convergence. Even without calculating a precise P-value, a clear trend line is still discernable. The resulting graph of our baseline simulation is very similar to a well-established species invasion model.
  
 <show online graph>
@@ -150,7 +150,7 @@ We predicted that this measure would be the most effective out of all three. Fir
 --------------------------------------------------
 
 ## IV. Results
-
+#### Annual
 The results conformed to expectations in some ways and defied them in others. This is the resulting graph of the three countermeasures, compared to the baseline:
 
 <result graph>
@@ -161,15 +161,36 @@ However, comparing the trend lines as well as extending the length of time simul
 
 The second surprise was that the same did not exist for the quarantine countermeasure. Although it initially depressed the infestation curve pretty well, the line continued to shoot up to where it was nearly identical to the baseline result after a while. But this also makes sense when considering that quarantine in this model only negates the infestation that comes to it from adjacent counties, not growth of the population it already has.
 
+#### Monthly
+
+![Infestation levels of Baseline Spread and Countermeasures for Life Cycle Model]('references/avg_trends_life_cycle.png')
+
+##### Baseline
+The Baseline spread of the infestation shows some promise, with accelerated growth along interstate edges. However, the spread of the model is far too fast, with full saturation occuring at year eight. This is, of course, without any counter-measures. Implementation of zero counter-measures would be illogical in a real-life scenerio. That being said, we are erring on the side of caution and assuming the model is faster than it should be.
+
+
+##### Poisoning Tree of Heaven
+The least impactful of models was the poisoning of ToH. This is most likely a result of the `toh_trigger` variable. Earlier models did not include this, and the poisoning was much more effective. But since the poisoning now only begins once a county is publically aware of the problem, the SLF population has already been established and isn't as easily reduced. The effect of the poisoning is noticeable, but only in counties with a high ToH density. Because ToH isn't well established in Illinois, the overall effect is minimal 
+
+##### Population-Based
+Population Counter-Measures suffered from a problem similar to poisoning the tree of heaven, where it only affected counties with extremely high population density. This effectively results in only Cook County and the surrounding Chicago-land area being able to reduce the SLF population enough for it to make an impact.
+
+
+##### Quarantine
+The most effective counter-measure in this version of the simulation is the quarantine. The previous population based counter-measures, combined with increase the edge weight significantly in counties with high saturation, results in lockdowns occuring before the lanternfly can spread. Quarantine also trigger public awareness in neighboring counties allows them to kill the population before it can permanently establish. 
+
+#### All
+Obviously, the most effective counter measure is the one that combines all approaches. Because of quarantine triggering public awareness in other counties, the poisoning of ToH occurs much sooner than it otherwise would have, this combined with the population-based killing results in an effective erradication of the SLF.
+
 --------------------------------------------------
  
 ## V. Analysis and Discussions
 
-The weakness of this simulation, as acknowledged several times, is the mathematical model. The expertise and resources it would take to model this more comprehensively were overwhelmingly prohibitory. However, despite this, several strong conclusions can still be supported by the outcome of the simulation.
+The weakness of these simulations, as acknowledged several times, is the mathematical model. The expertise and resources it would take to model this more comprehensively were overwhelmingly prohibitory. However, despite this, several strong conclusions can still be supported by the outcome of the simulation.
 
 Clearly, any countermeasures are better than an uninhibited spread. However, depending on the priorities of different locales, certain countermeasures may be preferable to others. For instance, the most overall depression in the model was with trap trees, but the highest initial depression was from population-based countermeasures. Quarantine may initially be more successful than trap trees but may be politically prohibitive. Trap trees requires expertise with identifying and treating trees, which may be too high an educational barrier to implement compared to population-based countermeasures, where residents may be taught to recognize the SLF from a few pictures.
 
-A further expansion of this project could be to explore more variations within each countermeasure. For instance, the quarantine threshold would likely look different if a county was 75% or 25% likely to declare and enforce a quarantine, or if residents of a county were more enthusiastic about finding and killing SLF. Doing this may require a more comprehensive and complex simulation, but it may yield results that can show a more nuanced insight into each of these interventions.
+Ultimately, both simulations suffered from the saturation of counties occuring more quickly than what occurs in real-life. While the levels could be adjusted to slow the spread, it is ultimately difficult to determine which variables to change and by how much. Validation is also an concern, as we have no actually basis for how the spread would occur in Illinois because it has not happened yet. A future work could involve creating a network of Pennsylvania counties in a fashion similar to this one, and adjusting variance and modifiers until the spread
 
 --------------------------------------------------
 
