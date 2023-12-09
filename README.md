@@ -1,3 +1,4 @@
+
 IS579 Fall 2023
 # Invasive_Species_Propogation
 
@@ -5,16 +6,41 @@ https://github.com/mhouser42/Invasive_Species_Propogation
 
 Justin Tung: https://github.com/JayTongue
 Matt Adam-Houser: https://github.com/mhouser42
-
- --------------------------------------------------
  
+ ### Files and data:
+ #### Files
+ - `preprocessing.py` - Cleans and processes data from outside sources and transfroms into csvs for later use.
+ - `my_classes.py` - Two custom classes for network construction and simulation: A `County` class with static attributes related to geographic, population, Tree of Heaven (ToH) and regular tree densities for counties, and dynamic attributes related to SLF population and spread. And a `MonthQueue` class used in the life cycle simulation.
+ - `illinois_network.py` - Constructs NetworkX Graph of Illinois counties, pickling graph and handlers for further use.
+ - `run_simulation.py` - Simulates the invasive spread of the SLF through Illinois, either on annual or month timeframe. Inputs parameters for run mode and how long to run the simulation for. Uses an accumulated dataframe that inserts rows based on each successive year the simulation is run.
+ - `visualization_functions.py` - Collection of fuctions used in Jupyter Notebooks to visualize the spread of the Lanterfly.
+ - `visualize_simulation_results.ipynb` - Visualizes the baseline spread of SLF, as well as population-based, quarantine, and poisoning ToH counter-measures. Plots aggregate saturation for specified number of simulation runs.
+ - `life_cycle.ipynb` - Variation of `visualize_simulation_results` which operates on a monthly basis and utilizes class methods to flucuate adult SLF and eggmass populations.
+#### Data
+- `location` folder - Contains NetworkX graph and handlers, as well as csvs for network construction
+- `lyde` folder - Contains data from [lydemapr project](https://github.com/ieco-lab/lydemapr/tree/main). Unused aside from heuristic reference.
+- `tree` folder - Data obtained from [EDDmaps](www.eddmaps.org/) related to ToH sightings.
+- `coef_dict.JSON` - Json file which inserts starting `saturation`, `slf_pop`, and `egg_pop` into each county.
+ --------------------------------------------------
+
+
 ## I.  Factual Background
 
 The Spotted Lanternfly (SLF) (Lycorma delicatula) is an invasive species originating from China, Bangladesh, and Vietnam. It was accidentally introduced to North America in 2014, first detected in Pennsylvania before [eventually spreading to 14 other states](https://www.aphis.usda.gov/aphis/ourfocus/planthealth/plant-pest-and-disease-programs/pests-and-diseases/sa_insects/slf). The SLF is very problematic due to its consumption of plant life, both endemic and agricultural. Its droppings also encourage mold growth, further detrimentally impacting the host plant (University of Illinois Extension "Spotted Lanternfly Fact Sheet").
 
-On September 16th of this year (2023), it has been spotted in Illinois for the first time (Illinois Department of Agriculture). The University of Illinois has warned that the SLF could potentially devastate grape and logging industries (University of Illinois Extension "Spotted Lanternfly Fact Sheet").
+On September 16th of this year (2023), it has been spotted in Illinois for the first time (Illinois Department of Agriculture). The University of Illinois has warned that the SLF could potentially devastate grape and logging industries, [causing a total of $50.1 million annually.](https://agsci.psu.edu/research/impacts/themes/biodiversity/detecting-biological-invasions/assessing-economic-impact)(PennState College of Agricultural Sciences "Assessing Economic Impact").
 
-While the SLF has a relatively short range by flight, it often travels long distances when they or their eggs are carried by vehicles, shipping containers, or any other vector.
+While the SLF has a relatively short range by flight, it often travels long distances when they or their eggs are carried by vehicles, shipping containers, or any other vector. The image on the left shows a hypothetical spread of the SLF across the United States, and the image on the right shows a network of major highways.
+
+Spread of Spotted Lanternfly	|	Major U.S. Highways
+:-------------------------:|:-------------------------:
+| <img src='https://i0.wp.com/entomologytoday.org/wp-content/uploads/2019/10/potential-distribution-of-spotted-lanternfly-in-United-States.jpg?resize=768%2C567&ssl=1' alt='Potential distribution of spotted lanternfly in the United States' height='300' width="500" /> | <img src='https://ops.fhwa.dot.gov/freight/freight_analysis/freight_story/images/compofmajorfghtcorr.jpg' alt='Composition of major freight corridors' height='300' width="500" /> |The Spotted Lanternfly (SLF) (Lycorma delicatula) is an invasive species originating from China, Bangladesh, and Vietnam. It was accidentally introduced to North America in 2014, first detected in Pennsylvania before [eventually spreading to 14 other states](https://www.aphis.usda.gov/aphis/ourfocus/planthealth/plant-pest-and-disease-programs/pests-and-diseases/sa_insects/slf). The SLF is very problematic due to its consumption of plant life, both endemic and agricultural. Its droppings also encourage mold growth, further detrimentally impacting the host plant (University of Illinois Extension "Spotted Lanternfly Fact Sheet").
+
+The SLF life cycle is characterized by adults mating, laying eggs, dying off in the winter while eggmasses survive, before hatching in the spring (John B. Ward & Co.).
+
+<div align="center">
+    <img src='https://johnbward.com/sites/default/files/cycle-2.png' height='400'/>
+</div>
 
 The SLF also has a unique interaction with an invasive tree, the Tree-of-Heaven (ToH) (Ailanthus altissima). This Tree comes from China and Taiwan and was introduced to the United States in the late 1700’s because of a rapid growth speed, toleration of poor air and soil, and ornamental qualities (Penn State Extension, "Tree of Heaven"). However, this tree soon fell out of favor because of its prolific root sprouting, foul odor, and weak wood (Penn State Extension "What Should You Do with Spotted Lanternfly Egg Masses"). The Tree-of-Heaven is the SLF’s preferred host.
 
@@ -135,10 +161,13 @@ A further expansion of this project could be to explore more variations within e
 2. Brandywine Conservancy. "Invasive Species Spotlight: Tree of Heaven (Ailanthus altissima) and Spotted Lanternfly." Brandywine Conservancy, n.d., https://www.brandywine.org/conservancy/blog/invasive-species-spotlight-tree-heaven-ailanthus-altissima-and-spotted-lanternfly.
 3. Cornell University, College of Agriculture and Life Sciences. "Spotted Lanternfly Reported Distribution Map." New York State Integrated Pest Management, n.d., https://cals.cornell.edu/new-york-state-integrated-pest-management/outreach-education/whats-bugging-you/spotted-lanternfly/spotted-lanternfly-reported-distribution-map.
 4. De Bona, Sebastiano, et al. "LydeMaPR: An R Package to Track the Spread of the Invasive Spotted Lanternfly (Lycorma delicatula, White 1845) (Hemiptera, Fulgoridae) in the United States." bioRxiv, 2023.01.27.525992, doi: https://doi.org/10.1101/2023.01.27.525992.
+5. John B. Ward & Co. Arborists, "Spotted Lanternfly", n.d., https://johnbward.com/spotted-lanternfly
 5. Illinois Department of Agriculture. "Spotted Lanternfly." Illinois Department of Agriculture, n.d., https://agr.illinois.gov/insects/pests/spotted-lanternfly.html.
 6. Pennsylvania Department of Agriculture. "Spotted Lanternfly Quarantine." Pennsylvania Department of Agriculture, n.d., https://www.agriculture.pa.gov/Plants_Land_Water/PlantIndustry/Entomology/spotted_lanternfly/quarantine/Pages/default.aspx.
-7. Penn State Extension. "Controlling Tree of Heaven: Why It Matters." Penn State Extension, n.d., https://extension.psu.edu/controlling-tree-of-heaven-why-it-matters#:~:text=Tree%20of%20heaven%20is%20a,across%20most%20of%20southeastern%20PA.
-8. Penn State Extension. "Tree of Heaven." Penn State Extension, n.d., https://extension.psu.edu/tree-of-heaven.
-9. Penn State Extension. "What Should You Do with Spotted Lanternfly Egg Masses." Penn State Extension, n.d., https://extension.psu.edu/what-should-you-do-with-spotted-lanternfly-egg-masses.
-10. University of Illinois Extension. "Spotted Lanternfly Fact Sheet." University of Illinois Extension, https://extension.illinois.edu/sites/default/files/spotted_lanternfly_fact_sheet_v8.pdf.
-11. University of Illinois Extension. "Tree of Heaven." University of Illinois Extension, n.d., https://extension.illinois.edu/invasives/tree-heaven.
+7. Penn State College of Agricultural Sciences. "Assessing Economic Impact", https://agsci.psu.edu/research/impacts/themes/biodiversity/detecting-biological-invasions/assessing-economic-impact
+8. Penn State Extension. "Controlling Tree of Heaven: Why It Matters." Penn State Extension, n.d., https://extension.psu.edu/controlling-tree-of-heaven-why-it-matters#:~:text=Tree%20of%20heaven%20is%20a,across%20most%20of%20southeastern%20PA.
+9. Penn State Extension. "Tree of Heaven." Penn State Extension, n.d., https://extension.psu.edu/tree-of-heaven.
+10. Penn State Extension. "What Should You Do with Spotted Lanternfly Egg Masses." Penn State Extension, n.d., https://extension.psu.edu/what-should-you-do-with-spotted-lanternfly-egg-masses.
+11. University of Illinois Extension. "Spotted Lanternfly Fact Sheet." University of Illinois Extension, https://extension.illinois.edu/sites/default/files/spotted_lanternfly_fact_sheet_v8.pdf.
+12. University of Illinois Extension. "Tree of Heaven." University of Illinois Extension, n.d., https://extension.illinois.edu/invasives/tree-heaven.
+13. U.S. Department of Transportaion. "Freight Managment and Operations", n.d., https://ops.fhwa.dot.gov/freight/freight_analysis/freight_story/major.htm
