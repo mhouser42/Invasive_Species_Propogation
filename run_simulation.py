@@ -664,7 +664,10 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
 
     """
     if run_mode == 'Poison ToH':
-        county.die_off(mortality_rate=county.toh_density/10)
+        county.toh_trigger = True if county.public_awareness else county.toh_trigger
+        if county.toh_trigger:
+            variance = random.normal(15, 5)
+            county.die_off(mortality_rate=county.toh_density/variance)
         # county.toh_density = county.toh_density - .01 if county.toh_density > 0.0 else county.toh_density
     elif run_mode in ('Population-Based', 'Quarantine'):
         implement_pop_kill(county, neighbor)
@@ -676,7 +679,7 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
         implement_quarantine(CG, county, neighbor)
 
 
-def implement_pop_kill(county, neighbor):
+def implement_pop_kill(county, neighbor, prob=None):
     """
     Toggles county's public_awareness if they reach certain thresholds.
     If the county is aware, triggers die_off and egg removal based off population density.
@@ -692,14 +695,15 @@ def implement_pop_kill(county, neighbor):
     >>> county_2.public_awareness
     True
     """
+    prob = random.normal(0.5, 0.1)
+    county.public_awareness = False if county.saturation <= .20 else county.public_awareness
     if neighbor.quarantine:
         county.public_awareness = True if county.saturation >= neighbor.saturation / 2 else county.public_awareness
-    county.public_awareness = False if county.saturation <= .20 else county.public_awareness
     if county.public_awareness:
         neighbor.public_awareness = True if neighbor.saturation >= county.saturation / 2 \
             else neighbor.public_awareness
-        county.die_off(mortality_rate=county.popdense_sqmi / 10000)
-        county.egg_pop = county.egg_pop - county.popdense_sqmi / 10000
+        county.die_off(mortality_rate=(prob * county.popdense_sqmi / 10000))
+        county.egg_pop = county.egg_pop - (prob * county.popdense_sqmi / 10000)
         county.stabilize_levels()
     max_pop = max(county.slf_pop, county.egg_pop)
     # county.saturation = (county.slf_pop + county.egg_pop)/2
@@ -728,11 +732,12 @@ def implement_quarantine(CG, county, neighbor):
     >>> CG[county_1][county_2]['weight']
     2.0
     """
+    prob = random.uniform(2, 10)
     county.quarantine = True if county.saturation >= .75 else county.quarantine
-    county.quarantine = False if county.saturation <= .05 else county.quarantine
+    county.quarantine = False if county.saturation <= .10 else county.quarantine
     if county.quarantine is True:
         neighbor.public_awareness = True
-        CG[county][neighbor]['weight'] = 1000
+        CG[county][neighbor]['weight'] = prob
     elif county.quarantine is False and neighbor.quarantine is True:
         pass
     elif CG[county][neighbor]['rel'] == 'interstate':

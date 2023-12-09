@@ -29,11 +29,14 @@ class County:
     :param traffic_level: overall traffic amount for state. Changes on month updates.
     :param quarantine: Boolean indicating if the location is under quarantine.
     :param public_awareness: Boolean indicating if people in the county has become aware of the saturation.
+    :param toh_trigger: Boolean which activates once a county has become publicly aware at least once.
+    Used for poisoning ToH.
     """
 
     def __init__(self, name, lat=None, lon=None, geometry=None, centroid=False, pop=None, popdense_sqmi=None,
                  saturation=0.0, slf_pop=1.0, mated=0.0, laid_eggs=0.0, egg_pop=0.0,
-                 tree_density=0.0, toh_density=0.0, traffic_level=1.0, quarantine=False, public_awareness=False):
+                 tree_density=0.0, toh_density=0.0, traffic_level=1.0, quarantine=False, public_awareness=False,
+                 toh_trigger=False):
         self.name = name
         self.lat, self.lon, self.geometry, self.centroid = lat, lon, geometry, centroid
         self.pop, self.popdense_sqmi = pop, popdense_sqmi
@@ -47,6 +50,7 @@ class County:
         self.traffic_level = traffic_level
         self.quarantine = quarantine
         self.public_awareness = public_awareness
+        self.toh_trigger = toh_trigger
 
     def get_neighbor_objects(self, graph):  # These are used in run_simulation.py
         """
@@ -98,13 +102,13 @@ class County:
         True
         """
         if mating_chance is None:
-            mating_chance = random.uniform(0.5, 0.2)
+            mating_chance = random.normal(0.25, 0.10)
         newly_mated = self.slf_pop * mating_chance * (1.0 - self.mated)
         self.mated += newly_mated
         self.stabilize_levels()  # caps the value at 100%
         return self.mated
 
-    def lay_eggs(self, extra_eggmass_chance=0.12):
+    def lay_eggs(self, extra_eggmass_chance=None):
         """
         Simulates the laying of eggs based on the porportion of mated SLFs.
 
@@ -118,7 +122,9 @@ class County:
         >>> current_eggs > old_eggs
         True
         """
-        new_egg_masses = self.mated * (self.toh_density + self.tree_density)
+        extra_eggmass_chance = random.normal(0.12, 0.4) if extra_eggmass_chance is None else extra_eggmass_chance
+        prob = random.normal(0.50, 0.20)
+        new_egg_masses = prob * self.mated * (self.toh_density + self.tree_density)
         additional_egg_masses = new_egg_masses * extra_eggmass_chance
         self.egg_pop += new_egg_masses + additional_egg_masses
         self.stabilize_levels()
