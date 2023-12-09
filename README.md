@@ -57,6 +57,7 @@ For construction of the nodes, data was obtained via (Wikipedia)[https://en.wiki
 --------------------------------------------------
 
 ## III. Monte Carlo Simulations
+We ran two seperate simulations, a primary model on a annual basis, and another on a monthly basis which incorparated the SLF life cycle. Many deterministic variables are the same between the simulations, but the probalistic models differ. Differences in design and outcomes will be outlined below.
 ### 1- Design
 
 In researching mathematical models of ecological phenomena, we quickly encountered two primary challenges. Firstly, many of these models are much more mathematically complex than we could effectively do or learn to do in the assignment period. Secondly, many of these models evaluated a lot more information than we were specifically able to find about the SLF.
@@ -72,8 +73,8 @@ There are also several concrete variables we consider. For instance, the populat
 Another aspect of our test design was to represent counties as nodes in a network. After finding the counties adjacent to each county, we represented these borders as edges, since they would be natural corridors for the SLF to spread. We also represented spread via major roadways by incorporating additional edges along these roadways to represent a vehicle-based spread. While a more comprehensive project may consider more natural barriers, the length and speed limit of road edges rather than their mere existence, for the sake of simplicity, the only distinction we make between edges is if the counties are connected by an interstate. 
 
 #### 3. Probabilities
-
-The probabilities we used were tailored to each randomized variable. Each month, the intrinsic growth of a county’s infestation rate as well as the chance of infestation from each of the county’s neighbors is calculated to change the county’s new infestation rate. The chance of an infestation growing intrinsically is modeled by a normal distribution with a mean of 0.025 and a standard deviation of 0.01. The probability of neighboring influence from each county is modeled by a normal distribution with a mean of 0.5 and a standard deviation of 0.8.
+#### Annual
+The probabilities we used were tailored to each randomized variable. Each year, the intrinsic growth of a county’s infestation rate as well as the chance of infestation from each of the county’s neighbors is calculated to change the county’s new infestation rate. The chance of an infestation growing intrinsically is modeled by a normal distribution with a mean of 0.025 and a standard deviation of 0.01. The probability of neighboring influence from each county is modeled by a normal distribution with a mean of 0.5 and a standard deviation of 0.8.
 
 The ToH is given a randomized chance to increase the infection rate due to its influence on SLF propagation. This probability is modeled with an exponential distribution with a scale of 0.02. Since the ToH is also a limited resource that SLF can deplete, and cannot host all SLF beyond a certain point, an exponential distribution seemed the most appropriate. The benefit to SLF would be great if they are in smaller number, but quickly diminishes as the ToH becomes saturated and depleted.
 
@@ -82,9 +83,26 @@ For population interventions, we modeled this effect with a normal with a mean o
 For quarantine measures, we let the decision to quarantine be 50/50. Since this comes down largely to a matter of governance and public policy, any predictive or behaviorally normative model is likely going to be flawed. Rather than try to develop such a model by doing time-intensive historical research on quarantine-related countermeasures enacted by different jurisdictions that may be relevant to this study, this probability was left as a random Boolean.
 
 The specifications for the numbers are largely the product of our best estimates. This is because of the difficulty in finding established statistical models for simulating the infestation of an invasive species that was appropriate in data requirements, mathematical complexity, and scope to what would be a successful project. These numbers were also adjusted as the model was developed and refined.
-            	
-### 2- Validation
+#### Monthly
+##### Life Cycle and Baseline Spread
+The SLF population is modulated on a monthly basis, with `County` class methods being triggered on different months, with `mate` occuring between August - December, `lay_eggs` occuring between September - November, `die_off` occuring January and February, and `hatch_eggs` occuring in May and June. The probabilities for each method are as follows:
+- `mate` - a random normal distribution centered around 25% and varying between 15% and 35%. This chance is modified by the current adult SLF population, adding to the total of mated adults.
+- `lay_eggs` - a random normal distribution centered around 50% and varying between 30% and 70%. This is modified by the number of mated adult SLF, ToH and regular densities, and an extra eggmass chance. Female SLFs usually lay one eggmass per seaason, but approximately 12% lay a second eggmass. The extra eggmass chance in this model is a normal distribution of 12% with of variance of 4%.
+- `die_off` - a random uniform distribution of 85% to 100% of the adult lanternfly population.
+- `hatch_eggs` - a random uniform chance between 75% and 100% that an eggmass will hatch. For each eggmass, there is a random uniform distribution of between 0.035 - 0.045 to represent that each egg mass tends to hatch between 35 - 45 SLF.
 
+After life cycle methods have triggered, the calculation for the spread of infestation occurs. The probability of a infestation spreading from one county is a random normal distribution of 20%, with a variance of 10%. This is modified by the counties curred adult lanternfly population, and the combined regular tree and ToH densities for the neighboring county. While it is impossible that a SLF could know what a neighboring county's tree densities are before migrating, this represents the capability of them to establish themselves once they have arrived. Finally, the probaility is modified by the edge weight between counties and the current month's traffic levels. 
+
+Once a spread probability has been established, `spread_infest` then spreads adult lanterflies by that amount modified by a variability of between %5 - 15%. If the current month is during a `lay_eggs` cycle, this also can spread eggmasses.
+
+##### Counter-Measures
+Once baseline spread has occured, counter measures are implemented if simulation is configured for a particular `run_mode` and certain conditions are met. The countermeasures are as follows:
+- Population Based - If a county's infestation/saturation has reached 60%, or it is half of a neighboring county's saturation that also has an aware public, it's `public_awareness` is set to `True`. Once `True`, `die_off` is triggered each month, at an intially normal distribution of 50% with a variance of 10%, modified by the population density of a county divided by 10000. A similar interaction occurs with that county's `egg_pop` as well.
+- Quarantine - The quarantine counter is an addition to the Population-Based counter-measure. If a county's saturation reaches over 75%, it will enter a state of quarantine, and also trigger public awareness in all neighboring counties. While in quarantine, the weight of the edges between it and all of it's neighbors raise to a random uniform distribution of between 2 and 10, greatly reducing the spread probability into and out of the county. This state is mostly permanant, only turning off is a county's saturation drops below 10%, in which case, the weights of edges between counties will return to prexisting levels as long as its neighbor is not also in quarantine.
+- Poisoning Tree of Heaven - If a county becomes aware of the infestation, a `toh_trigger` will change to `True`. Once `True`, this value will not revert. Each month after the trigger event, `die_off` occurs based on the `toh_density` of a county, divided by a random distribution of between 0 - 20. 
+
+### 2- Validation
+#### Annual
 Our simulations, especially our baseline simulations, exhibited strong statistical convergence. Even without calculating a precise P-value, a clear trend line is still discernable. The resulting graph of our baseline simulation is very similar to a well-established species invasion model.
  
 <show online graph>
