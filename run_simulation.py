@@ -664,7 +664,7 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
 
     """
     if run_mode == 'Poison ToH':
-        county.die_off(mortality_rate=county.toh_density/20)
+        county.die_off(mortality_rate=county.toh_density/10)
         # county.toh_density = county.toh_density - .01 if county.toh_density > 0.0 else county.toh_density
     elif run_mode in ('Population-Based', 'Quarantine'):
         implement_pop_kill(county, neighbor)
@@ -702,7 +702,7 @@ def implement_pop_kill(county, neighbor):
         county.egg_pop = county.egg_pop - county.popdense_sqmi / 10000
         county.stabilize_levels()
     max_pop = max(county.slf_pop, county.egg_pop)
-    county.saturation = max_pop
+    # county.saturation = (county.slf_pop + county.egg_pop)/2
 
 
 def implement_quarantine(CG, county, neighbor):

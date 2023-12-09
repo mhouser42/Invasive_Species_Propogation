@@ -213,9 +213,10 @@ def calc_toh_density_coef(df: pd.DataFrame, handler: dict, county_tots: dict, co
 
 def add_tree_density(handler: dict):
     """
-    adds regular tree densities to nodes, based on the counties latitude and longitude.
+    Adds regular tree densities to nodes, based on the counties latitude and longitude.
     REFERENCE: https://www.fs.usda.gov/nrs/pubs/rb/rb_nrs113.pdf, pages 5-6
     :param handler: graph handler with county names for keys and the counties themselves as values
+    >>>
     """
     peoria = handler['Peoria']
     hardin = handler['Hardin']
@@ -232,9 +233,9 @@ def add_tree_density(handler: dict):
 
 def set_up(path):
     """
-
-    :param path:
-    :return:
+    Loads and returns previously constructed csvs from preprocessing into pandas dataframes.
+    :param path: folder the csvs are stored in.
+    :return: csvs loaded into dataframes.
     """
     county_df = pd.read_csv(f'{path}/counties.csv')  # for nodes
     edge_df = pd.read_csv(f'{path}/county_edges.csv')  # for edges
@@ -246,12 +247,14 @@ def set_up(path):
 
 def construct_graph_and_handlers(CG, county_df, edge_df, toh_df):
     """
-
-    :param CG:
-    :param county_df:
-    :param edge_df:
-    :param toh_df:
-    :return:
+    Takes a NetworkX Graph,a pandas dataframe of counties for nodes, a dataframe of connections between the counties for
+    edges, and a dataframe of Tree of Heaven information about each county to be inserted into node attributes,
+    and constructs a network representing counties in Illinois, and handlers for both counties and neighboring counties.
+    :param CG: NetworkX Graph to be added to
+    :param county_df: dataframe containing counties and geographic/population information
+    :param edge_df: dataframe containing adjacency and interstate connections between counties
+    :param toh_df: dataframe of up-to-date ToH sightings by county.
+    :return: NetworkX Graph of Illinois counties, handler for counties, handler for neighboring counties of each county
     """
     # adding nodes
     county_handler = construct_nodes(CG, county_df)
@@ -268,11 +271,11 @@ def construct_graph_and_handlers(CG, county_df, edge_df, toh_df):
 
 def dump_graph_and_handler(CG, county_handler, neighbor_handler, prefix=''):
     """
-
-    :param CG:
-    :param county_handler:
-    :param neighbor_handler:
-    :param prefix:
+    Pickles Illinois network graph, county handler, and neighbor handler.
+    :param CG: NetworkX graph
+    :param county_handler: handler for nodes of NetworkX graph
+    :param neighbor_handler: handler for nodes and nodes connected to them.
+    :param prefix: specify to pickle different versions of graphs/handlers
     """
     pickle.dump(CG, open(f'{path}/{prefix}IL_graph.dat', 'wb'))
     pickle.dump(county_handler, open(f'{path}/{prefix}graph_handler_counties.dat', 'wb'))

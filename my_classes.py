@@ -7,7 +7,7 @@ This file will contain the classes to be used in the MC simulation
 
 from queue import Queue
 from numpy import random
-
+import networkx as nx
 
 class County:
     """
@@ -52,7 +52,17 @@ class County:
         """
         returns a list of neighbor nodes for the node.
         :param graph: the graph the node exists in.
-        :return: a list of nodes connected to this node by an edge
+        :return: a listof nodes connected to this node by an edge
+        >>> CG = nx.Graph()
+        >>> county_1 = County('Main County')
+        >>> CG.add_node(county_1)
+        >>> for i in range(3):
+        ...    neighbor = County(f'Neighbor {i}')
+        ...    CG.add_node(neighbor)
+        ...    CG.add_edge(county_1, neighbor, weight=1.0)
+        >>> neighbors = county_1.get_neighbor_objects(CG)
+        >>> print(neighbors[0].name)
+        Neighbor 0
         """
         neighbors = []
         for node in graph.nodes():
@@ -63,6 +73,15 @@ class County:
     def stabilize_levels(self):
         """
         ensures critical attributes never get above 1.0  or below 0.0
+        >>> county = County('Butts County', saturation=1.5, slf_pop=-0.7, egg_pop=0.5)
+        >>> county.stabilize_levels()
+        >>> county.saturation
+        1.0
+        >>> county.slf_pop
+        0.0
+        >>> county.egg_pop
+        0.5
+
         """
         self.slf_pop = max(0.0, min(self.slf_pop, 1.0))  # caps the value at 100%
         self.egg_pop = max(0.0, min(self.egg_pop, 1.0))  # caps the value at 100%

@@ -32,10 +32,10 @@ def replace_curly_apostrophes_and_strip(value, replacements=(('“', '"'),
 def get_geoloc(name: str, locator: Nominatim, attempts=5):
     """
     gets a single geolocation from Nominatim based on name.
-    :param name: name of city to be found
+    :param name: name of city or county to be found
     :param locator: Nominatim geolocator
     :param attempts: number of times try and retrieve geolocation from Nominatim
-    :return:
+    :return: gets the geolocation of a city or county
     """
     if attempts <= 0:
         return None
@@ -160,7 +160,8 @@ def handle_cities():
 def handle_string_errors(df):
     """
     handles some common name errors in dataframe
-    :param df:
+    :param df: dataframe to be fixed
+    :return: dataframe with corrected names
     """
     df['county'] = df['county'].str.replace('"', '')
     change_map = {
@@ -179,8 +180,8 @@ def handle_string_errors(df):
 
 def calc_infest_index(toh_df, keep_nulls=False):
     """
-    :param toh_df:
-    :param keep_nulls:
+    :param toh_df: dataframe of ToH data
+    :param keep_nulls: whether the dataframe returns null values
     """
     toh_df = toh_df.copy()
     if not keep_nulls:
