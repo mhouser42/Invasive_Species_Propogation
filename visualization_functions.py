@@ -100,12 +100,14 @@ def make_network_heat(CG: nx.Graph, simulation_df: pd.DataFrame, handler: dict, 
     plt.show()
 
 
-def make_average_graphs(df: pd.DataFrame, sim_iterations: int):
+def make_average_graphs(df: pd.DataFrame, sim_iterations: int, time_frame=None, tick_steps=1):
     """
     Takes the average values over the whole state for each given simulation df.
     Plots them all within the same graph
-    :param df:
+    :param df: dataframe to be visualized
     :param sim_iterations: number of iterations in sim runs
+    :param time_frame: Sets whether model displays Years or Months, defaults to Years
+    :param tick_steps: Sets the step for x ticks in visualization, defaults to 1
 
     >>> data = {'Year': [0, 1, 2], 'La Salle': [0.2, 0.5, 0.8], 'Williamson': [0.3, 0.6, 0.7]}
     >>> simulation_df = pd.DataFrame(data)
@@ -126,11 +128,12 @@ def make_average_graphs(df: pd.DataFrame, sim_iterations: int):
     ...
     AttributeError: 'dict' object has no attribute 'T'
     """
+    time_frame = 'Years' if time_frame is None else time_frame
     vis_df = make_visual_df(df)
     avg_df = vis_df.mean(axis=1)
-    plt.xticks(ticks=range(0, sim_iterations + 1),
-               labels=range(0, sim_iterations + 1))
-    plt.xlabel('Years')
+    plt.xticks(ticks=range(0, sim_iterations + 1, tick_steps),
+               labels=range(0, sim_iterations + 1, tick_steps))
+    plt.xlabel(time_frame)
     plt.ylabel('Saturation Percentage')
     plt.plot(avg_df.index, avg_df, linewidth=0.5)
 
@@ -145,6 +148,7 @@ def model_variables(run_mode: str, sims_run: int, sim_iterations: int, life_cycl
     :param sim_iterations: number of iterations in each run
     :param life_cycle: Toggles whether the model runs on the annual or month simulation.
     :param prefix: parameter allowing for different graphs/handlers to be loaded in.
+    :param tick_steps: step for xticks
 
     >>> model_variables('Baseline', 5, 3)
 
@@ -170,13 +174,13 @@ def model_variables(run_mode: str, sims_run: int, sim_iterations: int, life_cycl
     for i in range(0, sims_run):
         df = saturation_main(run_mode, sim_iterations, life_cycle=life_cycle, prefix=prefix)
         make_average_graphs(df,
-                            sim_iterations)  # hopefully putting this inside the loop will allow the code to forget the df
+                            sim_iterations)  # putting inside the loop will allow the code to forget the df
 
     plt.show()
 
 
 def model_variables_avg(run_mode: str, sims_run: int, sim_iterations: int, all_trends: dict,
-                        life_cycle=False, prefix=None) -> dict:
+                        life_cycle=False, prefix=None, time_frame=None, tick_steps=1) -> dict:
     """
     A modified version of model_variables
     includes an trend line that averages all the simulations graphed
@@ -187,7 +191,8 @@ def model_variables_avg(run_mode: str, sims_run: int, sim_iterations: int, all_t
     :param all_trends: a dictionary that accumulates trends for each of the simulations run in different modes.
     :param life_cycle: a boolean which determine if the annual or monthly simulation runs.
     :param prefix: alter this to change which network and handlers handled by the system
-
+    :param time_frame: Whether label is set to Years or Months
+    :param tick_steps: the step for x-ticks.
     :return all_trends: output dict that gets passed to the next run mode simulation.
 
     >>> all_trends = {}
@@ -208,6 +213,7 @@ def model_variables_avg(run_mode: str, sims_run: int, sim_iterations: int, all_t
     TypeError: 'float' object cannot be interpreted as an integer
     """
     prefix = '' if prefix is None else prefix
+    time_frame = 'Years' if time_frame is None else time_frame
 
     plt.figure(figsize=(12, 8))
     plt.title(f'{run_mode} Saturation Model')
@@ -216,7 +222,7 @@ def model_variables_avg(run_mode: str, sims_run: int, sim_iterations: int, all_t
 
     for i in range(sims_run):
         df = saturation_main(run_mode, sim_iterations, life_cycle=life_cycle, prefix=prefix)
-        make_average_graphs(df, sim_iterations)
+        make_average_graphs(df, sim_iterations, tick_steps)
 
         vis_df = make_visual_df(df)
         avg_df = vis_df.mean(axis=1)
@@ -226,9 +232,9 @@ def model_variables_avg(run_mode: str, sims_run: int, sim_iterations: int, all_t
         overall_avg = pd.DataFrame(all_avg_lines).mean()
         plt.plot(overall_avg.index, overall_avg, 'k-', linewidth=3)  # Plotting the overall trend line
     all_trends[run_mode] = overall_avg
-    plt.xticks(ticks=range(0, sim_iterations + 1),
-               labels=range(0, sim_iterations + 1))
-    plt.xlabel('Years')
+    plt.xticks(ticks=range(0, sim_iterations + 1, tick_steps),
+               labels=range(0, sim_iterations + 1, tick_steps))
+    plt.xlabel(time_frame)
     plt.ylabel('Saturation Percentage')
     plt.show()
     return all_trends
