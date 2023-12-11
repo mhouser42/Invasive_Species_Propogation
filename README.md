@@ -52,7 +52,7 @@ The purpose of our Monte Carlo is to simulate the spread of the lanternfly and e
 
 Two primary datasets provided the data for this model The first is aggregate data from US locations compiled by Sebastiano De Bona et al. in their 2023 paper “lydemapr: an R package to track the spread of the invasive Spotted Lanternfly (Lycorma delicatula, White 1845) (Hemiptera, Fulgoridae) in the United States.” The data from this research paper is available [on GitHub](https://github.com/ieco-lab/lydemapr). The second is data compiled by Cornell University’s New York State Integrated Pest Management Program. Their map is frequently updated and freely available online.
 
-For construction of the nodes, data was obtained via (Wikipedia)[https://en.wikipedia.org/wiki/List_of_municipalities_in_Illinois]. Additional information was collected on Tree of Heaven was collected from the website [EDDmaps](https://www.eddmaps.org/distribution/uscounty.cfm?sub=3003). This data is recorded sightings of the plant. Once sighted, experts will review the record and confirm if the sighting is authentic. Data from Illinois was separated out, and an aggregate of sightings from the last five years were added to our model. 
+For construction of the nodes, data was obtained via [Wikipedia](https://en.wikipedia.org/wiki/List_of_municipalities_in_Illinois). Additional information was collected on Tree of Heaven was collected from the website [EDDmaps](https://www.eddmaps.org/distribution/uscounty.cfm?sub=3003). This data is recorded sightings of the plant. Once sighted, experts will review the record and confirm if the sighting is authentic. Data from Illinois was separated out, and an aggregate of sightings from the last five years were added to our model. 
 
 --------------------------------------------------
 
@@ -161,7 +161,7 @@ We predicted that this measure would be the most effective out of all three. Fir
 #### Annual
 The results conformed to expectations in some ways and defied them in others. This is the resulting graph of the three countermeasures, compared to the baseline:
 
-<result graph>
+![alt text](https://github.com/mhouser42/Invasive_Species_Propogation/blob/main/references/end_graph.jpg)
  
 While all three countermeasures had an initial effect of slowing down the infestation of the SLF, the population-based countermeasures depressed the curve substantially more than other areas. This is probably because of the areas that had the most SLF introduced were also areas of major commerce and rigorous transportation, which also tend to be areas of higher population density. These measures were then followed by quarantine, then trap trees.
 
@@ -171,21 +171,21 @@ The second surprise was that the same did not exist for the quarantine counterme
 
 #### Monthly
 
-![Infestation levels of Baseline Spread and Countermeasures for Life Cycle Model]('https://github.com/mhouser42/Invasive_Species_Propogation/blob/main/references/avg_trends_life_cycle.png')
+![Infestation levels of Baseline Spread and Countermeasures for Life Cycle Model]('references/avg_trends_life_cycle.png')
 
 ##### Baseline
 The Baseline spread of the infestation shows some promise, with accelerated growth along interstate edges. However, the spread of the model is far too fast, with full saturation occuring at year eight. This is, of course, without any counter-measures. Implementation of zero counter-measures would be illogical in a real-life scenerio. That being said, we are erring on the side of caution and assuming the model is faster than it should be.
 
 
-##### Population-Based
-The saturation level for population-based counter-measures leveled off at around 0.6. 
-
-##### Quarantine
-The most effective counter-measure in this version of the simulation is the quarantine. The previous population based counter-measures, combined with increase the edge weight significantly in counties with high saturation, results in lockdowns occuring before the lanternfly can spread. Quarantine also trigger public awareness in neighboring counties allows them to kill the population before it can permanently establish. 
-
 ##### Poisoning Tree of Heaven
 The least impactful of models was the poisoning of ToH. This is most likely a result of the `toh_trigger` variable. Earlier models did not include this, and the poisoning was much more effective. But since the poisoning now only begins once a county is publically aware of the problem, the SLF population has already been established and isn't as easily reduced. The effect of the poisoning is noticeable, but only in counties with a high ToH density. Because ToH isn't well established in Illinois, the overall effect is minimal 
 
+##### Population-Based
+Population Counter-Measures suffered from a problem similar to poisoning the tree of heaven, where it only affected counties with extremely high population density. This effectively results in only Cook County and the surrounding Chicago-land area being able to reduce the SLF population enough for it to make an impact.
+
+
+##### Quarantine
+The most effective counter-measure in this version of the simulation is the quarantine. The previous population based counter-measures, combined with increase the edge weight significantly in counties with high saturation, results in lockdowns occuring before the lanternfly can spread. Quarantine also trigger public awareness in neighboring counties allows them to kill the population before it can permanently establish. 
 
 #### All
 Obviously, the most effective counter measure is the one that combines all approaches. Because of quarantine triggering public awareness in other counties, the poisoning of ToH occurs much sooner than it otherwise would have, this combined with the population-based killing results in an effective erradication of the SLF.
@@ -196,9 +196,13 @@ Obviously, the most effective counter measure is the one that combines all appro
 
 The weakness of these simulations, as acknowledged several times, is the mathematical model. The expertise and resources it would take to model this more comprehensively were overwhelmingly prohibitory. However, despite this, several strong conclusions can still be supported by the outcome of the simulation.
 
-Clearly, any countermeasures are better than an uninhibited spread. However, depending on the priorities of different locales, certain countermeasures may be preferable to others. For instance, the most overall depression in the model was with trap trees, but the highest initial depression was from population-based countermeasures. Quarantine may initially be more successful than trap trees but may be politically prohibitive. Trap trees requires expertise with identifying and treating trees, which may be too high an educational barrier to implement compared to population-based countermeasures, where residents may be taught to recognize the SLF from a few pictures.
+Clearly, any countermeasures are better than an uninhibited spread. However, depending on the priorities of different locales, certain countermeasures may be preferable to others. For instance, the most overall depression in the model was with trap trees, but the highest initial depression was from population-based countermeasures. Quarantine may initially be successful, but may be politically prohibitive. Trap trees requires expertise with identifying and treating trees, which may be too high an educational barrier to implement compared to population-based countermeasures, where residents may be taught to recognize the SLF from a few pictures.
 
-Ultimately, both simulations suffered from the saturation of counties occuring more quickly than what occurs in real-life. While the levels could be adjusted to slow the spread, it is ultimately difficult to determine which variables to change and by how much. Validation is also an concern, as we have no actually basis for how the spread would occur in Illinois because it has not happened yet. A future work could involve creating a network of Pennsylvania counties in a fashion similar to this one, and adjusting variance and modifiers until the spread
+Generally, both models showed a very agressive baseline spread, likely more aggressive than would may occur, but as mentioned earlier, there is no consensus on the speed or aggression of a mitigated or unmitigated spread. Additionally, all simulation outcomes are predictive, and cannot be validated against an actual documented spread in Illinois.
+
+A future work could involve creating a network of Pennsylvania counties in a fashion similar to this one, and adjusting variance and modifiers, ideally to mimic an infection curve as it is documented in real-time. Another further expansion of this project could be to explore more variations within each countermeasure. For instance, the quarantine threshold would likely look different if a county was 75% or 25% likely to declare and enforce a quarantine, or if residents of a county were more enthusiastic about finding and killing SLF. Doing this may require a more comprehensive and complex simulation, but it may yield results that can show a more nuanced insight into each of these interventions.
+
+
 
 --------------------------------------------------
 
