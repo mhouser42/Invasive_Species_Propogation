@@ -52,7 +52,7 @@ def saturation_main(run_mode: str, iterations: int, life_cycle=False, prefix=Non
     if type(iterations) == int and iterations > 0:
         CG, schema, neighbor_schema = set_up(prefix=prefix)
         schema = set_coefficients(schema)
-        cumulative_df = iterate_through_timeframe(CG, schema, neighbor_schema, iterations,
+        cumulative_df = iterate_through_timeframe(CG, schema, iterations,
                                                   run_mode, life_cycle=life_cycle)
 
         return cumulative_df
@@ -127,7 +127,7 @@ def set_coefficients(schema: dict) -> dict:
     return schema
 
 
-def iterate_through_timeframe(CG: nx.Graph, schema: dict, neighbor_schema: dict, iterations: int,
+def iterate_through_timeframe(CG: nx.Graph, schema: dict, iterations: int,
                               run_mode='Baseline', life_cycle=False) -> pd.DataFrame:
     """
     Takes the initial schema and iterates it through a number of years or months
@@ -165,8 +165,7 @@ def iterate_through_timeframe(CG: nx.Graph, schema: dict, neighbor_schema: dict,
         if life_cycle:
             handle_life_cycle_for_county(current_month, schema)
 
-        neighbor_obj = find_neighbor_status(CG,
-                                            schema)  # this needs to be below the of life cycle statement for both models to work correctly. if you put above, none of my changes occur in the monthly cycle -Matt
+        neighbor_obj = find_neighbor_status(CG, schema)  # Used to make both timeframes work correctly
         schema, cumulative_df = calculate_changes(CG, neighbor_obj, schema, cumulative_df, time_tracker, current_month,
                                                   run_mode, life_cycle=life_cycle)
 
@@ -176,7 +175,7 @@ def iterate_through_timeframe(CG: nx.Graph, schema: dict, neighbor_schema: dict,
 def make_starting_df(schema: dict, time_frame=None) -> pd.DataFrame:
     """
     Creates an initial dataframe with the list of counties and the starting infection rate for each county
-    :param schema:
+    :param schema: a dict of county names and their objects
     :param time_frame: changes if the df column names are years or months
     :return: instantiated dataframe based on graph handler
 
@@ -210,7 +209,7 @@ def get_object(name: str, schema: dict) -> County:
     """
     Utility function.
     Retrieves the county instance object from the schema when given its name
-    :param name: name of object
+    :param name: dict with county names and county objects
     :param schema: handler to be searched
     :return schmea[county]: the object that corresponds to the name in the schema
 
@@ -242,7 +241,7 @@ def find_neighbor_status(CG: nx.Graph, schema: dict) -> dict:
     returns them as a neighbor object
     :param CG: the network graph of counties
     :param schema: dictionary handler of graph, with keys as the names of counties and the counties themselves as values
-    :return neighbor_obj: the dict county objects
+    :return neighbor_obj: the dict of county objects
 
     >>> class County:
     ...     def __init__(self, name):
@@ -288,7 +287,7 @@ def calculate_changes(CG: nx.Graph, neighbor_obj: dict, schema: dict, cumulative
 
     :param CG: graph of county network
     :param neighbor_obj: the adjacent object
-    :param schema: county handler
+    :param schema: dict of county names and objects
     :param cumulative_df: a dataframe that stores saturation levels from year to year for each county
     :param time_tracker: count of current year or month
     :param run_mode: type of simulation
@@ -308,7 +307,7 @@ def calculate_changes(CG: nx.Graph, neighbor_obj: dict, schema: dict, cumulative
     else:
 
         saturation_collector = []
-        quarantine_list = set()
+        quarantine_list = set()  # set is used to eliminate redundancies
         for county_net in neighbor_obj:
             all_new_saturations = 0
             county = get_object(county_net, schema)
@@ -320,7 +319,8 @@ def calculate_changes(CG: nx.Graph, neighbor_obj: dict, schema: dict, cumulative
             all_new_saturations = max(0, min(all_new_saturations, 1))  # keeps all_new_saturations between 0 and 1
             setattr(county, 'saturation', all_new_saturations)  # changes the county instance attribute
             saturation_collector.append(all_new_saturations)  # Adds the saturation to a list
-        cumulative_df.insert(time_tracker, f'year {time_tracker}', saturation_collector, True)  # adds list to df
+        cumulative_df.insert(time_tracker, f'year {time_tracker}', saturation_collector, True)
+        # adds list to df
         return schema, cumulative_df
 
 
@@ -571,7 +571,7 @@ def all_modes(quarantine_list: set, county: County, net_neighbors: County, proba
     return quarantine_list, new_saturation
 
 
-def calculate_spread_prob(CG, county, neighbor):
+def calculate_spread_prob(CG: nx.Graph, county: County, neighbor: County) -> float:
     """
     returns the likelyhood of an saturation spreading from one county to another.
     the spread is based on:
@@ -602,7 +602,7 @@ def calculate_spread_prob(CG, county, neighbor):
     return spread_prob
 
 
-def spread_infest(county, neighbor, spread_prob, current_month=None):
+def spread_infest(county: County, neighbor, spread_prob, current_month=None):
     """
     updates the saturation level of a neighboring county to source county
     :param county: source node that saturation spreads from
@@ -637,7 +637,7 @@ def spread_infest(county, neighbor, spread_prob, current_month=None):
         neighbor.stabilize_levels()
 
 
-def implement_counter_measures(CG, county, neighbor, run_mode):
+def implement_counter_measures(CG: nx.Graph, county: County, neighbor: County, run_mode: str):
     """
     Manipulates saturation and egg levels based on run mode
     :param CG: graph of county network
@@ -668,7 +668,6 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
         if county.toh_trigger:
             variance = random.normal(25, 5)
             county.die_off(mortality_rate=county.toh_density/variance)
-        # county.toh_density = county.toh_density - .01 if county.toh_density > 0.0 else county.toh_density
     elif run_mode in ('Population-Based', 'Quarantine'):
         implement_pop_kill(county, neighbor)
     elif run_mode == 'All':
@@ -678,10 +677,8 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
     if run_mode == 'Quarantine':
         implement_quarantine(CG, county, neighbor)
 
-    # county.saturation = (county.slf_pop + county.egg_pop) / 2
 
-
-def implement_pop_kill(county, neighbor, prob=None):
+def implement_pop_kill(county: County, neighbor: County, prob=None):
     """
     Toggles county's public_awareness if they reach certain thresholds.
     If the county is aware, triggers die_off and egg removal based off population density.
@@ -689,6 +686,7 @@ def implement_pop_kill(county, neighbor, prob=None):
     Can also toggle neighbor's public awareness at certain thresholds.
     :param county: County obj being assessed
     :param neighbor: neighboring county
+    :param prob: Probability generated for randomizing public awareness
     >>> county_1 = County('Dog County', slf_pop=0.6, egg_pop=1.0, popdense_sqmi=5000, public_awareness=True)
     >>> county_2 = County('Cat County', slf_pop=0.3, egg_pop=.50, popdense_sqmi=3000)
     >>> implement_pop_kill(county_1, county_2)
@@ -707,11 +705,9 @@ def implement_pop_kill(county, neighbor, prob=None):
         county.die_off(mortality_rate=(prob * county.popdense_sqmi / 10000))
         county.egg_pop = county.egg_pop - (prob * county.popdense_sqmi / 10000)
         county.stabilize_levels()
-    # max_pop = max(county.slf_pop, county.egg_pop)
-    # county.saturation = (county.slf_pop + county.egg_pop)/2
 
 
-def implement_quarantine(CG, county, neighbor):
+def implement_quarantine(CG: nx.Graph, county: County, neighbor: County):
     """
     Toggles a county's quarantine once it reaches certain thresholds.
     Toggles neighbor's public awareness if its saturation is half of quarantine
@@ -748,11 +744,11 @@ def implement_quarantine(CG, county, neighbor):
         CG[county][neighbor]['weight'] = 1.0
 
 
-def handle_life_cycle_for_county(current_month, schema):
+def handle_life_cycle_for_county(current_month: str, schema: dict):
     """
     Activates different class methods based on the current month
     :param current_month: month from MonthQueue
-    :param schema: county handler
+    :param schema: county names and objects
     """
     for name, county in schema.items():
         county.traffic_level = current_month['traffic_level']
@@ -775,7 +771,8 @@ def handle_life_cycle_for_county(current_month, schema):
         county.stabilize_levels()
 
 
-def calc_infest(CG, neighbor_obj, schema, cumulative_df, time_tracker, current_month, run_mode=None):
+def calc_infest(CG: nx.Graph, neighbor_obj: County, schema: dict, cumulative_df: pd.DataFrame,
+                time_tracker: int, current_month: str, run_mode=None) -> (dict, pd.DataFrame):
     """
     updates the new saturation levels for all nodes in county graph.
     :param CG: The graph of counties
@@ -785,7 +782,8 @@ def calc_infest(CG, neighbor_obj, schema, cumulative_df, time_tracker, current_m
     :param time_tracker: count of current iteration
     :param current_month: current month from MonthQueue
     :param run_mode: Kind of simulation to run
-    :return: updated schema and cumulative_df
+    :return schema: updated schema
+    :return cumulative_df: cumulative_df
     """
     run_mode = 'Baseline' if run_mode is None else run_mode
     saturation_collector = []
