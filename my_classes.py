@@ -2,7 +2,6 @@
 
 """
 This file will contain the classes to be used in the MC simulation
-
 """
 
 from queue import Queue
