@@ -231,7 +231,7 @@ def add_tree_density(handler: dict):
             county.tree_density = 0.2
 
 
-def set_up(path):
+def set_up(path: str) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame):
     """
     Loads and returns previously constructed csvs from preprocessing into pandas dataframes.
     :param path: folder the csvs are stored in.
@@ -245,7 +245,8 @@ def set_up(path):
     return county_df, edge_df, f_edge_df, toh_df
 
 
-def construct_graph_and_handlers(CG, county_df, edge_df, toh_df):
+def construct_graph_and_handlers(CG: nx.Graph, county_df: pd.DataFrame, edge_df: pd.DataFrame, toh_df: pd.DataFrame)\
+        -> (nx.Graph, dict, dict):
     """
     Takes a NetworkX Graph,a pandas dataframe of counties for nodes, a dataframe of connections between the counties for
     edges, and a dataframe of Tree of Heaven information about each county to be inserted into node attributes,
@@ -269,7 +270,7 @@ def construct_graph_and_handlers(CG, county_df, edge_df, toh_df):
     return CG, county_handler, neighbor_handler
 
 
-def dump_graph_and_handler(CG, county_handler, neighbor_handler, prefix=''):
+def dump_graph_and_handler(CG: nx.Graph, county_handler: dict, neighbor_handler: dict , prefix=''):
     """
     Pickles Illinois network graph, county handler, and neighbor handler.
     :param CG: NetworkX graph
