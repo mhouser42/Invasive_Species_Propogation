@@ -7,7 +7,7 @@ https://github.com/mhouser42/Invasive_Species_Propogation
 Justin Tung: https://github.com/JayTongue
 Matt Adam-Houser: https://github.com/mhouser42
  
- ### Files and data:
+ ### Files and data: 
  #### Files
  - `preprocessing.py` - Cleans and processes data from outside sources and transfroms into csvs for later use.
  - `my_classes.py` - Two custom classes for network construction and simulation: A `County` class with static attributes related to geographic, population, Tree of Heaven (ToH) and regular tree densities for counties, and dynamic attributes related to SLF population and spread. And a `MonthQueue` class used in the life cycle simulation.
