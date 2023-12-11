@@ -202,6 +202,8 @@ Generally, both models showed a very agressive baseline spread, likely more aggr
 
 A future work could involve creating a network of Pennsylvania counties in a fashion similar to this one, and adjusting variance and modifiers, ideally to mimic an infection curve as it is documented in real-time. Another further expansion of this project could be to explore more variations within each countermeasure. For instance, the quarantine threshold would likely look different if a county was 75% or 25% likely to declare and enforce a quarantine, or if residents of a county were more enthusiastic about finding and killing SLF. Doing this may require a more comprehensive and complex simulation, but it may yield results that can show a more nuanced insight into each of these interventions.
 
+Another further expansion of the project may be to tweek the monthly and annual simulations so they can compute probabilities and outcomes with higher cohesion. While both models reflect a projection of the invasion with probability, they, at this point, represent different approaches to the same problem. Cohereing the inputs, calculations, mathmatical models, and probabilities in a further expansion may yeild the benefits of both approaches and help give a more accurate prediction.
+
 
 
 --------------------------------------------------
