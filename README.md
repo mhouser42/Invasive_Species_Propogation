@@ -103,19 +103,27 @@ Once baseline spread has occured, counter measures are implemented if simulation
 - Poisoning Tree of Heaven - If a county becomes aware of the infestation, a `toh_trigger` will change to `True`. Once `True`, this value will not revert. Each month after the trigger event, `die_off` occurs based on the `toh_density` of a county, divided by a random distribution of between 0 - 20. 
 
 ### 2- Validation
+A realistic projection of SLF infestation is very difficult to quantify, and available data and literature from reputable sources supports varying results. For instance, De Bona et al. show a map of the 8 years of spread since introduction to in 2014.
+
+![alt text](https://github.com/mhouser42/Invasive_Species_Propogation/blob/main/references/Map_yearly.png)
+
+(De Bona et al. 2023)
+
+Howver, Jones et al, in developing a specially and temporally dynamic forecast for SLF infestation, show perhaps a quarter of the United States and being partially or completely innundated with SLF in just 7 years. 
+
+![alt text](https://github.com/mhouser42/Invasive_Species_Propogation/blob/JayTongue-patch-1/references/jones.png)
+
+(Jones et al. 2022)
+
 Our simulations, especially our baseline simulations, exhibited strong statistical convergence. Even without calculating a precise P-value, a clear trend line is still discernable. The resulting graph of our baseline simulation is very similar to a well-established species invasion model.
  
-<show online graph>
-(This one was found at ____ but many like it are available)
-<show our graph>
+![alt text](https://github.com/mhouser42/Invasive_Species_Propogation/blob/main/references/standard_curve.jpg)
  
-More confidence was imparted in our simulation and methodology since our graph was reproducing a known statistical behavior. The outcome of the graph also makes intuitive sense. When an invasive species is relatively new to an area, their population is low and growth will be slow. As the population increases, so does the rate of infestation. However, an inflection point is reached, where the growth begins to slow due to depletion of natural resources such as food and habitat, and the growth increasingly slows as the ecology reaches full saturation.
- 
- 
-            	Statistical convergence
-            	Components and outcomes make sense
-            	If possible, simulate a known statistical behavior
+(This one is from Lovett et al., but many like it are available)
 
+![alt text](https://github.com/mhouser42/Invasive_Species_Propogation/blob/main/references/our_curve.JPG)
+ 
+More confidence was imparted in our simulation and methodology since our graph was reproducing a known statistical behavior, and bears repeated convergence. The outcome of the graph also makes intuitive sense. When an invasive species is relatively new to an area, their population is low and growth will be slow. As the population increases, so does the rate of infestation. However, an inflection point is reached, where the growth begins to slow due to depletion of natural resources such as food and habitat, and the growth increasingly slows as the ecology reaches full saturation.
              
 ### 3- Hypotheses, experiments and predictions
 
@@ -201,12 +209,12 @@ Ultimately, both simulations suffered from the saturation of counties occuring m
 3. Cornell University, College of Agriculture and Life Sciences. "Spotted Lanternfly Reported Distribution Map." New York State Integrated Pest Management, n.d., https://cals.cornell.edu/new-york-state-integrated-pest-management/outreach-education/whats-bugging-you/spotted-lanternfly/spotted-lanternfly-reported-distribution-map.
 4. De Bona, Sebastiano, et al. "LydeMaPR: An R Package to Track the Spread of the Invasive Spotted Lanternfly (Lycorma delicatula, White 1845) (Hemiptera, Fulgoridae) in the United States." bioRxiv, 2023.01.27.525992, doi: https://doi.org/10.1101/2023.01.27.525992.
 5. John B. Ward & Co. Arborists, "Spotted Lanternfly", n.d., https://johnbward.com/spotted-lanternfly
-5. Illinois Department of Agriculture. "Spotted Lanternfly." Illinois Department of Agriculture, n.d., https://agr.illinois.gov/insects/pests/spotted-lanternfly.html.
-6. Pennsylvania Department of Agriculture. "Spotted Lanternfly Quarantine." Pennsylvania Department of Agriculture, n.d., https://www.agriculture.pa.gov/Plants_Land_Water/PlantIndustry/Entomology/spotted_lanternfly/quarantine/Pages/default.aspx.
-7. Penn State College of Agricultural Sciences. "Assessing Economic Impact", https://agsci.psu.edu/research/impacts/themes/biodiversity/detecting-biological-invasions/assessing-economic-impact
-8. Penn State Extension. "Controlling Tree of Heaven: Why It Matters." Penn State Extension, n.d., https://extension.psu.edu/controlling-tree-of-heaven-why-it-matters#:~:text=Tree%20of%20heaven%20is%20a,across%20most%20of%20southeastern%20PA.
-9. Penn State Extension. "Tree of Heaven." Penn State Extension, n.d., https://extension.psu.edu/tree-of-heaven.
-10. Penn State Extension. "What Should You Do with Spotted Lanternfly Egg Masses." Penn State Extension, n.d., https://extension.psu.edu/what-should-you-do-with-spotted-lanternfly-egg-masses.
-11. University of Illinois Extension. "Spotted Lanternfly Fact Sheet." University of Illinois Extension, https://extension.illinois.edu/sites/default/files/spotted_lanternfly_fact_sheet_v8.pdf.
-12. University of Illinois Extension. "Tree of Heaven." University of Illinois Extension, n.d., https://extension.illinois.edu/invasives/tree-heaven.
-13. U.S. Department of Transportaion. "Freight Managment and Operations", n.d., https://ops.fhwa.dot.gov/freight/freight_analysis/freight_story/major.htm
+6. Illinois Department of Agriculture. "Spotted Lanternfly." Illinois Department of Agriculture, n.d., https://agr.illinois.gov/insects/pests/spotted-lanternfly.html.
+7. Pennsylvania Department of Agriculture. "Spotted Lanternfly Quarantine." Pennsylvania Department of Agriculture, n.d., https://www.agriculture.pa.gov/Plants_Land_Water/PlantIndustry/Entomology/spotted_lanternfly/quarantine/Pages/default.aspx.
+8. Penn State College of Agricultural Sciences. "Assessing Economic Impact", https://agsci.psu.edu/research/impacts/themes/biodiversity/detecting-biological-invasions/assessing-economic-impact
+9. Penn State Extension. "Controlling Tree of Heaven: Why It Matters." Penn State Extension, n.d., https://extension.psu.edu/controlling-tree-of-heaven-why-it-matters#:~:text=Tree%20of%20heaven%20is%20a,across%20most%20of%20southeastern%20PA.
+10. Penn State Extension. "Tree of Heaven." Penn State Extension, n.d., https://extension.psu.edu/tree-of-heaven.
+11. Penn State Extension. "What Should You Do with Spotted Lanternfly Egg Masses." Penn State Extension, n.d., https://extension.psu.edu/what-should-you-do-with-spotted-lanternfly-egg-masses.
+12. University of Illinois Extension. "Spotted Lanternfly Fact Sheet." University of Illinois Extension, https://extension.illinois.edu/sites/default/files/spotted_lanternfly_fact_sheet_v8.pdf.
+13. University of Illinois Extension. "Tree of Heaven." University of Illinois Extension, n.d., https://extension.illinois.edu/invasives/tree-heaven.
+14. U.S. Department of Transportaion. "Freight Managment and Operations", n.d., https://ops.fhwa.dot.gov/freight/freight_analysis/freight_story/major.htm
