@@ -595,7 +595,7 @@ def calculate_spread_prob(CG: nx.Graph, county: County, neighbor: County) -> flo
 
     """
     edge_weight = CG[county][neighbor]['weight']
-    base_prob = random.normal(0.2, 0.1) * county.slf_pop / (neighbor.toh_density + neighbor.tree_density)
+    base_prob = random.uniform(0.1, 0.05) * county.slf_pop / (neighbor.toh_density + neighbor.tree_density)
     spread_prob = (base_prob / edge_weight / county.traffic_level)
 
     spread_prob = max(0.0, min(spread_prob, 1.0))
@@ -666,7 +666,7 @@ def implement_counter_measures(CG: nx.Graph, county: County, neighbor: County, r
     if run_mode == 'Poison ToH':
         county.toh_trigger = True if county.public_awareness else county.toh_trigger
         if county.toh_trigger:
-            variance = random.normal(25, 5)
+            variance = random.normal(50, 25)
             county.die_off(mortality_rate=county.toh_density/variance)
     elif run_mode in ('Population-Based', 'Quarantine'):
         implement_pop_kill(county, neighbor)
@@ -695,15 +695,19 @@ def implement_pop_kill(county: County, neighbor: County, prob=None):
     >>> county_2.public_awareness
     True
     """
-    prob = random.normal(0.5, 0.1)
-    county.public_awareness = False if county.saturation <= .20 else county.public_awareness
+    egg_to_fly_ratio = 3.0
+    prob = random.normal(0.35, 0.1)
+    mortality_rate = prob * county.popdense_sqmi/5000
+
+    county.public_awareness = False if county.saturation <= .5 else county.public_awareness
     if neighbor.quarantine:
         county.public_awareness = True if county.saturation >= neighbor.saturation / 2 else county.public_awareness
     if county.public_awareness:
         neighbor.public_awareness = True if neighbor.saturation >= county.saturation / 2 \
             else neighbor.public_awareness
-        county.die_off(mortality_rate=(prob * county.popdense_sqmi / 10000))
-        county.egg_pop = county.egg_pop - (prob * county.popdense_sqmi / 10000)
+
+        county.die_off(mortality_rate=mortality_rate)
+        county.egg_pop = county.egg_pop - (mortality_rate * egg_to_fly_ratio)
         county.stabilize_levels()
 
 
@@ -730,7 +734,7 @@ def implement_quarantine(CG: nx.Graph, county: County, neighbor: County):
     >>> CG[county_1][county_2]['weight']
     2.0
     """
-    prob = random.uniform(2, 10)
+    prob = random.uniform(2, 5)
     county.quarantine = True if county.saturation >= .75 else county.quarantine
     county.quarantine = False if county.saturation <= .10 else county.quarantine
     if county.quarantine is True:
@@ -767,7 +771,7 @@ def handle_life_cycle_for_county(current_month: str, schema: dict):
 
         # if current_month['month'] in ['March', 'June', 'September', 'December']:
         #     county.saturation = max((county.slf_pop + county.egg_pop)/2, county.egg_pop, county.slf_pop)
-        county.saturation = max((county.slf_pop + county.egg_pop) / 2, county.egg_pop * 3.5, county.slf_pop)
+        county.saturation = max((county.slf_pop + county.egg_pop * 3.0) / 2, county.egg_pop * 3.0, county.slf_pop)
         county.stabilize_levels()
 
 
@@ -791,8 +795,8 @@ def calc_infest(CG: nx.Graph, neighbor_obj: County, schema: dict, cumulative_df:
 
     for county_net in neighbor_obj:
         county = schema[county_net]
-        county.public_awareness = True if county.saturation > .6 else county.public_awareness
-        county.toh_density = county.toh_density + .01  # shows slow growth of ToH, might delete
+        county.public_awareness = True if county.saturation > .5 else county.public_awareness
+        county.toh_density = county.toh_density + .0025  # shows slow growth of ToH, might delete
         new_saturations = 0
 
         for net_neighbor in neighbor_obj[county_net]:
