@@ -10,16 +10,17 @@ import pandas as pd
 from geopy.geocoders import Nominatim
 
 
-def replace_curly_apostrophes_and_strip(value, replacements=(('“', '"'),
+def replace_curly_apostrophes_and_strip(value: str, replacements=(('“', '"'),
                                                              ('”', '"'),
                                                              ('‘', "'"),
-                                                             ('’', "'"))):
+                                                             ('’', "'"))) -> str:
     """
     Tree of heaven data has wrong kind of quotations around string data. This function handles that by replacing all
     single and double quotation marks with standard used in python
 
     :param value: value in column to be changed
     :param replacements: tuples of paired quotation marks.
+    :return value: returns the cleaned values
     """
 
     if isinstance(value, str):
@@ -58,7 +59,7 @@ def get_IL_geocoords(df: pd.DataFrame, locator: Nominatim, col='name') -> pd.Dat
     :param df: the dataframe to be modified
     :param locator: a Nominatim geolocator used to find the latitude and longitude of a city or town
     :param col: the column to iterate over
-    :return: of geocoordinate
+    :return df: of geocoordinate
     """
     pbar = tqdm(df[col].items(), desc='Obtaining Geographic Coordinates by Municipality')
     try:
@@ -157,11 +158,11 @@ def handle_cities():
     cdf.set_index('name').to_csv(f'{path}/cities.csv', encoding='latin1')
 
 
-def handle_string_errors(df):
+def handle_string_errors(df: pd.DataFrame) -> pd.DataFrame:
     """
     handles some common name errors in dataframe
     :param df: dataframe to be fixed
-    :return: dataframe with corrected names
+    :return df: dataframe with corrected names
     """
     df['county'] = df['county'].str.replace('"', '')
     change_map = {
@@ -178,10 +179,12 @@ def handle_string_errors(df):
     return df
 
 
-def calc_infest_index(toh_df, keep_nulls=False):
+def calc_infest_index(toh_df: pd.DataFrame, keep_nulls=False) -> pd.DataFrame:
     """
+    Indexes the infestation levels by using a density map
     :param toh_df: dataframe of ToH data
     :param keep_nulls: whether the dataframe returns null values
+    :return toh_df: pd.DataFrame
     """
     toh_df = toh_df.copy()
     if not keep_nulls:
@@ -204,9 +207,10 @@ def calc_infest_index(toh_df, keep_nulls=False):
     return toh_df
 
 
-def update_with_revisits(toh_df, rev_df):
+def update_with_revisits(toh_df: pd.DataFrame, rev_df: pd.DataFrame) -> pd.DataFrame:
     """
-
+    Updates the toh_DataFrame with information from rev_df
+    to maintain toh_DataFrame currency
     :param toh_df: Dataframe with Tree of Heaven sightings
     :param rev_df: Revisits to sight locations
     :return toh_df: the updated tree of heaven dataframe
@@ -224,6 +228,8 @@ def update_with_revisits(toh_df, rev_df):
 def handle_toh():
     """
     processes Tree of Heaven data
+    renames and establishes columns
+    Saves to CSV
     """
 
     path = 'data/tree'
