@@ -666,7 +666,7 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
     if run_mode == 'Poison ToH':
         county.toh_trigger = True if county.public_awareness else county.toh_trigger
         if county.toh_trigger:
-            variance = random.normal(15, 5)
+            variance = random.normal(25, 5)
             county.die_off(mortality_rate=county.toh_density/variance)
         # county.toh_density = county.toh_density - .01 if county.toh_density > 0.0 else county.toh_density
     elif run_mode in ('Population-Based', 'Quarantine'):
@@ -677,6 +677,8 @@ def implement_counter_measures(CG, county, neighbor, run_mode):
 
     if run_mode == 'Quarantine':
         implement_quarantine(CG, county, neighbor)
+
+    # county.saturation = (county.slf_pop + county.egg_pop) / 2
 
 
 def implement_pop_kill(county, neighbor, prob=None):
@@ -705,7 +707,7 @@ def implement_pop_kill(county, neighbor, prob=None):
         county.die_off(mortality_rate=(prob * county.popdense_sqmi / 10000))
         county.egg_pop = county.egg_pop - (prob * county.popdense_sqmi / 10000)
         county.stabilize_levels()
-    max_pop = max(county.slf_pop, county.egg_pop)
+    # max_pop = max(county.slf_pop, county.egg_pop)
     # county.saturation = (county.slf_pop + county.egg_pop)/2
 
 
@@ -756,16 +758,21 @@ def handle_life_cycle_for_county(current_month, schema):
         county.traffic_level = current_month['traffic_level']
         if current_month['month'] in ['May', 'June']:
             county.hatch_eggs()
-            county.saturation = county.slf_pop if county.slf_pop > county.saturation else county.saturation
+            # county.saturation = (county.slf_pop + county.egg_pop)/2
         elif current_month['month'] in ['August', 'September', 'October', 'November', 'December']:
             county.mate()
-            county.saturation = county.slf_pop if county.slf_pop > county.saturation else county.saturation
+            # county.saturation = (county.slf_pop + county.egg_pop)/2
             if current_month['month'] in ['September', 'October', 'November']:
                 county.lay_eggs()
-                county.saturation = county.slf_pop if county.slf_pop > county.saturation else county.saturation
+                # county.saturation = (county.slf_pop + county.egg_pop) / 2
         elif current_month['month'] in ['January', 'February']:
             county.die_off()
-            county.saturation = county.egg_pop if county.egg_pop > county.saturation else county.saturation
+            # county.saturation = (county.slf_pop + county.egg_pop)/2
+
+        # if current_month['month'] in ['March', 'June', 'September', 'December']:
+        #     county.saturation = max((county.slf_pop + county.egg_pop)/2, county.egg_pop, county.slf_pop)
+        county.saturation = max((county.slf_pop + county.egg_pop) / 2, county.egg_pop * 3.5, county.slf_pop)
+        county.stabilize_levels()
 
 
 def calc_infest(CG, neighbor_obj, schema, cumulative_df, time_tracker, current_month, run_mode=None):
