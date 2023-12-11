@@ -3,6 +3,7 @@ Functions used in our visualizations of the simulation
 """
 
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 import networkx as nx

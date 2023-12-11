@@ -171,21 +171,21 @@ The second surprise was that the same did not exist for the quarantine counterme
 
 #### Monthly
 
-![Infestation levels of Baseline Spread and Countermeasures for Life Cycle Model]('references/avg_trends_life_cycle.png')
+![Infestation levels of Baseline Spread and Countermeasures for Life Cycle Model]('https://github.com/mhouser42/Invasive_Species_Propogation/blob/main/references/avg_trends_life_cycle.png')
 
 ##### Baseline
 The Baseline spread of the infestation shows some promise, with accelerated growth along interstate edges. However, the spread of the model is far too fast, with full saturation occuring at year eight. This is, of course, without any counter-measures. Implementation of zero counter-measures would be illogical in a real-life scenerio. That being said, we are erring on the side of caution and assuming the model is faster than it should be.
 
 
-##### Poisoning Tree of Heaven
-The least impactful of models was the poisoning of ToH. This is most likely a result of the `toh_trigger` variable. Earlier models did not include this, and the poisoning was much more effective. But since the poisoning now only begins once a county is publically aware of the problem, the SLF population has already been established and isn't as easily reduced. The effect of the poisoning is noticeable, but only in counties with a high ToH density. Because ToH isn't well established in Illinois, the overall effect is minimal 
-
 ##### Population-Based
-Population Counter-Measures suffered from a problem similar to poisoning the tree of heaven, where it only affected counties with extremely high population density. This effectively results in only Cook County and the surrounding Chicago-land area being able to reduce the SLF population enough for it to make an impact.
-
+The saturation level for population-based counter-measures leveled off at around 0.6. 
 
 ##### Quarantine
 The most effective counter-measure in this version of the simulation is the quarantine. The previous population based counter-measures, combined with increase the edge weight significantly in counties with high saturation, results in lockdowns occuring before the lanternfly can spread. Quarantine also trigger public awareness in neighboring counties allows them to kill the population before it can permanently establish. 
+
+##### Poisoning Tree of Heaven
+The least impactful of models was the poisoning of ToH. This is most likely a result of the `toh_trigger` variable. Earlier models did not include this, and the poisoning was much more effective. But since the poisoning now only begins once a county is publically aware of the problem, the SLF population has already been established and isn't as easily reduced. The effect of the poisoning is noticeable, but only in counties with a high ToH density. Because ToH isn't well established in Illinois, the overall effect is minimal 
+
 
 #### All
 Obviously, the most effective counter measure is the one that combines all approaches. Because of quarantine triggering public awareness in other counties, the poisoning of ToH occurs much sooner than it otherwise would have, this combined with the population-based killing results in an effective erradication of the SLF.
