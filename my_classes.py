@@ -241,9 +241,9 @@ class MonthQueue(Queue):
         :return old_month: the month that was popped off
         >>> my_queue = MonthQueue()
         >>> my_queue.rotate()
-        ('January', 0.9)
+        {'month': 'January', 'traffic_level': 0.9}
         >>> my_queue.rotate()
-        ('February', 0.9)
+        {'month': 'February', 'traffic_level': 0.9}
         """
         old_month = self.get()
         self.put(old_month)
