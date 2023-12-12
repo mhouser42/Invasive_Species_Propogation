@@ -99,9 +99,9 @@ def construct_nodes(CG: nx.Graph, df: pd.DataFrame) -> dict:
 def construct_edges(CG: nx.Graph, edge_df: pd.DataFrame, handler: dict):
     """
     takes a graph with nodes, a dataframe instructions, and a dictionary of nodes
-    :param CG: Graph of nodes to be populated with edges
-    :param edge_df: dataframe of connections between nodes
-    :param handler: graph handler for easy reference to
+    :param CG:
+    :param edge_df:
+    :param handler:
 
     >>> CG = nx.Graph()
     >>> handler = {'A': object(), 'B': object(), 'C': object()}
@@ -216,6 +216,7 @@ def add_tree_density(handler: dict):
     Adds regular tree densities to nodes, based on the counties latitude and longitude.
     REFERENCE: https://www.fs.usda.gov/nrs/pubs/rb/rb_nrs113.pdf, pages 5-6
     :param handler: graph handler with county names for keys and the counties themselves as values
+    >>>
     """
     peoria = handler['Peoria']
     hardin = handler['Hardin']
@@ -230,7 +231,7 @@ def add_tree_density(handler: dict):
             county.tree_density = 0.2
 
 
-def set_up(path: str) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame):
+def set_up(path):
     """
     Loads and returns previously constructed csvs from preprocessing into pandas dataframes.
     :param path: folder the csvs are stored in.
@@ -244,8 +245,7 @@ def set_up(path: str) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame
     return county_df, edge_df, f_edge_df, toh_df
 
 
-def construct_graph_and_handlers(CG: nx.Graph, county_df: pd.DataFrame, edge_df: pd.DataFrame, toh_df: pd.DataFrame)\
-        -> (nx.Graph, dict, dict):
+def construct_graph_and_handlers(CG, county_df, edge_df, toh_df):
     """
     Takes a NetworkX Graph,a pandas dataframe of counties for nodes, a dataframe of connections between the counties for
     edges, and a dataframe of Tree of Heaven information about each county to be inserted into node attributes,
@@ -269,7 +269,7 @@ def construct_graph_and_handlers(CG: nx.Graph, county_df: pd.DataFrame, edge_df:
     return CG, county_handler, neighbor_handler
 
 
-def dump_graph_and_handler(CG: nx.Graph, county_handler: dict, neighbor_handler: dict, prefix=''):
+def dump_graph_and_handler(CG, county_handler, neighbor_handler, prefix=''):
     """
     Pickles Illinois network graph, county handler, and neighbor handler.
     :param CG: NetworkX graph

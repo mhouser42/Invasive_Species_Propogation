@@ -625,7 +625,7 @@ def spread_infest(county: County, neighbor, spread_prob, current_month=None):
     True
     """
     max_transferable = county.slf_pop * spread_prob
-    variability = random.normal(0.05, 0.15)
+    variability = random.uniform(0.05, 0.15)
 
     transfer_amount = max_transferable * variability
 
