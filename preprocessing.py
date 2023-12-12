@@ -30,7 +30,7 @@ def replace_curly_apostrophes_and_strip(value: str, replacements=(('“', '"'),
     return value
 
 
-def get_geoloc(name: str, locator: Nominatim, attempts=5):
+def get_geoloc(name: str, locator: Nominatim, attempts=5) -> dict:
     """
     gets a single geolocation from Nominatim based on name.
     :param name: name of city or county to be found

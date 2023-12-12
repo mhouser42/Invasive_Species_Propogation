@@ -42,7 +42,7 @@ def saturation_main(run_mode: str, iterations: int, life_cycle=False, prefix=Non
     Traceback (most recent call last):
     ...
     ValueError: Please use an integer greater than zero.
-    >>> saturation_main('Parasitic Wasps', 15)  # THIS TEST IS CURRENTLY BLOWING UP DUE TO current_month
+    >>> saturation_main('Parasitic Wasps', 15)
     Traceback (most recent call last):
     ...
     ValueError: This is not a valid run mode.
@@ -137,21 +137,6 @@ def iterate_through_timeframe(CG: nx.Graph, schema: dict, iterations: int,
     :param run_mode: whether it is baseline mode or another format
     :param life_cycle: determines the model uses the County class methods to fluctuate the levels of SLF
     :return cumulative_df: a df that contains the full data for all counties in a run simulation
-
-    # I cannot for the life of me figure out how to get this to work
-    # >>> schema = {}
-    # >>> CG = nx.Graph()
-    # >>> for county in ['Coles', 'Bond', 'Edwards', 'Kane', 'Macon']:
-    # ...     county_obj = County(county, 0.5, 0.3)
-    # ...     schema[county] = county_obj
-    # >>> neighbor_schema = {'Coles': ['Edwards', 'Kane', 'Macon'], 'Bond': ['Edwards', 'Kane', 'Macon']}
-    # >>> test_iterations = 5
-    # >>> test_df = iterate_through_timeframe(CG, schema, neighbor_schema, test_iterations)
-    # >>> isinstance(test_df, pd.DataFrame)
-    # True
-    # >>> len(test_df)
-    # 5
-
     """
     cumulative_df = make_starting_df(schema, time_frame='month') if life_cycle \
         else make_starting_df(schema, time_frame='year')
@@ -217,16 +202,16 @@ def get_object(name: str, schema: dict) -> County:
     ...         self.name = name
     >>> counties = {'Richland': County('Richland'), 'Scott': County('Scott')}
     >>> obj_a = get_object('Richland', counties)
-    >>> isinstance(obj_a, County)  # Check if object returned is an instance of County
+    >>> isinstance(obj_a, County)
     True
-    >>> obj_a.name  # Check the name of the retrieved object
+    >>> obj_a.name
     'Richland'
     >>> obj_b = get_object('Scott', counties)
-    >>> isinstance(obj_b, County)  # Check if object returned is an instance of County
+    >>> isinstance(obj_b, County)
     True
-    >>> obj_b.name  # Check the name of the retrieved object
+    >>> obj_b.name
     'Scott'
-    >>> get_object('Travis', counties) is None  # Check if non-existent object returns None
+    >>> get_object('Travis', counties) is None
     True
     """
     for county in schema:
@@ -250,11 +235,11 @@ def find_neighbor_status(CG: nx.Graph, schema: dict) -> dict:
     >>> counties = {'Stark': County('Stark'), 'Massac': County('Massac')}
     >>> CG = {}  # Your graph here
     >>> neighbors = find_neighbor_status(CG, counties)
-    >>> isinstance(neighbors, dict)  # Check if the returned value is a dictionary
+    >>> isinstance(neighbors, dict)
     True
-    >>> len(neighbors)  # Check if the dictionary has expected length based on the number of counties
+    >>> len(neighbors)
     2
-    >>> isinstance(neighbors['Stark'], list)  # Check if the neighbors are returned as lists
+    >>> isinstance(neighbors['Stark'], list)
     True
     >>> len(neighbors['Stark'])
     2
@@ -264,7 +249,7 @@ def find_neighbor_status(CG: nx.Graph, schema: dict) -> dict:
     Traceback (most recent call last):
     ...
     IndexError: list index out of range
-    >>> len(neighbors['Massac'])  # Check the number of neighbors for County B
+    >>> len(neighbors['Massac'])
     2
     """
     neighbor_obj = {}
@@ -278,7 +263,7 @@ def find_neighbor_status(CG: nx.Graph, schema: dict) -> dict:
 
 
 def calculate_changes(CG: nx.Graph, neighbor_obj: dict, schema: dict, cumulative_df: pd.DataFrame,
-                      time_tracker: int, current_month=None, run_mode=None, life_cycle=False):
+                      time_tracker: int, current_month=None, run_mode=None, life_cycle=False) -> (dict, pd.DataFrame):
     """
     Models interactions between every county and every county it is adjacent to
     This is a yearly interaction
@@ -298,7 +283,6 @@ def calculate_changes(CG: nx.Graph, neighbor_obj: dict, schema: dict, cumulative
     # going to have trouble doctesting this because it's not deterministic
     """
     run_mode = 'Baseline' if run_mode is None else run_mode
-    # print('------------------------- Begin New year -------------------------')
     if life_cycle:
         schema, cumulative_df = calc_infest(CG, neighbor_obj, schema, cumulative_df, time_tracker, current_month,
                                             run_mode=run_mode)
@@ -677,7 +661,7 @@ def implement_counter_measures(CG: nx.Graph, county: County, neighbor: County, r
         implement_quarantine(CG, county, neighbor)
 
 
-def implement_pop_kill(county: County, neighbor: County, prob=None):
+def implement_pop_kill(county: County, neighbor: County):
     """
     Toggles county's public_awareness if they reach certain thresholds.
     If the county is aware, triggers die_off and egg removal based off population density.
@@ -766,10 +750,6 @@ def handle_life_cycle_for_county(current_month: str, schema: dict):
                 # county.saturation = (county.slf_pop + county.egg_pop) / 2
         elif current_month['month'] in ['January', 'February']:
             county.die_off()
-            # county.saturation = (county.slf_pop + county.egg_pop)/2
-
-        # if current_month['month'] in ['March', 'June', 'September', 'December']:
-        #     county.saturation = max((county.slf_pop + county.egg_pop)/2, county.egg_pop, county.slf_pop)
         county.saturation = max((county.slf_pop + county.egg_pop * 3.0) / 2, county.egg_pop * 3.0, county.slf_pop)
         county.stabilize_levels()
 
