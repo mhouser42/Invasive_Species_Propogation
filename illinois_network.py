@@ -10,9 +10,7 @@ It constructs a network with nodes and edges
 outputs three binary files: the NX network, a county handler, and a neighbor handler.
 
 TODO: doctests for get_neighbor_handler, calc_toh_density_coef, add_tree_density?
-TODO: Remove unused code
 """
-import collections
 import time
 from tqdm import tqdm
 import pickle
@@ -230,7 +228,7 @@ def add_tree_density(handler: dict):
             county.tree_density = 0.2
 
 
-def set_up(path):
+def set_up(path: str):
     """
     Loads and returns previously constructed csvs from preprocessing into pandas dataframes.
     :param path: folder the csvs are stored in.
@@ -244,7 +242,7 @@ def set_up(path):
     return county_df, edge_df, f_edge_df, toh_df
 
 
-def construct_graph_and_handlers(CG, county_df, edge_df, toh_df):
+def construct_graph_and_handlers(CG: nx.Graph, county_df: pd.DataFrame, edge_df: pd.DataFrame, toh_df: pd.DataFrame):
     """
     Takes a NetworkX Graph,a pandas dataframe of counties for nodes, a dataframe of connections between the counties for
     edges, and a dataframe of Tree of Heaven information about each county to be inserted into node attributes,
@@ -268,7 +266,7 @@ def construct_graph_and_handlers(CG, county_df, edge_df, toh_df):
     return CG, county_handler, neighbor_handler
 
 
-def dump_graph_and_handler(CG, county_handler, neighbor_handler, prefix=''):
+def dump_graph_and_handler(CG: nx.Graph, county_handler: pd.DataFrame, neighbor_handler: pd.DataFrame, prefix=None):
     """
     Pickles Illinois network graph, county handler, and neighbor handler.
     :param CG: NetworkX graph
@@ -276,6 +274,7 @@ def dump_graph_and_handler(CG, county_handler, neighbor_handler, prefix=''):
     :param neighbor_handler: handler for nodes and nodes connected to them.
     :param prefix: specify to pickle different versions of graphs/handlers
     """
+    prefix = '' if prefix is None else prefix
     pickle.dump(CG, open(f'{path}/{prefix}IL_graph.dat', 'wb'))
     pickle.dump(county_handler, open(f'{path}/{prefix}graph_handler_counties.dat', 'wb'))
     pickle.dump(neighbor_handler, open(f'{path}/{prefix}graph_handler_neighbors.dat', 'wb'))
@@ -284,7 +283,6 @@ def dump_graph_and_handler(CG, county_handler, neighbor_handler, prefix=''):
 if __name__ == '__main__':
     path = 'data/location'
     county_df, edge_df, f_edge_df, toh_df = set_up(path)
-    # city_df = pd.read_csv(f'{path}/target_cities.csv')
 
     CG = nx.Graph()
     fCG = nx.Graph()
@@ -296,19 +294,3 @@ if __name__ == '__main__':
     dump_graph_and_handler(CG, county_handler, neighbor_handler)
     dump_graph_and_handler(fCG, f_county_handler, f_neighbor_handler, prefix='fast_')
 
-    # city_dict = construct_nodes(CG, city_df, is_county=False)
-    # handler = {'C': county_dict, 'c': city_dict}
-
-    # adding edges
-    # # adjacent_e = edge_df[(edge_df['type'] == 'adjacent') & (edge_df['weight'] == 1)]
-    # interstate_e = edge_df[(edge_df['type'] == 'interstate') | (edge_df['weight']) == .1]
-    # constituent_e = edge_df[(edge_df['type'] == 'constituent')]
-    #
-    # construct_edges(CG, adjacent_e, county_dict)
-    # construct_edges(CG, interstate_e, county_dict, rel='interstate')
-    # construct_edges(CG, constituent_e, handler, rel='constituent')
-
-    # # pickling
-    # pickle.dump(CG, open(f'{path}/IL_graph.dat', 'wb'))
-    # pickle.dump(CG, open(f'{path}/graph_handler_counties'))
-    # pickle.dump(handler, open(f'{path}/graph_handler.dat', 'wb'))
