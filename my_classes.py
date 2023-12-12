@@ -32,7 +32,7 @@ class County:
     Used for poisoning ToH.
     """
 
-    def __init__(self, name, lat=None, lon=None, geometry=None, centroid=False, pop=None, popdense_sqmi=None,
+    def __init__(self, name: str, lat=None, lon=None, geometry=None, centroid=False, pop=None, popdense_sqmi=None,
                  saturation=0.0, slf_pop=1.0, mated=0.0, laid_eggs=0.0, egg_pop=0.0,
                  tree_density=0.0, toh_density=0.0, traffic_level=1.0, quarantine=False, public_awareness=False,
                  toh_trigger=False):
