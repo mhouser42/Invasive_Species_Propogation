@@ -11,9 +11,9 @@ from geopy.geocoders import Nominatim
 
 
 def replace_curly_apostrophes_and_strip(value: str, replacements=(('“', '"'),
-                                                             ('”', '"'),
-                                                             ('‘', "'"),
-                                                             ('’', "'"))) -> str:
+                                                                  ('”', '"'),
+                                                                  ('‘', "'"),
+                                                                  ('’', "'"))) -> str:
     """
     Tree of heaven data has wrong kind of quotations around string data. This function handles that by replacing all
     single and double quotation marks with standard used in python
