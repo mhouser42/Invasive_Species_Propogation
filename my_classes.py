@@ -111,7 +111,6 @@ class County:
         """
         Simulates the laying of eggs based on the porportion of mated SLFs.
 
-        :param scaling_factor: Factor to convert mated proportion to number of egg masses.
         :param extra_eggmass_chance: Chance of laying an additional egg mass.
         :return self.eggcount: Total number of egg masses after laying.
 
@@ -184,7 +183,6 @@ class MonthQueue(Queue):
     """
     A Queue which keeps track of which month it is. Each item in Queue is a dictionary correspond to the month and
     attributes associated with it. Begins with traffic levels inserted
-    :param months_traffic_levels: A dictionary of corresponding traffic levels for each month.
     """
 
     def __init__(self):
@@ -254,7 +252,8 @@ class MonthQueue(Queue):
     def get_atr_level(self, month_name, atr):
         """
         find the value of attribute for month
-        :param month: month to be accessed
+        :param month_name: month to be accessed
+        :param atr: The attribute whose level to be agtained
         :return: the traffic level for this month
 
         >>> my_queue = MonthQueue()

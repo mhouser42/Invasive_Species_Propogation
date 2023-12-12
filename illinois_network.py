@@ -9,8 +9,6 @@ This file is for the creation of county network
 It constructs a network with nodes and edges
 outputs three binary files: the NX network, a county handler, and a neighbor handler.
 
-TODO: doctests for get_neighbor_handler, calc_toh_density_coef, add_tree_density?
-TODO: Remove unused code
 """
 import collections
 import time
@@ -99,9 +97,9 @@ def construct_nodes(CG: nx.Graph, df: pd.DataFrame) -> dict:
 def construct_edges(CG: nx.Graph, edge_df: pd.DataFrame, handler: dict):
     """
     takes a graph with nodes, a dataframe instructions, and a dictionary of nodes
-    :param CG: Graph of nodes to be populated with edges
-    :param edge_df: dataframe of connections between nodes
-    :param handler: graph handler for easy reference to
+    :param CG:
+    :param edge_df:
+    :param handler:
 
     >>> CG = nx.Graph()
     >>> handler = {'A': object(), 'B': object(), 'C': object()}
@@ -216,6 +214,7 @@ def add_tree_density(handler: dict):
     Adds regular tree densities to nodes, based on the counties latitude and longitude.
     REFERENCE: https://www.fs.usda.gov/nrs/pubs/rb/rb_nrs113.pdf, pages 5-6
     :param handler: graph handler with county names for keys and the counties themselves as values
+    >>>
     """
     peoria = handler['Peoria']
     hardin = handler['Hardin']
@@ -244,8 +243,7 @@ def set_up(path):
     return county_df, edge_df, f_edge_df, toh_df
 
 
-def construct_graph_and_handlers(CG: nx.Graph, county_df: pd.DataFrame, edge_df: pd.DataFrame, toh_df: pd.DataFrame)\
-        -> (nx.Graph, dict, dict):
+def construct_graph_and_handlers(CG, county_df, edge_df, toh_df):
     """
     Takes a NetworkX Graph,a pandas dataframe of counties for nodes, a dataframe of connections between the counties for
     edges, and a dataframe of Tree of Heaven information about each county to be inserted into node attributes,
@@ -269,7 +267,7 @@ def construct_graph_and_handlers(CG: nx.Graph, county_df: pd.DataFrame, edge_df:
     return CG, county_handler, neighbor_handler
 
 
-def dump_graph_and_handler(CG: nx.Graph, county_handler: dict, neighbor_handler: dict , prefix=''):
+def dump_graph_and_handler(CG, county_handler, neighbor_handler, prefix=''):
     """
     Pickles Illinois network graph, county handler, and neighbor handler.
     :param CG: NetworkX graph
@@ -285,7 +283,6 @@ def dump_graph_and_handler(CG: nx.Graph, county_handler: dict, neighbor_handler:
 if __name__ == '__main__':
     path = 'data/location'
     county_df, edge_df, f_edge_df, toh_df = set_up(path)
-    # city_df = pd.read_csv(f'{path}/target_cities.csv')
 
     CG = nx.Graph()
     fCG = nx.Graph()
@@ -293,23 +290,5 @@ if __name__ == '__main__':
     CG, county_handler, neighbor_handler = construct_graph_and_handlers(CG, county_df, edge_df, toh_df)
     fCG, f_county_handler, f_neighbor_handler = construct_graph_and_handlers(fCG, county_df, f_edge_df, toh_df)
 
-    # pickling
     dump_graph_and_handler(CG, county_handler, neighbor_handler)
     dump_graph_and_handler(fCG, f_county_handler, f_neighbor_handler, prefix='fast_')
-
-    # city_dict = construct_nodes(CG, city_df, is_county=False)
-    # handler = {'C': county_dict, 'c': city_dict}
-
-    # adding edges
-    # # adjacent_e = edge_df[(edge_df['type'] == 'adjacent') & (edge_df['weight'] == 1)]
-    # interstate_e = edge_df[(edge_df['type'] == 'interstate') | (edge_df['weight']) == .1]
-    # constituent_e = edge_df[(edge_df['type'] == 'constituent')]
-    #
-    # construct_edges(CG, adjacent_e, county_dict)
-    # construct_edges(CG, interstate_e, county_dict, rel='interstate')
-    # construct_edges(CG, constituent_e, handler, rel='constituent')
-
-    # # pickling
-    # pickle.dump(CG, open(f'{path}/IL_graph.dat', 'wb'))
-    # pickle.dump(CG, open(f'{path}/graph_handler_counties'))
-    # pickle.dump(handler, open(f'{path}/graph_handler.dat', 'wb'))
