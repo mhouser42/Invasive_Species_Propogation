@@ -133,10 +133,9 @@ def iterate_through_timeframe(CG: nx.Graph, schema: dict, iterations: int,
     Takes the initial schema and iterates it through a number of years or months
     :param CG: graph of Illinois network
     :param schema: handler dictionary for graph with name of nodes for keys and County object for values
-    :param neighbor_schema: handler dictionary with name of nodes for keys and a list of neighboring County objects
     :param iterations: number of years or months
     :param run_mode: whether it is baseline mode or another format
-    :param life_cycle: determines the model uses the County class methods to flucate the levels of SLF
+    :param life_cycle: determines the model uses the County class methods to fluctuate the levels of SLF
     :return cumulative_df: a df that contains the full data for all counties in a run simulation
 
     # I cannot for the life of me figure out how to get this to work
@@ -419,8 +418,8 @@ def assign_mode(ToH_modifier: float, county: County, net_neighbors: County, prob
 
 def baseline_calc(net_neighbors: County, probability: float, ToH_modifier: float) -> float:
     """
-    A baseline calculation that serves as a an initial model to modify for different interventions
-    :param net_neighbors: the particualr instance of an neighbor object used to change saturation
+    A baseline calculation that serves as an initial model to modify for different interventions
+    :param net_neighbors: the particualr instance of a neighbor object used to change saturation
     :param probability: the random probability of infection on a normal distribution
     :param ToH_modifier: the maount that ToH chances the succeptability to SLF
     :return new_saturation: the new amount of saturation for that county
@@ -472,7 +471,7 @@ def population_calc(county: County, net_neighbors: County, probability: float, T
     :param county: the object of the target county
     :param net_neighbors: the object of the neighboring county
     :param probability: random probability of transmission based on a normal distribution
-    :param ToH_modifier: random probability that transmission will influenced by ToH
+    :param ToH_modifier: random probability that transmission will be influenced by ToH
     :return new_infection: the new infection level from neighbor to target county
 
     >>> class County:
@@ -573,7 +572,7 @@ def all_modes(quarantine_list: set, county: County, net_neighbors: County, proba
 
 def calculate_spread_prob(CG: nx.Graph, county: County, neighbor: County) -> float:
     """
-    returns the likelyhood of an saturation spreading from one county to another.
+    returns the likelyhood of a saturation spreading from one county to another.
     the spread is based on:
         - The current saturation level of source county
         - The combined density of tree of heaven and regular trees for neighboring county
@@ -775,7 +774,7 @@ def handle_life_cycle_for_county(current_month: str, schema: dict):
         county.stabilize_levels()
 
 
-def calc_infest(CG: nx.Graph, neighbor_obj: County, schema: dict, cumulative_df: pd.DataFrame,
+def calc_infest(CG: nx.Graph, neighbor_obj: dict, schema: dict, cumulative_df: pd.DataFrame,
                 time_tracker: int, current_month: str, run_mode=None) -> (dict, pd.DataFrame):
     """
     updates the new saturation levels for all nodes in county graph.

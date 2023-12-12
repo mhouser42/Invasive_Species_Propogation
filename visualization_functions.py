@@ -127,7 +127,7 @@ def make_average_graphs(df: pd.DataFrame, sim_iterations: int, time_frame=None, 
     >>> make_average_graphs(data, sim_iterations=1)
     Traceback (most recent call last):
     ...
-    AttributeError: 'dict' object has no attribute 'T'
+    AttributeError: 'dict' object has no attribute "T"
     """
     time_frame = 'Years' if time_frame is None else time_frame
     vis_df = make_visual_df(df)
@@ -149,7 +149,6 @@ def model_variables(run_mode: str, sims_run: int, sim_iterations: int, life_cycl
     :param sim_iterations: number of iterations in each run
     :param life_cycle: Toggles whether the model runs on the annual or month simulation.
     :param prefix: parameter allowing for different graphs/handlers to be loaded in.
-    :param tick_steps: step for xticks
 
     >>> model_variables('Baseline', 5, 3)
 
@@ -184,7 +183,7 @@ def model_variables_avg(run_mode: str, sims_run: int, sim_iterations: int, all_t
                         life_cycle=False, prefix=None, time_frame=None, tick_steps=1) -> dict:
     """
     A modified version of model_variables
-    includes an trend line that averages all the simulations graphed
+    includes a trend line that averages all the simulations graphed
     Average line is made with the all_trends dict to get passed to the next block of simulations
     :param run_mode: type of mode the simulation runs in
     :param sims_run: number of runs
