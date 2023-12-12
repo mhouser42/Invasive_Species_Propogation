@@ -23,7 +23,7 @@ from collections import Counter
 from my_classes import County
 
 
-def get_lower_and_upper_bounds(df: pd.DataFrame, col_name) -> tuple:
+def get_lower_and_upper_bounds(df: pd.DataFrame, col_name: str) -> tuple:
     """
     return the lower and upper bounds of a column's values
     :param df: dataframe to be accessed
