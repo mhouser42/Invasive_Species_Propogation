@@ -48,7 +48,6 @@ def make_network_heat(CG: nx.Graph, simulation_df: pd.DataFrame, handler: dict, 
     :param simulation_df: df generated from on trial instance of the MC simulation
     :param iteration: The number of iterations from the interactive ipywidget
     :param time_frame: sets whether the functions handles years or months
-    :param
 
     >>> simulation_data = {'Cook': ['0', '0', '0'], 'year 1': [0.2, 0.6, 0.8], 'year 2': [0.4, 0.7, 0.5]}
     >>> simulation_df = pd.DataFrame(simulation_data)

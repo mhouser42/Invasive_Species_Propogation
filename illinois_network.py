@@ -30,7 +30,7 @@ def get_lower_and_upper_bounds(df: pd.DataFrame, col_name: str) -> tuple:
     :param col_name: string name of column to retrieve boundaries
     :return: the lower and upper bounds
 
-  >>> data = {'A': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+    >>> data = {'A': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
     >>> df = pd.DataFrame(data)
     >>> get_lower_and_upper_bounds(df, 'A')
     (-3.5, 14.5)
@@ -139,7 +139,6 @@ def get_neighbor_handler(CG: nx.Graph, handler: dict) -> dict:
     :return neighbor_handle: another handler, with county names for keys and a
                                 list of neighboring county nodes for values
 
-    # I don't know how to write doctests for this function
     """
     neighbor_handle = {}
     for county in handler:
@@ -190,7 +189,6 @@ def calc_toh_density_coef(df: pd.DataFrame, handler: dict, county_tots: dict, co
     :param handler: graph handler with county names as keys and the counties themselves as values
     :param county_tots: total saturation index by county
     :param county_counts: total sightings by county
-
     """
     toh_df = pd.read_csv(f'data/tree/Il_toh.csv')
     lower, upper = get_lower_and_upper_bounds(toh_df, 'infest_index')
@@ -213,7 +211,6 @@ def add_tree_density(handler: dict):
     Adds regular tree densities to nodes, based on the counties latitude and longitude.
     REFERENCE: https://www.fs.usda.gov/nrs/pubs/rb/rb_nrs113.pdf, pages 5-6
     :param handler: graph handler with county names for keys and the counties themselves as values
-    >>>
     """
     peoria = handler['Peoria']
     hardin = handler['Hardin']
@@ -228,7 +225,7 @@ def add_tree_density(handler: dict):
             county.tree_density = 0.2
 
 
-def set_up(path: str):
+def set_up(path: str) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame):
     """
     Loads and returns previously constructed csvs from preprocessing into pandas dataframes.
     :param path: folder the csvs are stored in.
@@ -242,7 +239,8 @@ def set_up(path: str):
     return county_df, edge_df, f_edge_df, toh_df
 
 
-def construct_graph_and_handlers(CG: nx.Graph, county_df: pd.DataFrame, edge_df: pd.DataFrame, toh_df: pd.DataFrame):
+def construct_graph_and_handlers(CG: nx.Graph, county_df: pd.DataFrame, edge_df: pd.DataFrame, toh_df: pd.DataFrame) \
+        -> (nx.Graph, dict, dict):
     """
     Takes a NetworkX Graph,a pandas dataframe of counties for nodes, a dataframe of connections between the counties for
     edges, and a dataframe of Tree of Heaven information about each county to be inserted into node attributes,
