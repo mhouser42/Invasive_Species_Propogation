@@ -88,19 +88,19 @@ Small note: this model uses a different edge weight for interstate edges, of 0.2
 ##### Life Cycle and Baseline Spread
 The SLF population is modulated on a monthly basis, with `County` class methods being triggered on different months, with `mate` occuring between August - December, `lay_eggs` occuring between September - November, `die_off` occuring January and February, and `hatch_eggs` occuring in May and June. The probabilities for each method are as follows:
 - `mate` - a random normal distribution centered around 25% and varying between 15% and 35%. This chance is modified by the current adult SLF population, adding to the total of mated adults.
-- `lay_eggs` - a random normal distribution centered around 50% and varying between 30% and 70%. This is modified by the number of mated adult SLF, ToH and regular densities, and an extra eggmass chance. Female SLFs usually lay one eggmass per seaason, but approximately 12% lay a second eggmass. The extra eggmass chance in this model is a normal distribution of 12% with of variance of 4%.
+- `lay_eggs` - a random normal distribution centered around 50% and varying between 30% and 70%. This is modified by the number of mated adult SLF, ToH and regular densities, and an extra eggmass chance. Female SLFs usually lay one eggmass per seaason, but approximately 12% lay a second eggmass (Belouard & Behm, 2023). The extra eggmass chance in this model is a normal distribution of 12% with of variance of 4%.
 - `die_off` - a random uniform distribution of 85% to 100% of the adult lanternfly population.
 - `hatch_eggs` - a random uniform chance between 75% and 100% that an eggmass will hatch. For each eggmass, there is a random uniform distribution of between 0.035 - 0.045 to represent that each egg mass tends to hatch between 35 - 45 SLF.
 
-After life cycle methods have triggered, the calculation for the spread of infestation occurs. The probability of a infestation spreading from one county is a random normal distribution of 20%, with a variance of 10%. This is modified by the counties current adult lanternfly population, and the combined regular tree and ToH densities for the neighboring county. While it is impossible that a SLF could know what a neighboring county's tree densities are before migrating, this represents the capability of them to establish themselves once they have arrived. Finally, the probaility is modified by the edge weight between counties and the current month's traffic levels. 
+After life cycle methods have triggered, the calculation for the spread of infestation occurs. The probability of a infestation spreading from one county is a random normal distribution of 10%, with a variance of 5%. This is modified by the counties current adult lanternfly population, and the combined regular tree and ToH densities for the neighboring county. While it is impossible that a SLF could know what a neighboring county's tree densities are before migrating, this represents the capability of them to establish themselves once they have arrived. Finally, the probaility is modified by the edge weight between counties and the current month's traffic levels. 
 
 Once a spread probability has been established, `spread_infest` then spreads adult lanterflies by that amount modified by a variability of between %5 - 15%. If the current month is during a `lay_eggs` cycle, this also can spread eggmasses.
 
 ##### Counter-Measures
 Once baseline spread has occured, counter measures are implemented if simulation is configured for a particular `run_mode` and certain conditions are met. The countermeasures are as follows:
-- Population Based - If a county's infestation/saturation has reached 60%, or it is half of a neighboring county's saturation that also has an aware public, it's `public_awareness` is set to `True`. Once `True`, `die_off` is triggered each month, at an intially normal distribution of 50% with a variance of 10%, modified by the population density of a county divided by 10000. A similar interaction occurs with that county's `egg_pop` as well.
-- Quarantine - The quarantine counter is an addition to the Population-Based counter-measure. If a county's saturation reaches over 75%, it will enter a state of quarantine, and also trigger public awareness in all neighboring counties. While in quarantine, the weight of the edges between it and all of it's neighbors raise to a random uniform distribution of between 2 and 10, greatly reducing the spread probability into and out of the county. This state is mostly permanant, only turning off is a county's saturation drops below 10%, in which case, the weights of edges between counties will return to prexisting levels as long as its neighbor is not also in quarantine.
-- Poisoning Tree of Heaven - If a county becomes aware of the infestation, a `toh_trigger` will change to `True`. Once `True`, this value will not revert. Each month after the trigger event, `die_off` occurs based on the `toh_density` of a county, divided by a random distribution of between 0 - 20. 
+- Population Based - If a county's infestation/saturation has reached 50%, or it is half of a neighboring county's saturation that also has an aware public, it's `public_awareness` is set to `True`. Once `True`, `die_off` is triggered each month, at an intially normal distribution of 35% with a variance of 10%, modified by the population density of a county divided by 10000. A similar interaction occurs with that county's `egg_pop` as well.
+- Quarantine - The quarantine counter is an addition to the Population-Based counter-measure. If a county's saturation reaches over 75%, it will enter a state of quarantine, and also trigger public awareness in all neighboring counties. While in quarantine, the weight of the edges between it and all of it's neighbors raise to a random uniform distribution of between 2 and 5, greatly reducing the spread probability into and out of the county. This state is mostly permanant, only turning off is a county's saturation drops below 10%, in which case, the weights of edges between counties will return to prexisting levels as long as its neighbor is not also in quarantine.
+- Poisoning Tree of Heaven - If a county becomes aware of the infestation, a `toh_trigger` will change to `True`. Once `True`, this value will not revert. Each month after the trigger event, `die_off` occurs based on the `toh_density` of a county, divided by a normal distribution of 50 with a variance of 25. 
 
 ### 2- Validation
 A realistic projection of SLF infestation is very difficult to quantify, and available data and literature from reputable sources supports varying results. For instance, De Bona et al. show a map of the 8 years of spread since introduction to in 2014.
@@ -171,17 +171,17 @@ The second surprise was that the same did not exist for the quarantine counterme
 
 #### Monthly
 
-![Infestation levels of Baseline Spread and Countermeasures for Life Cycle Model]('references/avg_trends_life_cycle.png')
+![Infestation levels of Baseline Spread and Countermeasures for Life Cycle Model](https://github.com/mhouser42/Invasive_Species_Propogation/blob/main/references/avg_trends_life_cycle.png)
 
 ##### Baseline
 The Baseline spread of the infestation shows some promise, with accelerated growth along interstate edges. However, the spread of the model is far too fast, with full saturation occuring at year eight. This is, of course, without any counter-measures. Implementation of zero counter-measures would be illogical in a real-life scenerio. That being said, we are erring on the side of caution and assuming the model is faster than it should be.
 
 
 ##### Poisoning Tree of Heaven
-The least impactful of models was the poisoning of ToH. This is most likely a result of the `toh_trigger` variable. Earlier models did not include this, and the poisoning was much more effective. But since the poisoning now only begins once a county is publically aware of the problem, the SLF population has already been established and isn't as easily reduced. The effect of the poisoning is noticeable, but only in counties with a high ToH density. Because ToH isn't well established in Illinois, the overall effect is minimal 
+Intially, the poisoning of ToH is the least effective model. This is most likely a result of the `toh_trigger` variable. Earlier models did not include this, and the poisoning was much more effective. But since the poisoning now only begins once a county is publically aware of the problem, the SLF population has already been established and isn't as easily reduced. However, due to the slow growth of ToH, overtime the saturation is flattened, and actually begins to trend downwards.
 
 ##### Population-Based
-Population Counter-Measures suffered from a problem similar to poisoning the tree of heaven, where it only affected counties with extremely high population density. This effectively results in only Cook County and the surrounding Chicago-land area being able to reduce the SLF population enough for it to make an impact.
+Population Counter-Measures suffered from a problem similar to poisoning the tree of heaven, where it only affected counties with extremely high population density. This effectively results in only Cook County and Sagamon counties and the counties surrounding them area being able to reduce the SLF population enough for it to make an impact.
 
 
 ##### Quarantine
@@ -211,16 +211,17 @@ Another further expansion of the project may be to tweek the monthly and annual 
 ## VI. Citations
 
 1. APHIS. "Spotted Lanternfly." Animal and Plant Health Inspection Service, United States Department of Agriculture, n.d., https://www.aphis.usda.gov/aphis/resources/pests-diseases/hungry-pests/the-threat/spotted-lanternfly/spotted-lanternfly.
-2. Brandywine Conservancy. "Invasive Species Spotlight: Tree of Heaven (Ailanthus altissima) and Spotted Lanternfly." Brandywine Conservancy, n.d., https://www.brandywine.org/conservancy/blog/invasive-species-spotlight-tree-heaven-ailanthus-altissima-and-spotted-lanternfly.
-3. Cornell University, College of Agriculture and Life Sciences. "Spotted Lanternfly Reported Distribution Map." New York State Integrated Pest Management, n.d., https://cals.cornell.edu/new-york-state-integrated-pest-management/outreach-education/whats-bugging-you/spotted-lanternfly/spotted-lanternfly-reported-distribution-map.
-4. De Bona, Sebastiano, et al. "LydeMaPR: An R Package to Track the Spread of the Invasive Spotted Lanternfly (Lycorma delicatula, White 1845) (Hemiptera, Fulgoridae) in the United States." bioRxiv, 2023.01.27.525992, doi: https://doi.org/10.1101/2023.01.27.525992.
-5. John B. Ward & Co. Arborists, "Spotted Lanternfly", n.d., https://johnbward.com/spotted-lanternfly
-6. Illinois Department of Agriculture. "Spotted Lanternfly." Illinois Department of Agriculture, n.d., https://agr.illinois.gov/insects/pests/spotted-lanternfly.html.
-7. Pennsylvania Department of Agriculture. "Spotted Lanternfly Quarantine." Pennsylvania Department of Agriculture, n.d., https://www.agriculture.pa.gov/Plants_Land_Water/PlantIndustry/Entomology/spotted_lanternfly/quarantine/Pages/default.aspx.
-8. Penn State College of Agricultural Sciences. "Assessing Economic Impact", https://agsci.psu.edu/research/impacts/themes/biodiversity/detecting-biological-invasions/assessing-economic-impact
-9. Penn State Extension. "Controlling Tree of Heaven: Why It Matters." Penn State Extension, n.d., https://extension.psu.edu/controlling-tree-of-heaven-why-it-matters#:~:text=Tree%20of%20heaven%20is%20a,across%20most%20of%20southeastern%20PA.
-10. Penn State Extension. "Tree of Heaven." Penn State Extension, n.d., https://extension.psu.edu/tree-of-heaven.
-11. Penn State Extension. "What Should You Do with Spotted Lanternfly Egg Masses." Penn State Extension, n.d., https://extension.psu.edu/what-should-you-do-with-spotted-lanternfly-egg-masses.
-12. University of Illinois Extension. "Spotted Lanternfly Fact Sheet." University of Illinois Extension, https://extension.illinois.edu/sites/default/files/spotted_lanternfly_fact_sheet_v8.pdf.
-13. University of Illinois Extension. "Tree of Heaven." University of Illinois Extension, n.d., https://extension.illinois.edu/invasives/tree-heaven.
-14. U.S. Department of Transportaion. "Freight Managment and Operations", n.d., https://ops.fhwa.dot.gov/freight/freight_analysis/freight_story/major.htm
+2. Belouard, N., & Behm, J. E. (2023). Multiple paternity in the invasive spotted lanternfly (Hemiptera: Fulgoridae). Environmental Entomology, 52(5), 949–955. https://doi.org/10.1093/ee/nvad083
+3. Brandywine Conservancy. "Invasive Species Spotlight: Tree of Heaven (Ailanthus altissima) and Spotted Lanternfly." Brandywine Conservancy, n.d., https://www.brandywine.org/conservancy/blog/invasive-species-spotlight-tree-heaven-ailanthus-altissima-and-spotted-lanternfly.
+4. Cornell University, College of Agriculture and Life Sciences. "Spotted Lanternfly Reported Distribution Map." New York State Integrated Pest Management, n.d., https://cals.cornell.edu/new-york-state-integrated-pest-management/outreach-education/whats-bugging-you/spotted-lanternfly/spotted-lanternfly-reported-distribution-map.
+5. De Bona, Sebastiano, et al. "LydeMaPR: An R Package to Track the Spread of the Invasive Spotted Lanternfly (Lycorma delicatula, White 1845) (Hemiptera, Fulgoridae) in the United States." bioRxiv, 2023.01.27.525992, doi: https://doi.org/10.1101/2023.01.27.525992.
+6. John B. Ward & Co. Arborists, "Spotted Lanternfly", n.d., https://johnbward.com/spotted-lanternfly
+7. Illinois Department of Agriculture. "Spotted Lanternfly." Illinois Department of Agriculture, n.d., https://agr.illinois.gov/insects/pests/spotted-lanternfly.html.
+8. Pennsylvania Department of Agriculture. "Spotted Lanternfly Quarantine." Pennsylvania Department of Agriculture, n.d., https://www.agriculture.pa.gov/Plants_Land_Water/PlantIndustry/Entomology/spotted_lanternfly/quarantine/Pages/default.aspx.
+9. Penn State College of Agricultural Sciences. "Assessing Economic Impact", https://agsci.psu.edu/research/impacts/themes/biodiversity/detecting-biological-invasions/assessing-economic-impact
+10. Penn State Extension. "Controlling Tree of Heaven: Why It Matters." Penn State Extension, n.d., https://extension.psu.edu/controlling-tree-of-heaven-why-it-matters#:~:text=Tree%20of%20heaven%20is%20a,across%20most%20of%20southeastern%20PA.
+11. Penn State Extension. "Tree of Heaven." Penn State Extension, n.d., https://extension.psu.edu/tree-of-heaven.
+12. Penn State Extension. "What Should You Do with Spotted Lanternfly Egg Masses." Penn State Extension, n.d., https://extension.psu.edu/what-should-you-do-with-spotted-lanternfly-egg-masses.
+13. University of Illinois Extension. "Spotted Lanternfly Fact Sheet." University of Illinois Extension, https://extension.illinois.edu/sites/default/files/spotted_lanternfly_fact_sheet_v8.pdf.
+14. University of Illinois Extension. "Tree of Heaven." University of Illinois Extension, n.d., https://extension.illinois.edu/invasives/tree-heaven.
+15. U.S. Department of Transportaion. "Freight Managment and Operations", n.d., https://ops.fhwa.dot.gov/freight/freight_analysis/freight_story/major.htm
