@@ -9,6 +9,8 @@ This file is for the creation of county network
 It constructs a network with nodes and edges
 outputs three binary files: the NX network, a county handler, and a neighbor handler.
 
+TODO: doctests for get_neighbor_handler, calc_toh_density_coef, add_tree_density?
+TODO: Remove unused code
 """
 import collections
 import time
@@ -283,6 +285,7 @@ def dump_graph_and_handler(CG, county_handler, neighbor_handler, prefix=''):
 if __name__ == '__main__':
     path = 'data/location'
     county_df, edge_df, f_edge_df, toh_df = set_up(path)
+    # city_df = pd.read_csv(f'{path}/target_cities.csv')
 
     CG = nx.Graph()
     fCG = nx.Graph()
@@ -290,5 +293,23 @@ if __name__ == '__main__':
     CG, county_handler, neighbor_handler = construct_graph_and_handlers(CG, county_df, edge_df, toh_df)
     fCG, f_county_handler, f_neighbor_handler = construct_graph_and_handlers(fCG, county_df, f_edge_df, toh_df)
 
+    # pickling
     dump_graph_and_handler(CG, county_handler, neighbor_handler)
     dump_graph_and_handler(fCG, f_county_handler, f_neighbor_handler, prefix='fast_')
+
+    # city_dict = construct_nodes(CG, city_df, is_county=False)
+    # handler = {'C': county_dict, 'c': city_dict}
+
+    # adding edges
+    # # adjacent_e = edge_df[(edge_df['type'] == 'adjacent') & (edge_df['weight'] == 1)]
+    # interstate_e = edge_df[(edge_df['type'] == 'interstate') | (edge_df['weight']) == .1]
+    # constituent_e = edge_df[(edge_df['type'] == 'constituent')]
+    #
+    # construct_edges(CG, adjacent_e, county_dict)
+    # construct_edges(CG, interstate_e, county_dict, rel='interstate')
+    # construct_edges(CG, constituent_e, handler, rel='constituent')
+
+    # # pickling
+    # pickle.dump(CG, open(f'{path}/IL_graph.dat', 'wb'))
+    # pickle.dump(CG, open(f'{path}/graph_handler_counties'))
+    # pickle.dump(handler, open(f'{path}/graph_handler.dat', 'wb'))
