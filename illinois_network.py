@@ -191,9 +191,8 @@ def calc_toh_density_coef(df: pd.DataFrame, handler: dict, county_tots: dict, co
     :param county_tots: total saturation index by county
     :param county_counts: total sightings by county
 
-    # Not sure how to write tests for this func
-
     """
+    toh_df = pd.read_csv(f'data/tree/Il_toh.csv')
     lower, upper = get_lower_and_upper_bounds(toh_df, 'infest_index')
     toh_df['infest_index'] = np.clip(toh_df['infest_index'], lower, upper)
     max_infest = max(df['infest_index'])

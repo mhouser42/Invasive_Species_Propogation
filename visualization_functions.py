@@ -127,7 +127,7 @@ def make_average_graphs(df: pd.DataFrame, sim_iterations: int, time_frame=None, 
     >>> make_average_graphs(data, sim_iterations=1)
     Traceback (most recent call last):
     ...
-    AttributeError: 'dict' object has no attribute "T"
+    AttributeError: 'dict' object has no attribute 'T'
     """
     time_frame = 'Years' if time_frame is None else time_frame
     vis_df = make_visual_df(df)
