@@ -741,13 +741,10 @@ def handle_life_cycle_for_county(current_month: str, schema: dict):
         county.traffic_level = current_month['traffic_level']
         if current_month['month'] in ['May', 'June']:
             county.hatch_eggs()
-            # county.saturation = (county.slf_pop + county.egg_pop)/2
         elif current_month['month'] in ['August', 'September', 'October', 'November', 'December']:
             county.mate()
-            # county.saturation = (county.slf_pop + county.egg_pop)/2
             if current_month['month'] in ['September', 'October', 'November']:
                 county.lay_eggs()
-                # county.saturation = (county.slf_pop + county.egg_pop) / 2
         elif current_month['month'] in ['January', 'February']:
             county.die_off()
         county.saturation = max((county.slf_pop + county.egg_pop * 3.0) / 2, county.egg_pop * 3.0, county.slf_pop)

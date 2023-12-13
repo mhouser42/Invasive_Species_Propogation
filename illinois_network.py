@@ -233,7 +233,7 @@ def set_up(path: str) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame
     """
     county_df = pd.read_csv(f'{path}/counties.csv')  # for nodes
     edge_df = pd.read_csv(f'{path}/county_edges.csv')  # for edges
-    f_edge_df = pd.read_csv(f'{path}/county_edges_fast_highways.csv')  # makes edge weight on highways lower, inc spread
+    f_edge_df = pd.read_csv(f'{path}/fast_county_edges.csv')  # makes edge weight on highways lower, inc spread
     toh_df = pd.read_csv(f'data/tree/Il_toh.csv')
 
     return county_df, edge_df, f_edge_df, toh_df
